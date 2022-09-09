@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: dev #默认为开发环境
+  mvc:
+    pathmatch:
+      #解决整合Swagger报错的问题->https://blog.csdn.net/dchua123/article/details/121918921
+      matching-strategy: ant_path_matcher
+  datasource:
+    username: <username>
+    password: <password>
+
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:/dao/**/*.xml
+
+#debug: true
+
