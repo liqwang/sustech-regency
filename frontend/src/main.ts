@@ -1,5 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+import elementPlus from './plugins/element-plus'
+import router from './router'
+import "./styles/reset.css"
 
-createApp(App).mount('#app')
+createApp(App)
+  .use(elementPlus, { size: "mini" })
+  .use(router)
+  .mount('#app')
