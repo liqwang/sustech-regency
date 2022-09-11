@@ -18,7 +18,6 @@ public class User {
 	private Integer id;
 	private String name;
 	private String password;
-	private Date createTime;
 	private String phone;
 	private String email;
 	private String idNumber;
