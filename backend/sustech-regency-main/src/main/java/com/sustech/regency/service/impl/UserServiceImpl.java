@@ -1,8 +1,10 @@
 package com.sustech.regency.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.sustech.regency.db.dao.LoginLogDao;
 import com.sustech.regency.db.dao.UserDao;
 import com.sustech.regency.db.dao.UserWithRoleDao;
+import com.sustech.regency.db.po.LoginLog;
 import com.sustech.regency.db.po.User;
 import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
@@ -23,17 +25,18 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
+	private Redis redis;
+	@Autowired
 	private UserDao userDao;
 	@Autowired
 	private UserWithRoleDao userWithRoleDao;
 	@Autowired
-	private Redis redis;
+	private LoginLogDao loginLogDao;
 
 	@Override
 	public String register(String name, String password, Integer roleId) {
 		//判断该name是否已经存在
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-										 .select(User::getId)
 										 .eq(User::getName, name));
 		if(user==null){
 			user=User.builder()
@@ -55,11 +58,26 @@ public class UserServiceImpl implements UserService {
 		Authentication authentication=new UsernamePasswordAuthenticationToken(user.getId(),user.getPassword(),null);
 		SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
 		redis.setObject("login:"+user.getId(),user,60*60*2); //把完整用户信息存入Redis, sid作为key, ttl为2h
-		return JwtUtil.createJwt(String.valueOf(user.getId())); //使用sid生成JWT返回
+		return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
 	}
 
 	@Override
 	public String login(String name, String password) {
-		return null;
+		//判断该name是否存在
+		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
+										 .eq(User::getName, name));
+		if(user==null){
+			throw new ApiException(400,"User doesn't exists, please register first");
+		}else if(!passwordEncoder.matches(password,user.getPassword())){
+			throw new ApiException(400,"Password wrong");
+		}else{
+			//生成LoginLog
+			loginLogDao.insert(new LoginLog(user.getId(),new Date()));
+			//直接认证通过，就不经过AuthenticationManager#authenticate了
+			Authentication authentication=new UsernamePasswordAuthenticationToken(user.getId(),user.getPassword(),null);
+			SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
+			redis.setObject("login:"+user.getId(),user,60*60*2); //把完整用户信息存入Redis, sid作为key, ttl为2h
+			return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
+		}
 	}
 }
