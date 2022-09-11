@@ -7,6 +7,6 @@ public class Hotel {
     private Integer id;
     private Float latitude;
     private Float longitude;
-    private Integer city_id;
+    private Integer cityId;
     private Integer merchantId;
 }

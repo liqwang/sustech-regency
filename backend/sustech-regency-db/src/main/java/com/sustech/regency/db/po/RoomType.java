@@ -6,8 +6,8 @@ import lombok.Data;
 public class RoomType {
     private Integer id;
     private String name;
-    private Integer room_num;
+    private Integer roomNum;
     private Integer capacity;
-    private Integer toilet_num;
-    private Boolean isContainLivingRoom;
+    private Integer toiletNum;
+    private Boolean hasLivingRoom;
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Room {
     private Integer id;
-    private Integer roomId;
+    private Integer roomNum;
     private Integer price;
     private Integer floor;
     private Integer typeId;
