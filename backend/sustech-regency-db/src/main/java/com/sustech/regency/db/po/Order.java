@@ -7,10 +7,10 @@ import java.util.Date;
 @Data
 public class Order {
     private Integer id;
-    private Integer room_id;
-    private Date date_start;
-    private Date date_end;
-    private Integer payer_id;
+    private Integer roomId;
+    private Date dateStart;
+    private Date dateEnd;
+    private Integer payerId;
     private Integer fee;
     private Integer status;
     private String comment;

@@ -9,5 +9,5 @@ public class RoomType {
     private Integer room_num;
     private Integer capacity;
     private Integer toilet_num;
-    private Boolean is_contain_living_room;
+    private Boolean isContainLivingRoom;
 }

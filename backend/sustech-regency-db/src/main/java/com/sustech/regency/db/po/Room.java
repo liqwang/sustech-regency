@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class Room {
     private Integer id;
-    private Integer room_id;
+    private Integer roomId;
     private Integer price;
     private Integer floor;
-    private Integer type_id;
-    private Integer hotel_id;
-    private Boolean is_available;
+    private Integer typeId;
+    private Integer hotelId;
+    private Boolean isAvailable;
     private Float discount;
 }

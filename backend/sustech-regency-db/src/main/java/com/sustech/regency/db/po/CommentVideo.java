@@ -6,5 +6,5 @@ import lombok.Data;
 public class CommentVideo {
     private Integer id;
     private String url;
-    private Integer order_id;
+    private Integer orderId;
 }
