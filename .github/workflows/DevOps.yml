@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
 
 jobs:
   frontend-build:
@@ -35,7 +38,8 @@ jobs:
   backend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: 迁出代码
+        uses: actions/checkout@v3
       - name: 安装JDK17
         uses: actions/setup-java@v3
         with:
@@ -56,3 +60,6 @@ jobs:
           source: "backend/sustech-regency-main/target/*.jar"
           target: "/root/sustech-regency"
           strip_components: 3
+
+#  docker-compose-run:
+
