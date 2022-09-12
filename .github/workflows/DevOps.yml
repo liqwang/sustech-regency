@@ -27,7 +27,6 @@ jobs:
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: root
-          password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "frontend/dist/*"
           target: "/root/sustech-regency/nginx/html"
