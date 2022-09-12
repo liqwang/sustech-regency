@@ -5,7 +5,7 @@ import {
   RouterView,
 } from "vue-router";
 import HelloWorld from "../pages/HelloWorld.vue";
-import Login from "../pages/LoginPage.vue";
+import LoginPage from "../pages/LoginPage.vue";
 import register from "../pages/register3.vue";
 const routes: RouteRecordRaw[] = [
   {
@@ -15,17 +15,17 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/login",
     name: "Login page",
-    component: Login,
+    component: LoginPage,
   },
   {
     path: "/signup",
     name: "signup",
     component: register,
-  },
+  }
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: routes,
 });
 
