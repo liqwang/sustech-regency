@@ -5,7 +5,7 @@ import {
   RouterView,
 } from "vue-router";
 import HelloWorld from "../pages/HelloWorld.vue";
-import Login from "../pages/Login.vue";
+import Login from "../pages/LoginPage.vue";
 import register from "../pages/register3.vue";
 const routes: RouteRecordRaw[] = [
   {
@@ -18,8 +18,8 @@ const routes: RouteRecordRaw[] = [
     component: Login,
   },
   {
-    path: "/signin",
-    name: "signin",
+    path: "/signup",
+    name: "signup",
     component: register,
   },
 ];
