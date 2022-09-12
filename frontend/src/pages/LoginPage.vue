@@ -24,7 +24,7 @@
             <div id="sign_up" style="display: inline-block">
               <div>
                 <span>没有账号？点此</span>
-                <a href="./#/register" id="signup">注册</a>
+                <a href="./#/signup" id="signup">注册</a>
               </div>
             </div>
           </div>
