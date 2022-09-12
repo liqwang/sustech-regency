@@ -18,8 +18,8 @@ const routes: RouteRecordRaw[] = [
     component: Login,
   },
   {
-    path: "/setup",
-    name: "setup",
+    path: "/signin",
+    name: "signin",
     component: register,
   },
 ];

@@ -1,5 +1,5 @@
 <template>
-
+    <div id="big">
     <div id='register_page' class="flex justify-center">
         <el-row>
             <el-col :span="18">
@@ -126,11 +126,20 @@
     <div class='page'>
         <!-- <img src="https://picx.zhimg.com/v2-fe2d9ef609280bad61b9be01314de881_r.jpg"> -->
     </div>
+</div>
 </template>
   
-<style lang="scss" >
-body {
-    // background-color: #a3c3ed;
+<style lang="scss" scoped>
+// body {
+//     // background-color: #a3c3ed;
+//     background-image: url('../images/gray.png');
+//     background-repeat: no-repeat;
+//     background-size: 1560px 780px;
+// }
+#big{
+        // background-color: #a3c3ed;
+    width: auto;
+    height: 780px;
     background-image: url('../images/gray.png');
     background-repeat: no-repeat;
     background-size: 1560px 780px;
