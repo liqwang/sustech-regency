@@ -1,6 +1,9 @@
 name: DevOps
 on:
-  - push
+  push:
+    branches:
+      - master
+
 jobs:
   frontend-build:
     runs-on: ubuntu-latest
