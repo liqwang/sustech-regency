@@ -6,8 +6,8 @@ spring:
       #解决整合Swagger报错的问题->https://blog.csdn.net/dchua123/article/details/121918921
       matching-strategy: ant_path_matcher
   datasource:
-    username: <username>
-    password: <password>
+    username: quanquan
+    password: wlqyanyalun008++
 
 #mybatis-plus:
 #  configuration:
