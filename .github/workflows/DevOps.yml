@@ -12,10 +12,10 @@ jobs:
         with:
           node-version: 14.0.0
       - name: 安装依赖
-        run: npm i
+        run: cd frontend
+             npm i
       - name: 编译打包
-        run: cd frontend &&\
-             npm run build
+        run: npm run build
       - name: 复制文件到阿里云
         uses: appleboy/scp-action@master
         with:
