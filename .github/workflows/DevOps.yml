@@ -30,6 +30,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           source: "frontend/dist/*"
           target: "/root/sustech-regency/nginx/html"
+          strip_components: 2
 
 
 #  backend-build:
