@@ -16,7 +16,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: sustech-grab-course-redis
+    container_name: sustech-regency-redis
     environment:
       TZ: Asia/Shanghai
     ports:
@@ -24,7 +24,7 @@ services:
 
   main:
     image: openjdk:17
-    container_name: sustech-grab-course-main
+    container_name: sustech-regency-main
     environment:
       TZ: Asia/Shanghai
     ports:
