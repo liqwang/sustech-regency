@@ -4,6 +4,8 @@ import com.sustech.regency.web.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,13 +31,11 @@ public class SecurityConfig implements WebMvcConfigurer {
 		return new BCryptPasswordEncoder();
 	}
 
-	/*当有AuthenticationManager的Bean时，使用JUnit会StackOverFlowError
-	  参考https://www.cnblogs.com/seliote/p/15096901.html
-	     https://stackoverflow.com/questions/67546793/why-is-spring-boot-2-4-5-with-junit5-and-mocked-beans-is-throwing-stackoverflowe*/
-//	@Bean
-//	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-//		return authenticationConfiguration.getAuthenticationManager();
-//	}
+	//https://github.com/spring-projects/spring-security/issues/11792
+	@Bean
+	public static AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -44,7 +44,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() //关闭Session(不通过Session获取SecurityContext)
 					.authorizeRequests(
 						authorize->authorize
-								  .antMatchers("/user/login").anonymous() //只允许登录接口匿名访问，认证通过后无法访问
+								  .antMatchers("/user/register","/user/login").anonymous() //只允许注册和登录接口匿名访问，认证通过后无法访问
 								  .antMatchers("/doc.html","/webjars/**","/img.icons/**","/swagger-resources","/v2/api-docs","/favicon.ico").permitAll() //放行Knife4j相关URL
 								  .anyRequest().authenticated()
 					)

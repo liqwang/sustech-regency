@@ -1,16 +1,16 @@
 server:
   ssl:
     key-alias: alias
-    key-store-password: <password>
+    key-store-password: VO8Pqyrl
     key-store-type: PKCS12
-    key-store: <path>
+    key-store: classpath:7998226_quanquancho.com.pfx
 
 spring:
   redis:
     timeout: 300ms #连接超时时间
     host: redis #docker-compose中定义的域名
   datasource:
-    url: jdbc:mysql://<host>:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
 #    port: 6379
 #    database: 0 #数据库编号
 

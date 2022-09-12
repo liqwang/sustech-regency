@@ -1,5 +1,7 @@
 package com.sustech.regency.web.filter;
 
+import com.sustech.regency.db.dao.UserDao;
+import com.sustech.regency.db.po.User;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.web.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -22,8 +24,8 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private Redis redis;
-//	@Autowired
-//	private UserDao userDao;
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	protected void doFilterInternal(@NotNull HttpServletRequest request,
@@ -33,16 +35,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String token = request.getHeader("token");
 		if (StringUtils.hasText(token)){
 			Claims claims = JwtUtil.parseJwt(token);
-			String sid = claims.getSubject();
-//			User user = redis.getObject("login:" + sid);
-//			if (user == null) { //Redis的User过期了，查询数据库
-//				user = userDao.selectById(sid);
-//			}
-//			if (user != null) { //如果Redis和数据库中都没有User，则SecurityContext中没有Authentication对象
-//				redis.setObject("login:" + sid, user, 3600); //刷新ttl为1h
-//				Authentication authentication = new UsernamePasswordAuthenticationToken(user.getSid(), user.getPassword(), null);
-//				SecurityContextHolder.getContext().setAuthentication(authentication);
-//			}
+			String id = claims.getSubject();
+			User user = redis.getObject("login:" + id);
+			if (user == null) { //Redis的User过期了，查询数据库
+				user = userDao.selectById(id);
+			}
+			if (user != null) { //如果Redis和数据库中都没有User，则SecurityContext中没有Authentication对象
+				redis.setObject("login:" + id, user, 60*60*2); //刷新ttl为2h
+				Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
 		}
 		filterChain.doFilter(request, response); //没有user也直接放行，之后会被Interceptor拦截，因为SecurityContext中没有Authentication对象
 	}
