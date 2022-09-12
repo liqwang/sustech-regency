@@ -11,6 +11,8 @@ on:
 jobs:
   frontend-build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
     steps:
       - name: 迁出代码
         uses: actions/checkout@master
@@ -38,6 +40,8 @@ jobs:
 
   backend-build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
     steps:
       - name: 迁出代码
         uses: actions/checkout@v3
@@ -62,5 +66,21 @@ jobs:
           target: "/root/sustech-regency"
           strip_components: 3
 
-#  docker-compose-run:
-
+  docker-compose-run:
+    needs:
+      - frontend-build
+      - backend-build
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: Docker-Compose一键部署
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: root
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd /root/sustech-regency
+            docker-compose down
+            docker-compose up -d
