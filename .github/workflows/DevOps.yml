@@ -12,8 +12,9 @@ jobs:
         with:
           node-version: 14.0.0
       - name: 安装依赖
-        run: cd frontend
-             npm i
+        run: |
+          cd frontend
+          npm i
       - name: 编译打包
         run: npm run build
       - name: 复制文件到阿里云
