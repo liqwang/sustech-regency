@@ -9,7 +9,7 @@
           <div id="logoimg"></div>
         </div>
       </div>
-      <div class="input">
+      <div class="input_login">
         <div id="username">用户名/手机号/邮箱</div>
         <el-input
           v-model="username"
@@ -112,7 +112,7 @@ body {
   #pwd {
     margin-top: 0.7rem;
   }
-  .input {
+  .input_login {
     width: 80%;
     height: 60%;
     display: table;
@@ -244,7 +244,7 @@ body {
   #pwd {
     margin-top: 0.7rem;
   }
-  .input {
+  .input_login {
     width: 67%;
     display: table;
     margin: 0 auto;

@@ -3,7 +3,7 @@
     <div id='register_page' class="flex justify-center">
         <el-row>
             <el-col :span="18">
-                <div id="title">
+                <div id="title_setup">
                     <b>SUSTech Regency</b>
                 </div>
             </el-col>
@@ -120,7 +120,7 @@
                 </el-radio-group>
             </div>
         </el-scrollbar>
-        <el-button @click="signup" id="signup" size="large" type="primary" round>注册</el-button>
+        <el-button @click="signup" id="signup_button" size="large" type="primary" round>注册</el-button>
         <el-link id="link_login" type="primary" href="../login" target="_blank">已有账号？点击这里</el-link>
     </div>
     <div class='page'>
@@ -181,7 +181,7 @@ body {
 }
 
 
-#title {
+#title_setup {
     font-family: "Lucida Calligraphy", cursive, serif, sans-serif;
     text-indent: 30px;
     position: relative;
@@ -191,7 +191,7 @@ body {
 
 
 
-#signup {
+#signup_button {
     position: absolute;
     left: 50px;
     top: 530px;
