@@ -1,0 +1,36 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: sustech-regency-nginx
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/html:/etc/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/cert:/etc/nginx/cert
+    privileged: true #必须要有，打开nginx文件调用权限
+
+  redis:
+    image: redis:latest
+    container_name: sustech-grab-course-redis
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "6379:6379"
+
+  main:
+    image: openjdk:17
+    container_name: sustech-grab-course-main
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./sustech-regency-main-0.0.1-SNAPSHOT.jar:/main.jar
+    entrypoint: ["java","-jar","/main.jar","--spring.profiles.active=prod"]
+    depends_on:
+      - redis
