@@ -139,9 +139,15 @@
 //     background-repeat: no-repeat;
 //     background-size: 1560px 780px;
 // }
+<<<<<<< HEAD
 #big {
     // background-color: #a3c3ed;
     width: 100%;
+=======
+#big{
+        // background-color: #a3c3ed;
+    width: auto;
+>>>>>>> bfec4a67ceaed6ec9df0baa58d7a10670a2eeb0e
     // margin:0 0;
     height: 780px;
     // height: 100%;
@@ -288,12 +294,18 @@ const checkPassword = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('Please input the password'))
     } else {
+<<<<<<< HEAD
         const reg = new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}');
         if (!reg.test(value)) {
             callback(new Error('Your password is too simple'))
         } else {
             IsComplete.password = 1;
             callback()
+=======
+        const reg =new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}');
+        if(!reg.test(value)){
+            callback(new Error('Your password is too simple'))
+>>>>>>> bfec4a67ceaed6ec9df0baa58d7a10670a2eeb0e
         }
     }
 }
@@ -372,6 +384,7 @@ const send_phone = () => {
 }
 
 const signup = () => {
+<<<<<<< HEAD
     if(UserOrmerchant.value!=''&&IsComplete.name==1 &&IsComplete.password==1&&IsComplete.checkPassword==1&&IsComplete.phone==1&&IsComplete.mail==1&&IsComplete.verify_mail==1&&IsComplete.verify_phone==1){
         var id = 1;
     if (UserOrmerchant.value === '商家') {
@@ -403,6 +416,12 @@ const signup = () => {
     
 
 
+=======
+    ElNotification({
+        title: 'Fail',
+        message: h('i', { style: 'color: red' }, "Function for register not yet open")
+    })
+>>>>>>> bfec4a67ceaed6ec9df0baa58d7a10670a2eeb0e
 }
 </script>
     
