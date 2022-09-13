@@ -156,12 +156,12 @@
     margin: 0 0;
     background: hsl(0, 0%, 100%);
     // width: 367px;
-    width:40%;
+    width:38%;
     height: 100%;
     position: relative;
     // left: 250px;
     // top: 40px;
-    border-radius: 25px 0px 0px 25px;
+    border-radius: 25px 25px 25px 25px;
 
     box-shadow: 10px 10px 5px #888888;
 }
@@ -191,6 +191,7 @@
     border-radius: 0px 25px 25px 0px;
     position: relative;
     // left: 600px;
+    left:-2%;
     // top: 40px;
     box-shadow: 10px 10px 5px #888888;
     background-size: 1240px 800px;
@@ -249,7 +250,7 @@
     position: absolute;
     left: 150px;
     top: 84%;
-    width: 130px;
+    // width: 130px;
 }
 
 .input_area {
