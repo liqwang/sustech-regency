@@ -9,6 +9,11 @@ on:
       - '.github/workflows/**'
 
 jobs:
+  log-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log GitHub context
+        run: echo '${{ toJSON(github.event.head_commit) }}'
   frontend-build:
     runs-on: ubuntu-latest
     env:
@@ -20,6 +25,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.15.1
+          cache: 'npm'
       - name: 安装依赖
         run: |
           cd frontend
@@ -50,7 +56,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-          cache: maven
+          cache: 'maven'
       - name: Maven打包
         run: |
           cd backend
