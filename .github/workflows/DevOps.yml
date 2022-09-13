@@ -13,17 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Log GitHub context
-        run: echo '${{ toJSON(github) }}'
-      - name: Log job context
-        run: echo '${{ toJSON(job) }}'
-      - name: Log steps context
-        run: echo '${{ toJSON(steps) }}'
-      - name: Log runner context
-        run: echo '${{ toJSON(runner) }}'
-      - name: Log strategy context
-        run: echo '${{ toJSON(strategy) }}'
-      - name: Log matrix context
-        run: echo '${{ toJSON(matrix) }}'
+        run: echo '${{ toJSON(github.event.head_commit.modified) }}'
   frontend-build:
     runs-on: ubuntu-latest
     env:
