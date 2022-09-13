@@ -20,18 +20,18 @@ public class UserController {
 
 	@ApiOperation("注册")
 	@PostMapping("/register")
-	public ApiResponse<Map> register(@ApiParam(value="用户名", required=true) @RequestParam String name,
+	public ApiResponse<Map> register(@ApiParam(value="用户名", required=true) @RequestParam String username,
 	                                 @ApiParam(value="密码", required=true) @RequestParam String password,
 	                                 @ApiParam(value="角色, 1为消费者, 2为商家",allowableValues="1,2",required=true, example="1") @RequestParam @Range(min=1,max=2,message="roleId只能是1或2") Integer roleId){
-		String jwt = userService.register(name,password,roleId);
+		String jwt = userService.register(username,password,roleId);
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 
 	@ApiOperation("登录")
 	@PostMapping("/login")
-	public ApiResponse<Map> login(@ApiParam(value="用户名", required=true) @RequestParam String name,
+	public ApiResponse<Map> login(@ApiParam(value="用户名", required=true) @RequestParam String username,
 	                              @ApiParam(value="密码", required=true) @RequestParam String password){
-		String jwt = userService.login(name,password);
+		String jwt = userService.login(username,password);
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 }
