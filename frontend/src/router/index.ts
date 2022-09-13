@@ -10,13 +10,13 @@ import register from "../pages/register3.vue";
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    component: HelloWorld,
-  },
-  {
-    path: "/login",
-    name: "Login page",
     component: LoginPage,
   },
+  // {
+  //   path: "/login",
+  //   name: "Login page",
+  //   component: LoginPage,
+  // },
   {
     path: "/signup",
     name: "signup",
