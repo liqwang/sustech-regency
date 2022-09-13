@@ -139,7 +139,9 @@
 #big{
         // background-color: #a3c3ed;
     width: auto;
+    // margin:0 0;
     height: 780px;
+    // height: 100%;
     background-image: url('../images/gray.png');
     background-repeat: no-repeat;
     background-size: 1560px 780px;
@@ -270,9 +272,9 @@ const checkPassword = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('Please input the password'))
     } else {
-        if (ruleForm.password !== '') {
-            if (!ruleFormRef.value) return
-            ruleFormRef.value.validateField('checkPass', () => null)
+        const reg =new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}');
+        if(!reg.test(value)){
+            callback(new Error('Your password is too simple'))
         }
         callback()
     }
@@ -350,6 +352,5 @@ const signup = () => {
         message: h('i', { style: 'color: red' }, "Function for register not yet open")
     })
 }
-
 </script>
     
