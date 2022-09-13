@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Log GitHub context
-        run: echo '${{ toJSON(github.event.head_commit.modified) }}'
+        run: echo '${{ toJSON(github.event.head_commit) }}'
   frontend-build:
     runs-on: ubuntu-latest
     env:
