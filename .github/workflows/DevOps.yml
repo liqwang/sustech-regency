@@ -9,6 +9,11 @@ on:
       - '.github/workflows/**'
 
 jobs:
+  log-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log GitHub context
+        run: echo '${{ toJSON(github) }}'
   frontend-build:
     runs-on: ubuntu-latest
     env:
