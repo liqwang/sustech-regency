@@ -14,13 +14,28 @@
         </div>
         <div class="input_login">
           <div id="username">用户名/手机号/邮箱</div>
-          <el-input v-model="username" placeholder="请输入用户名/手机号/邮箱" :prefix-icon="User" clearable id="input_username" />
+          <el-input
+            v-model="username"
+            placeholder="请输入用户名/手机号/邮箱"
+            :prefix-icon="User"
+            clearable
+            id="input_username"
+          />
           <div id="pwd">密码</div>
-          <el-input v-model="pwd" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password id="input_pwd"
-            @keyup.enter="Login" />
+          <el-input
+            v-model="pwd"
+            type="password"
+            placeholder="请输入密码"
+            :prefix-icon="Lock"
+            show-password
+            id="input_pwd"
+            @keyup.enter="Login"
+          />
           <div id="err_msg" v-show="show_err_msg">用户名或密码错误，请重试</div>
           <div id="btns">
-            <el-button type="primary" round id="btn_login" @click="Login">登录</el-button>
+            <el-button type="primary" round id="btn_login" @click="Login"
+              >登录</el-button
+            >
             <div id="sign_up" style="display: inline-block">
               <div>
                 <span>没有账号？点此</span>
@@ -41,22 +56,11 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, getCurrentInstance } from "vue";
-import { User, Lock } from "@element-plus/icons-vue";
-const username = ref("");
-const pwd = ref("");
-const show_err_msg = ref(false);
-const Login = () => {
-  console.log(username, pwd);
-};
-</script>
-
 <style scoped>
 /* body {
   background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
 } */
-#bigg{
+#bigg {
   background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
   width: auto;
   height: 780px;
@@ -347,3 +351,46 @@ const Login = () => {
   }
 }
 </style>
+
+<script lang="ts" setup>
+import { ElNotification } from "element-plus";
+import { ref, reactive, getCurrentInstance, h } from "vue";
+import { User, Lock } from "@element-plus/icons-vue";
+import axios from "axios";
+import request from "../utils/request";
+import { da } from "element-plus/es/locale";
+const username = ref("");
+const pwd = ref("");
+const token = ref("");
+const show_err_msg = ref(false);
+const Login = () => {
+  console.log(username.value, pwd.value);
+  axios
+    .post(
+      "https://quanquancho.com:8080/user/login?username=" +
+        username.value +
+        "&password=" +
+        pwd.value
+    )
+    .then(
+      function (response) {
+        if (response.data.code === 400) {
+          ElNotification({
+            title: "Failed",
+            message: h("i", { style: "color: red" }, "用户名或密码错误"),
+          });
+        } else {
+          token.value = response.data.data.token;
+          ElNotification({
+            title: "Success",
+            message: h("i", { style: "color: teal" }, "Login success"),
+          });
+          location.hash = "/main";
+        }
+      },
+      function (err) {
+        console.log(err);
+      }
+    );
+};
+</script>
