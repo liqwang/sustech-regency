@@ -9,4 +9,5 @@ public class Hotel {
     private Float longitude;
     private Integer cityId;
     private Integer merchantId;
+    private String name;
 }
