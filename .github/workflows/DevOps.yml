@@ -9,11 +9,6 @@ on:
       - '.github/workflows/**'
 
 jobs:
-#  log-context:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Log GitHub context
-#        run: echo '${{ toJSON(github.event.head_commit) }}'
   check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
     runs-on: ubuntu-latest
     outputs:
@@ -73,7 +68,7 @@ jobs:
           strip_components: 2
 
   backend-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: check-file-changed
     if: needs.check-file-changed.outputs.backend_changed == 'True'
     env:
