@@ -20,10 +20,10 @@ jobs:
       frontend-changed: ${{ steps.check-file-changed.outputs.frontend_changed }}
       backend-changed: ${{ steps.check-file-changed.outputs.backend_changed }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          # Checkout as many commits as needed for the diff
-          fetch-depth: 2
+      - uses: actions/checkout@master
+#        with:
+#          # Checkout as many commits as needed for the diff
+#          fetch-depth: 2
       - shell: pwsh
         id: check-file-changed
         run: |
