@@ -9,13 +9,39 @@ on:
       - '.github/workflows/**'
 
 jobs:
-  log-context:
+#  log-context:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Log GitHub context
+#        run: echo '${{ toJSON(github.event.head_commit) }}'
+  check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
     runs-on: ubuntu-latest
+    outputs:
+      frontend-changed: ${{ steps.check-file-changed.outputs.frontend_changed }}
+      backend-changed: ${{ steps.check-file-changed.outputs.backend_changed }}
     steps:
-      - name: Log GitHub context
-        run: echo '${{ toJSON(github.event.head_commit) }}'
-  frontend-build:
+      - uses: actions/checkout@v2
+        with:
+          # Checkout as many commits as needed for the diff
+          fetch-depth: 2
+      - shell: pwsh
+        id: check-file-changed
+        run: |
+#           Diff HEAD with the previous commit
+          $diff = git diff --name-only HEAD^ HEAD
+#           Check if a file under frontend/ has changed (added, modified, deleted)
+          $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
+          $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
+          $FrontendHasDiff = $SourceDiff.Length -gt 0
+          $backendHasDiff = $SourceDiff.Length -gt 0
+#           Set the output named "frontend_changed" and "backend_changed"
+          Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
+          Write-Host "::set-output name=backend_changed::$BackendHasDiff"
+
+  frontend-deploy:
     runs-on: ubuntu-latest
+    needs: check-file-changed
+    if: needs.check-file-changed.outputs.frontend_changed == 'True'
     env:
       TZ: Asia/Shanghai
     steps:
@@ -44,8 +70,10 @@ jobs:
           target: "/root/sustech-regency/nginx/html"
           strip_components: 2
 
-  backend-build:
+  backend-deploy:
     runs-on: ubuntu-latest
+    needs: check-file-changed
+    if: needs.check-file-changed.outputs.backend_changed == 'True'
     env:
       TZ: Asia/Shanghai
     steps:
@@ -71,16 +99,7 @@ jobs:
           source: "backend/sustech-regency-main/target/*.jar"
           target: "/root/sustech-regency"
           strip_components: 3
-
-  docker-compose-run:
-    needs:
-      - frontend-build
-      - backend-build
-    runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Shanghai
-    steps:
-      - name: Docker-Compose一键部署
+      - name: 重启Jar包容器
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -88,5 +107,4 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             cd /root/sustech-regency
-            docker-compose down
-            docker-compose up -d
+            docker-compose restart main
