@@ -34,8 +34,8 @@ jobs:
           # Check if a file under frontend/ has changed (added, modified, deleted)
           $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
           $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
-          $FrontendHasDiff = $SourceDiff.Length -gt 0
-          $backendHasDiff = $SourceDiff.Length -gt 0
+          $FrontendHasDiff = $FrontendDiff.Length -gt 0
+          $BackendHasDiff = $BackendDiff.Length -gt 0
           # Set the output named "frontend_changed" and "backend_changed"
           Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
           Write-Host "::set-output name=backend_changed::$BackendHasDiff"
