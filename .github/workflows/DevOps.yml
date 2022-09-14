@@ -20,12 +20,13 @@ jobs:
       frontend-changed: ${{ steps.check-file-changed.outputs.frontend_changed }}
       backend-changed: ${{ steps.check-file-changed.outputs.backend_changed }}
     steps:
-      - uses: actions/checkout@master
-#        with:
-#          # Checkout as many commits as needed for the diff
-#          fetch-depth: 2
-      - shell: pwsh
-        id: check-file-changed
+      - name: 迁出代码
+        uses: actions/checkout@master
+        with:
+          # Checkout as many commits as needed for the diff
+          fetch-depth: 2
+      - name: check-file-changed
+        shell: pwsh
         run: |
 #           Diff HEAD with the previous commit
           $diff = git diff --name-only HEAD^ HEAD
