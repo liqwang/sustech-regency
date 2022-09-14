@@ -342,7 +342,7 @@
     margin-left: 1.2rem;
     margin-top: 1.3rem;
     gap: 3%;
-    justify-content: start;
+    justify-content: flex-start;
     align-content: center;
   }
 
