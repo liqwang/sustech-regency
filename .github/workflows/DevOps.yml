@@ -17,8 +17,8 @@ jobs:
   check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
     runs-on: ubuntu-latest
     outputs:
-      frontend-changed: ${{ steps.check-file-changed.outputs.frontend_changed }}
-      backend-changed: ${{ steps.check-file-changed.outputs.backend_changed }}
+      frontend_changed: ${{ steps.check-file-changed.outputs.frontend_changed }}
+      backend_changed: ${{ steps.check-file-changed.outputs.backend_changed }}
     steps:
       - name: 迁出代码
         uses: actions/checkout@master
@@ -43,7 +43,7 @@ jobs:
   frontend-deploy:
     runs-on: ubuntu-latest
     needs: check-file-changed
-    if: needs.check-file-changed.outputs.frontend-changed == 'True'
+    if: needs.check-file-changed.outputs.frontend_changed == 'True'
     env:
       TZ: Asia/Shanghai
     steps:
@@ -75,7 +75,7 @@ jobs:
   backend-deploy:
     runs-on: ubuntu-latest
     needs: check-file-changed
-    if: needs.check-file-changed.outputs.backend-changed == 'True'
+    if: needs.check-file-changed.outputs.backend_changed == 'True'
     env:
       TZ: Asia/Shanghai
     steps:
