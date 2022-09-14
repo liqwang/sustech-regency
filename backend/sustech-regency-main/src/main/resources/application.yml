@@ -8,6 +8,20 @@ spring:
   datasource:
     username: quanquan
     password: wlqyanyalun008++
+  mail:
+    username: 836200779@qq.com
+    password: alwrojjgukoubdgj
+    host: smtp.qq.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+            required: true
+    port: 465
 
 #mybatis-plus:
 #  configuration:
