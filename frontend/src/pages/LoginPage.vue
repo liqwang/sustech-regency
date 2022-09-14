@@ -361,17 +361,10 @@ import request from "../utils/request";
 import { da } from "element-plus/es/locale";
 const username = ref("");
 const pwd = ref("");
-const token = ref("");
 const show_err_msg = ref(false);
 const Login = () => {
   console.log(username.value, pwd.value);
-  axios
-    .post(
-      "https://quanquancho.com:8080/user/login?username=" +
-        username.value +
-        "&password=" +
-        pwd.value
-    )
+  request.post(`/user/login?username=${username.value}&password=${pwd.value}`)
     .then(
       function (response) {
         if (response.data.code === 400) {
@@ -380,7 +373,8 @@ const Login = () => {
             message: h("i", { style: "color: red" }, "用户名或密码错误"),
           });
         } else {
-          token.value = response.data.data.token;
+          const token = response.data.data.token;
+          localStorage.setItem("token", token);
           ElNotification({
             title: "Success",
             message: h("i", { style: "color: teal" }, "Login success"),

@@ -126,7 +126,7 @@
                     </div>
                 </el-scrollbar>
                 <el-button @click="signup" id="signup_button" size="large" type="primary" round>注册</el-button>
-                <el-link id="link_login" type="primary" href="./#/" target="_blank">已有账号？点击这里</el-link>
+                <el-link id="link_login" type="primary" href="./#/">已有账号？点击这里</el-link>
             </div>
             <div class='page'>
                 <!-- <img src="https://picx.zhimg.com/v2-fe2d9ef609280bad61b9be01314de881_r.jpg"> -->

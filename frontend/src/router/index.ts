@@ -29,4 +29,14 @@ const router = createRouter({
   routes: routes,
 });
 
+router.beforeEach((to, from ,next) => {
+  const token = localStorage.getItem("token");
+  console.log(to.path)
+  if (token || to.path == "/" || to.path == '/signup') {
+    next();
+  } else {
+    next("/");
+  }
+})
+
 export default router;
