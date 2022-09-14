@@ -25,19 +25,19 @@ jobs:
         with:
           # Checkout as many commits as needed for the diff
           fetch-depth: 2
-#      - name: check-file-changed
+      - name: check-file-changed
 #        shell: pwsh
-#        run: |
-##           Diff HEAD with the previous commit
-#          $diff = git diff --name-only HEAD^ HEAD
-##           Check if a file under frontend/ has changed (added, modified, deleted)
-#          $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
-#          $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
-#          $FrontendHasDiff = $SourceDiff.Length -gt 0
-#          $backendHasDiff = $SourceDiff.Length -gt 0
-##           Set the output named "frontend_changed" and "backend_changed"
-#          Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
-#          Write-Host "::set-output name=backend_changed::$BackendHasDiff"
+        run: |
+#           Diff HEAD with the previous commit
+          $diff = git diff --name-only HEAD^ HEAD
+#           Check if a file under frontend/ has changed (added, modified, deleted)
+          $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
+          $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
+          $FrontendHasDiff = $SourceDiff.Length -gt 0
+          $backendHasDiff = $SourceDiff.Length -gt 0
+#           Set the output named "frontend_changed" and "backend_changed"
+          Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
+          Write-Host "::set-output name=backend_changed::$BackendHasDiff"
 
   frontend-deploy:
     runs-on: ubuntu-latest
