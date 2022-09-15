@@ -15,4 +15,8 @@ public class ApiException extends RuntimeException{
 		super(message);
 		this.code=code;
 	}
+
+	public static ApiException badRequest(String message){
+		return new ApiException(400,message);
+	}
 }
