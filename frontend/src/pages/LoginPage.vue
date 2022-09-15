@@ -1,6 +1,6 @@
 <template>
   <div id="bigg">
-    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="login.css"/>
     <div id="main">
       <div id="left">
         <!-- LOGO区域 -->
@@ -19,8 +19,7 @@
             placeholder="请输入用户名/手机号/邮箱"
             :prefix-icon="User"
             clearable
-            id="input_username"
-          />
+            id="input_username"/>
           <div id="pwd">密码</div>
           <el-input
             v-model="pwd"
@@ -29,17 +28,14 @@
             :prefix-icon="Lock"
             show-password
             id="input_pwd"
-            @keyup.enter="Login"
-          />
+            @keyup.enter="Login"/>
           <div id="err_msg" v-show="show_err_msg">用户名或密码错误，请重试</div>
           <div id="btns">
-            <el-button type="primary" round id="btn_login" @click="Login"
-              >登录</el-button
-            >
+            <el-button type="primary" round id="btn_login" @click="Login">登录</el-button>
             <div id="sign_up" style="display: inline-block">
               <div>
                 <span>没有账号？点此</span>
-                <a href="./#/signup" id="signup">注册</a>
+                <router-link to="/signup">注册</router-link>
               </div>
             </div>
           </div>
@@ -353,37 +349,35 @@
 </style>
 
 <script lang="ts" setup>
-import { ElNotification } from "element-plus";
-import { ref, reactive, getCurrentInstance, h } from "vue";
-import { User, Lock } from "@element-plus/icons-vue";
+import {ElNotification} from "element-plus";
+import {ref, reactive, getCurrentInstance, h} from "vue";
+import {User, Lock} from "@element-plus/icons-vue";
 import axios from "axios";
 import request from "../utils/request";
-import { da } from "element-plus/es/locale";
+import {da} from "element-plus/es/locale";
+import router from "../router";
+
 const username = ref("");
 const pwd = ref("");
 const show_err_msg = ref(false);
 const Login = () => {
   console.log(username.value, pwd.value);
   request.post(`/user/login?username=${username.value}&password=${pwd.value}`)
-    .then(
-      function (response) {
-        if (response.data.code === 400) {
+    .then(res => {
+        if (res.data.code === 400) {
           ElNotification({
             title: "Failed",
-            message: h("i", { style: "color: red" }, "用户名或密码错误"),
+            message: h("i", {style: "color: red"}, "用户名或密码错误"),
           });
         } else {
-          const token = response.data.data.token;
+          const token = res.data.data.token;
           localStorage.setItem("token", token);
           ElNotification({
             title: "Success",
-            message: h("i", { style: "color: teal" }, "Login success"),
+            message: h("i", {style: "color: teal"}, "Login success"),
           });
-          location.hash = "/main";
+          router.push("/back");
         }
-      },
-      function (err) {
-        console.log(err);
       }
     );
 };

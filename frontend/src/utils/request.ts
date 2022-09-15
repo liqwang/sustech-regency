@@ -5,6 +5,12 @@ const request = axios.create({
 });
 
 request.interceptors.request.use(function (config) {
+  const token = localStorage.getItem("token");
+  if (config && config.headers) {
+    if (token) {
+      config.headers['Authorization'] = token;
+    }
+  }
   return config;
 }, function (error) {
   return Promise.reject(error);

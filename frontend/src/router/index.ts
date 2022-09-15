@@ -1,5 +1,5 @@
 import {
-  createRouter,createWebHistory,
+  createRouter, createWebHistory,
   createWebHashHistory,
   RouteRecordRaw,
   RouterView,
@@ -7,16 +7,13 @@ import {
 import HelloWorld from "../pages/HelloWorld.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import register from "../pages/register3.vue";
+import FrontLayout from "../pages/back/BackLayout.vue"
+
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: LoginPage,
   },
-  // {
-  //   path: "/login",
-  //   name: "Login page",
-  //   component: LoginPage,
-  // },
   {
     path: "/signup",
     name: "signup",
@@ -29,7 +26,7 @@ const router = createRouter({
   routes: routes,
 });
 
-router.beforeEach((to, from ,next) => {
+router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
   console.log(to.path)
   if (token || to.path == "/" || to.path == '/signup') {
