@@ -350,11 +350,9 @@
 
 <script lang="ts" setup>
 import {ElNotification} from "element-plus";
-import {ref, reactive, getCurrentInstance, h} from "vue";
+import {ref, h} from "vue";
 import {User, Lock} from "@element-plus/icons-vue";
-import axios from "axios";
 import request from "../utils/request";
-import {da} from "element-plus/es/locale";
 import router from "../router";
 
 const username = ref("");

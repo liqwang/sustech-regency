@@ -3,7 +3,6 @@ import App from './App.vue'
 import elementPlus from './plugins/element-plus'
 import router from './router'
 import "./styles/reset.css"
-import "./tailwind.css"
 
 createApp(App)
   .use(elementPlus, { size: "mini" })
