@@ -1,11 +1,13 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  Hello, World!
+  <teleport to="#modal-container">
+        <div class="test">
+          <el-button type="primary">这是一个测试</el-button>
+        </div>
+  </teleport>
 </template>
+<script>
 
-<style scoped>
-
-</style>
+export default {
+  name:"Test"
+}
+</script>
