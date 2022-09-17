@@ -157,7 +157,7 @@
 #bigg {
   background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
   width: auto;
-  height: 780px;
+  height: 100vh;
 }
 
 #main {

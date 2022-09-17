@@ -44,7 +44,7 @@
                                 </el-input>
                             </el-form-item>
                         </div>
-                        <div class="input_area">
+                        <div class="input_area" v-show="false">
                             <p class="text_area">手机</p>
                             <el-form-item prop="phone">
                                 <el-input class="input" size='large' v-model="ruleForm.phone" autocomplete="off"
@@ -83,7 +83,7 @@
                                 </el-input>
                             </el-form-item>
                         </div>
-                        <div class="input_area">
+                        <div class="input_area" v-show=false>
                             <p class="text_area">手机验证码</p>
                             <el-form-item prop="verify_phone">
                                 <el-input class="input" size='large' v-model="ruleForm.verify_phone" autocomplete="off"
@@ -137,30 +137,19 @@
 
 <style lang="scss" scoped>
 #big {
-    // background-color: #a3c3ed;
-    // width: 100%;
-    // position:fixed;
-    // margin:0 0;
-    // height: 100%;
-    width: 100%;
-    // position: relative;
-    height: 780px;
-    background-image: url('../images/gray.png');
-    // background-repeat: no-repeat;
-    // background-size: 1560px 780px;
-    // background-size: 100% 100%;
+
+    width: 100vw;
+
+    height: 106vh;
+    background: url('../images/gray.png') 0% 0% /cover no-repeat;
 }
 
 #register_page {
-    // display: none;
     margin: 0 0;
     background: hsl(0, 0%, 100%);
-    // width: 367px;
     width:38%;
     height: 100%;
     position: relative;
-    // left: 250px;
-    // top: 40px;
     border-radius: 25px 25px 25px 25px;
 
     box-shadow: 10px 10px 5px #888888;
@@ -181,23 +170,15 @@
 
 
 .page {
-    // display: none;
-    // background: hsl(201, 81%, 49%);
-    // width: 610px;
     width: 60%;
-    // height: 650px;
     height: 100%;
-    margin: 0 0;
+    // margin: 0 0;
     border-radius: 0px 25px 25px 0px;
     position: relative;
-    // left: 600px;
     left:-2%;
-    // top: 40px;
     box-shadow: 10px 10px 5px #888888;
-    background-size: 1240px 800px;
-    background-repeat: no-repeat;
-    // background-image: url('https://picx.zhimg.com/v2-fe2d9ef609280bad61b9be01314de881_r.jpg');
-    background-image: url('../images/background.png');
+    background: url('../images/background.png') 0% 0% / cover no-repeat;
+    // background-image: url('../images/background.png');
 }
 
 #bar {
@@ -278,6 +259,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { h } from 'vue'
+import request from '../utils/request'
 import type { FormInstance } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { User, Lock, Message, Iphone } from '@element-plus/icons-vue'
@@ -401,13 +383,18 @@ const send_phone = () => {
 }
 
 const signup = () => {
-    if (UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1 && IsComplete.phone == 1 && IsComplete.mail == 1 && IsComplete.verify_mail == 1 && IsComplete.verify_phone == 1) {
+    if (true||UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1  && IsComplete.mail == 1 && IsComplete.verify_mail == 1 ) {
         var id = 1;
-        if (UserOrmerchant.value === '商家') {
+        if (UserOrmerchant.value == '2') {
             id = 2;
         }
-        axios.post('https://quanquancho.com:8080/user/register?username=' +
-            ruleForm.name + "&password=" + ruleForm.password + "&roleId=" + id)
+        // console.log(UserOrmerchant)
+        // console.log(id)
+        // console.log(ruleForm)
+        request.post('https://quanquancho.com:8080/user/register?roleId=' + id,{
+            username:ruleForm.name,
+            password:ruleForm.password,
+        })
             .then(function (response) {
                 console.log(response.data)
                 console.log(id)
@@ -418,7 +405,7 @@ const signup = () => {
                     })
                 } else {
                     ElNotification({
-                        title: 'Fail',
+                        title: 'Fail ',
                         message: h('i', { style: 'color: red' }, "The username already exists")
                     })
                 }
