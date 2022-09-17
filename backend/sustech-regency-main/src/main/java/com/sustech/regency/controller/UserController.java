@@ -32,6 +32,7 @@ public class UserController {
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 
+	//id单独ling出来
 	@ApiOperation("登录")
 	@PostMapping("/login")
 	public ApiResponse<Map> login(@Validated @RequestBody LoginParam loginParam){
