@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class Permission {
 	private Integer id;
 	private Integer parentId;
+	private Integer level;
 	private String name;
 }
