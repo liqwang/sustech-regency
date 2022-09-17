@@ -383,7 +383,7 @@ const send_phone = () => {
 }
 
 const signup = () => {
-    if (true||UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1  && IsComplete.mail == 1 && IsComplete.verify_mail == 1 ) {
+    if (UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1  && IsComplete.mail == 1 && IsComplete.verify_mail == 1 ) {
         var id = 1;
         if (UserOrmerchant.value == '2') {
             id = 2;
