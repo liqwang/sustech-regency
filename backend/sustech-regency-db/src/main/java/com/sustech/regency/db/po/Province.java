@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class City {
-    private Integer id;
-    private String name;
-    private Integer provinceId;
+public class Province {
+	private Integer id;
+	private String name;
+	private String abbreviation;
 }

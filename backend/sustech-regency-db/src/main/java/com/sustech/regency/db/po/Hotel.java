@@ -13,7 +13,7 @@ public class Hotel {
     private Integer id;
     private Float latitude;
     private Float longitude;
-    private Integer cityId;
+    private Integer regionId;
     private Integer merchantId;
     private String name;
     private String tel;
