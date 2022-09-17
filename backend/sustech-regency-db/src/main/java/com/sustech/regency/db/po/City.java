@@ -13,4 +13,5 @@ public class City {
     private Integer id;
     private String name;
     private Integer provinceId;
+    private Boolean isProvincialCapital;
 }
