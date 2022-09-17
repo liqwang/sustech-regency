@@ -431,20 +431,12 @@
 </style>
 
 <script lang="ts" setup>
-<<<<<<< HEAD
-import {ElNotification} from 'element-plus';
-import {h} from 'vue';
-import {reactive} from 'vue';
-import request from '../utils/request';
-import router from '../router';
-=======
 import { ElNotification } from "element-plus";
 import { ref, h } from "vue";
 import { reactive } from "vue";
 
 import request from "../utils/request";
 import router from "../router";
->>>>>>> f0ac3e7 (change the use of "ref")
 
 // do not use same name with ref
 let btn_msg = ref("获取验证码");
