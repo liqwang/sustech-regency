@@ -36,7 +36,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
   console.log(to.path);
-  if (token || to.path == '/' || to.path == '/signup') {
+  if (token || to.path == '/' || to.path == '/signup' || to.path == '/changepassword') {
     next();
   } else {
     next('/');
