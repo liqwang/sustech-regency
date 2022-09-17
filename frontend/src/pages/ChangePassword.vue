@@ -432,14 +432,10 @@
 
 <script lang="ts" setup>
 import {ElNotification} from 'element-plus';
-import {ref, h} from 'vue';
+import {h} from 'vue';
 import {reactive} from 'vue';
-import {onMounted} from 'vue';
-import {User, Lock} from '@element-plus/icons-vue';
 import request from '../utils/request';
 import router from '../router';
-import {el, fa, tr} from 'element-plus/es/locale';
-import {fromPairs} from 'lodash';
 
 // do not use same name with ref
 let btn_msg = $ref('获取验证码');

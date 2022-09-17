@@ -371,11 +371,10 @@ const Login = () => {
     });
 };
 const SignUp = () => {
-  return router.push('/signup');
+  router.push('/signup');
 };
 const ChangePwd = () => {
   console.log('change page to change pwd');
-
-  return router.push('/changepassword');
+  router.push('/changepassword');
 };
 </script>

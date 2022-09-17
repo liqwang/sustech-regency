@@ -134,7 +134,7 @@
         </div>
     </div>
 </template>
-  
+
 <style lang="scss" scoped>
 #big {
     // background-color: #a3c3ed;
