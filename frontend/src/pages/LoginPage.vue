@@ -1,6 +1,5 @@
 <template>
   <div id="bigg">
-    <link rel="stylesheet" href="login.css"/>
     <div id="main">
       <div id="left">
         <!-- LOGO区域 -->
@@ -13,13 +12,13 @@
           </div>
         </div>
         <div class="input_login">
-          <div id="username">用户名/手机号/邮箱</div>
+          <div id="username">用户名/邮箱</div>
           <el-input
             v-model="username"
-            placeholder="请输入用户名/手机号/邮箱"
+            placeholder="请输入用户名/邮箱"
             :prefix-icon="User"
             clearable
-            id="input_username"/>
+            id="input_username" />
           <div id="pwd">密码</div>
           <el-input
             v-model="pwd"
@@ -28,16 +27,20 @@
             :prefix-icon="Lock"
             show-password
             id="input_pwd"
-            @keyup.enter="Login"/>
-          <div id="err_msg" v-show="show_err_msg">用户名或密码错误，请重试</div>
-          <div id="btns">
-            <el-button type="primary" round id="btn_login" @click="Login">登录</el-button>
-            <div id="sign_up" style="display: inline-block">
-              <div>
-                <span>没有账号？点此</span>
-                <router-link to="/signup">注册</router-link>
-              </div>
-            </div>
+            @keyup.enter="Login" />
+
+          <div id="btn_area">
+            <el-button type="primary" round id="btn_login" @click="Login"
+              >登陆账号</el-button
+            ><el-button type="primary" round id="btn_sign" @click="SignUp"
+              >注册账号</el-button
+            ><el-button
+              type="primary"
+              round
+              id="btn_get_pwd_back"
+              @click="ChangePwd"
+              >忘记密码</el-button
+            >
           </div>
         </div>
       </div>
@@ -57,7 +60,7 @@
   background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
 } */
 #bigg {
-  background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
+  background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
   width: auto;
   height: 780px;
 }
@@ -78,6 +81,10 @@
 
 /* 在850px以下直接用left */
 @media screen and (max-width: 850px) {
+  #btn_sign,
+  #btn_get_pwd_back {
+    margin: 0;
+  }
   #right {
     display: none;
   }
@@ -92,14 +99,6 @@
     /* 交叉轴居中 */
     align-items: center;
     border-radius: 30px;
-  }
-
-  #err_msg {
-    color: red;
-  }
-
-  #signup {
-    text-decoration: none;
   }
 
   #username,
@@ -120,18 +119,6 @@
     height: 60%;
     display: table;
     margin: 0 auto;
-  }
-
-  #err_msg {
-    margin: 1rem;
-    margin-left: 0.5rem;
-    font-size: 0.85rem;
-    margin-bottom: 2rem;
-  }
-
-  #sign_up {
-    margin-left: 1rem;
-    margin-top: 1.3rem;
   }
 
   #logo {
@@ -159,12 +146,13 @@
   #hotel {
     order: 1;
     width: 100px;
-    height: 100px;
-    /* background-color: red; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  #text,
-  #logoimg {
+  #text {
     margin: 0;
     position: relative;
     top: 50%;
@@ -177,12 +165,27 @@
   }
 
   #logoimg {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    display: block;
+    width: 100px;
+    height: 100px;
     background: url(../assets/hotel.png) 0% 0% / cover no-repeat;
     opacity: 0.75;
+  }
+
+  #btn_area {
+    margin: 1vh;
+    margin-top: 2vh;
+    padding: 1.5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+  }
+
+  #btn_get_pwd_back,
+  #btn_sign,
+  #btn_login {
+    min-width: 25vw;
+    max-width: 45vw;
   }
 }
 
@@ -213,7 +216,7 @@
   }
 
   #welcome {
-    font-family: "Inter";
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 3rem;
@@ -226,7 +229,7 @@
   }
 
   #slogn {
-    font-family: "Inter";
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 200;
     font-size: 1.7rem;
@@ -249,10 +252,6 @@
     color: red;
   }
 
-  #signup {
-    text-decoration: none;
-  }
-
   #username,
   #pwd {
     color: rgb(118, 171, 249);
@@ -270,13 +269,6 @@
     width: 67%;
     display: table;
     margin: 0 auto;
-  }
-
-  #err_msg {
-    margin: 1rem;
-    margin-left: 0.5rem;
-    font-size: 0.85rem;
-    margin-bottom: 2rem;
   }
 
   #logo {
@@ -304,12 +296,15 @@
   #hotel {
     order: 1;
     width: 100px;
-    height: 100px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* background-color: red; */
   }
 
-  #text,
-  #logoimg {
+  #text {
+    font-size: 2.1rem;
     margin: 0;
     position: relative;
     top: 50%;
@@ -317,66 +312,70 @@
     transform: translate(-50%, -50%);
   }
 
-  #text {
-    font-size: 2.1rem;
-  }
-
   #logoimg {
-    position: relative;
     width: 80px;
     height: 80px;
-    display: block;
     background: url(../assets/hotel.png) 0% 0% / cover no-repeat;
     opacity: 0.75;
   }
 
-  #btns {
-    width: 100%;
+  #btn_area {
+    margin: 0.5vw;
+    padding: 1.5vw;
     display: flex;
     flex-direction: row;
-    padding: 0;
-    margin-left: 1.2rem;
-    margin-top: 1.3rem;
-    gap: 3%;
-    justify-content: flex-start;
-    align-content: center;
+    gap: 1vw;
   }
-
-  #sign_up {
-    margin: 3px;
+  #btn_get_pwd_back,
+  #btn_sign,
+  #btn_login {
+    min-width: 5vw;
+    max-width: 7vw;
   }
 }
 </style>
 
 <script lang="ts" setup>
-import {ElNotification} from "element-plus";
-import {ref, h} from "vue";
-import {User, Lock} from "@element-plus/icons-vue";
-import request from "../utils/request";
-import router from "../router";
+import { ElNotification } from 'element-plus';
+import { ref, h } from 'vue';
+import { User, Lock } from '@element-plus/icons-vue';
+import request from '../utils/request';
+import router from '../router';
 
-const username = ref("");
-const pwd = ref("");
+const username = ref('');
+const pwd = ref('');
+const dialog_visible = ref(false);
 const show_err_msg = ref(false);
+
 const Login = () => {
-  console.log(username.value, pwd.value);
-  request.post(`/user/login?username=${username.value}&password=${pwd.value}`)
-    .then(res => {
-        if (res.data.code === 400) {
-          ElNotification({
-            title: "Failed",
-            message: h("i", {style: "color: red"}, "用户名或密码错误"),
-          });
-        } else {
-          const token = res.data.data.token;
-          localStorage.setItem("token", token);
-          ElNotification({
-            title: "Success",
-            message: h("i", {style: "color: teal"}, "Login success"),
-          });
-          router.push("/back");
-        }
+  request
+    .post(`/user/login`, {
+      password: pwd.value,
+      username: username.value,
+    })
+    .then((res) => {
+      if (res.data.code === 400) {
+        ElNotification({
+          title: 'Failed',
+          message: h('i', { style: 'color: red' }, '用户名或密码错误'),
+        });
+      } else {
+        const token = res.data.data.token;
+        localStorage.setItem('token', token);
+        ElNotification({
+          title: 'Success',
+          message: h('i', { style: 'color: teal' }, 'Login success'),
+        });
+        router.push('/back');
       }
-    );
+    });
+};
+const SignUp = () => {
+  return router.push('/signup');
+};
+const ChangePwd = () => {
+  console.log('change page to change pwd');
+
+  return router.push('/changepassword');
 };
 </script>

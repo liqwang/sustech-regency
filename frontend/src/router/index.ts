@@ -1,24 +1,31 @@
 import {
-  createRouter, createWebHistory,
+  createRouter,
+  createWebHistory,
   createWebHashHistory,
   RouteRecordRaw,
   RouterView,
-} from "vue-router";
-import HelloWorld from "../pages/HelloWorld.vue";
-import LoginPage from "../pages/LoginPage.vue";
-import register from "../pages/register3.vue";
-import FrontLayout from "../pages/back/BackLayout.vue"
+} from 'vue-router';
+import HelloWorld from '../pages/HelloWorld.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import ChangePassword from '../pages/ChangePassword.vue';
+import register from '../pages/register3.vue';
+import FrontLayout from '../pages/back/BackLayout.vue';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: "/",
+    path: '/',
     component: LoginPage,
   },
   {
-    path: "/signup",
-    name: "signup",
+    path: '/signup',
+    name: 'signup',
     component: register,
-  }
+  },
+  {
+    path: '/changepassword',
+    name: 'changepassword',
+    component: ChangePassword,
+  },
 ];
 
 const router = createRouter({
@@ -27,13 +34,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
-  console.log(to.path)
-  if (token || to.path == "/" || to.path == '/signup') {
+  const token = localStorage.getItem('token');
+  console.log(to.path);
+  if (token || to.path == '/' || to.path == '/signup') {
     next();
   } else {
-    next("/");
+    next('/');
   }
-})
+});
 
 export default router;
