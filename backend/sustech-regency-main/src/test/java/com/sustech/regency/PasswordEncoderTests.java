@@ -14,7 +14,6 @@ public class PasswordEncoderTests {
 	@Test
 	void test(){
 		String rawPassword = "wlqyanyalun008++";
-		String encodedPassword = passwordEncoder.encode(rawPassword);
-		Assertions.assertTrue(passwordEncoder.matches(rawPassword,encodedPassword));
+		Assertions.assertTrue(passwordEncoder.matches(rawPassword,"$2a$10$aJNoSXD4MenFbtqgZJy5tuMkf7y/BdkCCpCgicvwNIuL7LoMfynZe"));
 	}
 }

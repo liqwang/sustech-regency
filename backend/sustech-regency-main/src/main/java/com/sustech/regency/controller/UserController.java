@@ -1,6 +1,8 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.model.param.LoginParam;
 import com.sustech.regency.service.UserService;
+import com.sustech.regency.util.PasswordUtil;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,18 +22,20 @@ public class UserController {
 
 	@ApiOperation("注册")
 	@PostMapping("/register")
-	public ApiResponse<Map> register(@ApiParam(value="用户名", required=true) @RequestParam String username,
-	                                 @ApiParam(value="密码", required=true) @RequestParam String password,
-	                                 @ApiParam(value="角色, 1为消费者, 2为商家",allowableValues="1,2",required=true, example="1") @RequestParam @Range(min=1,max=2,message="roleId只能是1或2") Integer roleId){
-		String jwt = userService.register(username,password,roleId);
+	public ApiResponse<Map> register(@ApiParam(value="角色, 1为消费者, 2为商家",allowableValues="1,2",required=true,example="1")
+	                                 @Range(min=1,max=2,message="roleId只能是1或2")
+	                                 @RequestParam
+			                         Integer roleId,
+	                                 @Validated @RequestBody LoginParam loginParam){
+		PasswordUtil.judge(loginParam.getPassword());
+		String jwt = userService.register(loginParam.getUsername(),loginParam.getPassword(),roleId);
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 
 	@ApiOperation("登录")
 	@PostMapping("/login")
-	public ApiResponse<Map> login(@ApiParam(value="用户名", required=true) @RequestParam String username,
-	                              @ApiParam(value="密码", required=true) @RequestParam String password){
-		String jwt = userService.login(username,password);
+	public ApiResponse<Map> login(@Validated @RequestBody LoginParam loginParam){
+		String jwt = userService.login(loginParam.getUsername(),loginParam.getPassword());
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 }

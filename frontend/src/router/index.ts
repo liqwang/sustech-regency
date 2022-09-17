@@ -1,34 +1,36 @@
 import {
-  createRouter,createWebHistory,
+  createRouter,
+  createWebHistory,
   createWebHashHistory,
   RouteRecordRaw,
   RouterView,
-} from "vue-router";
-import h from "../pages/HelloWorld.vue";
+} from 'vue-router';
+import HelloWorld from '../pages/HelloWorld.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import ChangePassword from '../pages/ChangePassword.vue';
+import register from '../pages/register3.vue';
+import merchant from '../pages/merchant.vue'
+import FrontLayout from '../pages/back/BackLayout.vue';
 
-import merchant from "../pages/merchant.vue";
-import LoginPage from "../pages/LoginPage.vue";
-import register from "../pages/register3.vue";
 const routes: RouteRecordRaw[] = [
   {
-    path: "/",
+    path: '/',
     component: LoginPage,
   },
   {
-    path: "/merchant",
-    name: "shangjia",
+    path: '/merchant',
     component: merchant,
   },
   {
-    path: "/signup",
-    name: "signup",
+    path: '/signup',
+    name: 'signup',
     component: register,
   },
   {
-    path: "/t",
-    name: "s2",
-    component: h,
-  }
+    path: '/changepassword',
+    name: 'changepassword',
+    component: ChangePassword,
+  },
 ];
 
 const router = createRouter({
@@ -36,14 +38,14 @@ const router = createRouter({
   routes: routes,
 });
 
-router.beforeEach((to, from ,next) => {
-  const token = localStorage.getItem("token");
-  console.log(to.path)
-  if (token || to.path == "/" || to.path == '/signup'|| to.path == '/merchant'|| to.path=='/t') {
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+  console.log(to.path);
+  if (token || to.path == '/' || to.path == '/signup' || to.path == '/changepassword'|| to.path=='/merchant') {
     next();
   } else {
-    next("/");
+    next('/');
   }
-})
+});
 
 export default router;

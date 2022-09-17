@@ -14,6 +14,7 @@ public class MailTests {
 	@Test
 	void test(){
 		SimpleMailMessage message = new SimpleMailMessage();
+//		message.setFrom();
 		message.setFrom("836200779@qq.com");
 		message.setTo("12011619@mail.sustech.edu.cn");
 		message.setSubject("主题:yfsb");
