@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//Todo: API安全性校验是否是商家
+
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
 @RequestMapping("/merchant")
@@ -24,7 +24,7 @@ public class MerchantController {
 
     @ApiOperation("商家获取自己下面所有酒店")
     @PostMapping("/hotel/all")
-    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId) {
+    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID") @RequestParam(required = false) Integer cityId) {
         int id = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ApiResponse.success(merchantService.getAllHotels(id, cityId));
     }
@@ -58,11 +58,11 @@ public class MerchantController {
     @ApiOperation("商家更新一个酒店信息")
     @PostMapping("/hotel/update")
     public ApiResponse<Boolean> updateHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId,
-                                            @ApiParam(value = "纬度") @RequestParam Float latitude,
-                                            @ApiParam(value = "经度") @RequestParam Float longitude,
-                                            @ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId,
-                                            @ApiParam(value = "酒店名字", required = false) @RequestParam String name,
-                                            @ApiParam(value = "酒店座机电话", required = false) @RequestParam @Length(min = 12, max = 12) String tel) {
+                                            @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
+                                            @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
+                                            @ApiParam(value = "所在城市对应ID") @RequestParam(required = false) Integer cityId,
+                                            @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
+                                            @ApiParam(value = "酒店座机电话") @RequestParam(required = false) @Length(min = 12, max = 12) String tel) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, cityId, merchantId, name, tel));
@@ -71,13 +71,14 @@ public class MerchantController {
 
     @ApiOperation("商家查询某一个酒店")
     @PostMapping("/hotel/{id}")
-    public ApiResponse<Hotel> getOneHotel(@ApiParam(value = "酒店Id", required = false) @RequestParam Integer hotelId,
-                                          @ApiParam(value = "纬度", required = false) @RequestParam Float latitude,
-                                          @ApiParam(value = "经度", required = false) @RequestParam Float longitude,
-                                          @ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId,
-                                          @ApiParam(value = "酒店名字", required = false) @RequestParam String name,
-                                          @ApiParam(value = "酒店座机电话", required = false) @RequestParam @Length(min = 12, max = 12) String tel) {
+    public ApiResponse<Hotel> getOneHotel(@ApiParam(value = "酒店Id") @RequestParam(required = false) Integer hotelId,
+                                          @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
+                                          @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
+                                          @ApiParam(value = "所在城市对应ID") @RequestParam(required = false) Integer cityId,
+                                          @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
+                                          @ApiParam(value = "酒店座机电话") @RequestParam(required = false) @Length(min = 12, max = 12) String tel) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, cityId, merchantId, name, tel));
     }
+
 }

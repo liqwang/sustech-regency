@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Room {
     private Integer id;
     private Integer roomNum;
-    private Integer price;
+    private Float price;
     private Integer floor;
     private Integer typeId;
     private Integer hotelId;

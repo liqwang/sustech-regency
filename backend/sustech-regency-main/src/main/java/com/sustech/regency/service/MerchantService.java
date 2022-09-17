@@ -21,19 +21,8 @@ public interface MerchantService {
     Boolean updateHotel(Integer hotelId,Float latitude, Float longitude,Integer cityId, Integer merchantId, String name, String tel);
     //得到旗下某个酒店的所有房间信息
     Hotel getOneHotel(Integer hotelId,Float latitude, Float longitude,Integer cityId, Integer merchantId, String name, String tel);
-    //商家修改某个房间的配置如价格
-    void updateRoom(Integer RoomId);
-    //商家增加新的房间
-    void addNewRoom(Room room);
-    //商家删除某个房间
-    void deleteRoom(Integer roomId);
-    //商家查询某个房间的信息
-    Room getRoomById(Integer roomId);
-    //商家查询某个房型的入住情况
-    List<Room> getRoomByRoomType(Integer typeId);
     //查询某个商家的所有订单
-    List<Order> getOrders(Integer merchantId);
-    //这个多参数是不是传入等于null即可？
+    List<Order> getOrders(Integer merchantId,Integer hotelId,Integer roomId,Integer cityId);
 
 
 

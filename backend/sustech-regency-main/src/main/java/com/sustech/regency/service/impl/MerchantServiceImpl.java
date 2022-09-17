@@ -95,32 +95,8 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void updateRoom(Integer RoomId) {
-
-    }
-
-    @Override
-    public void addNewRoom(Room room) {
-
-    }
-
-    @Override
-    public void deleteRoom(Integer roomId) {
-
-    }
-
-    @Override
-    public Room getRoomById(Integer roomId) {
-        return null;
-    }
-
-    @Override
-    public List<Room> getRoomByRoomType(Integer typeId) {
-        return null;
-    }
-
-    @Override
-    public List<Order> getOrders(Integer merchantId) {
+    public List<Order> getOrders(Integer merchantId,Integer hotelId,Integer roomId,Integer cityId) {
+        //晚些实现，到时候看看前端需要那些参数可以查订单
         return null;
     }
 }
