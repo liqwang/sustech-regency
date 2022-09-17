@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 																	 .eq(UserWithRole::getUserId, user.getId())
 																	 .eq(UserWithRole::getRoleId, roleId));
 			if(userWithRole!=null){
-				throw ApiException.badRequest("无法重复注册"+(roleId==1?"消费者":"商家"));
+				throw new ApiException(400,"无法重复注册"+(roleId==1?"消费者":"商家"));
 			}
 		}
 		userWithRoleDao.insert(new UserWithRole(user.getId(),roleId,new Date()));
@@ -67,9 +67,9 @@ public class UserServiceImpl implements UserService {
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
 										 .eq(User::getName, name));
 		if(user==null){
-			throw ApiException.badRequest("User doesn't exists, please register first");
+			throw new ApiException(400,"User doesn't exists, please register first");
 		}else if(!passwordEncoder.matches(password,user.getPassword())){
-			throw ApiException.badRequest("Password wrong");
+			throw new ApiException(400,"Password wrong");
 		}else{
 			//生成LoginLog
 			loginLogDao.insert(new LoginLog(user.getId(),new Date()));
