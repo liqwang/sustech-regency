@@ -1,4 +1,4 @@
 package com.sustech.regency.controller;
 
-public class RoomServiceController {
+public class RoomController {
 }
