@@ -155,7 +155,7 @@
   text-align: center;
 }
 #bigg {
-  background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
+  background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
   width: auto;
   height: 780px;
 }
@@ -304,7 +304,7 @@
   }
 
   #welcome {
-    font-family: 'Inter';
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
     font-size: 3rem;
@@ -317,7 +317,7 @@
   }
 
   #slogn {
-    font-family: 'Inter';
+    font-family: "Inter";
     font-style: normal;
     font-weight: 200;
     font-size: 1.7rem;
@@ -431,72 +431,81 @@
 </style>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
 import {ElNotification} from 'element-plus';
 import {h} from 'vue';
 import {reactive} from 'vue';
 import request from '../utils/request';
 import router from '../router';
+=======
+import { ElNotification } from "element-plus";
+import { ref, h } from "vue";
+import { reactive } from "vue";
+
+import request from "../utils/request";
+import router from "../router";
+>>>>>>> f0ac3e7 (change the use of "ref")
 
 // do not use same name with ref
-let btn_msg = $ref('获取验证码');
-const back_code = $ref('');
-let btn_vaild = $ref(true);
-let has_get_code = $ref(false);
-let pass_check = $ref(false);
+let btn_msg = ref("获取验证码");
+const back_code = ref("");
+let btn_vaild = ref(true);
+let has_get_code = ref(false);
+let pass_check = ref(false);
 const form = reactive({
-  username: '',
-  code: '',
-  newpwd: '',
-  newpwd2: '',
+  username: "",
+  code: "",
+  newpwd: "",
+  newpwd2: "",
 });
 const cancel = () => {
-  return router.push('/');
+  return router.push("/");
 };
 const getCode = () => {
   //从后端获取验证码,btn_msg变成 “「60s」后再次获取” ，按钮在倒计时期间变成灰色
-  if (form.username != '') {
-    let timer = $ref<number>(60);
-    btn_vaild = false;
+  if (form.username != "") {
+    let timer = ref<number>(60);
+    btn_vaild.value = false;
 
     const T = setInterval(function () {
       {
-        timer--;
-        btn_msg = `${timer}s后重新获取`;
-        if (timer == 0) {
-          btn_vaild = true;
-          btn_msg = '获取验证码';
+        timer.value--;
+        btn_msg.value = `${timer.value}s后重新获取`;
+        if (timer.value == 0) {
+          btn_vaild.value = true;
+          btn_msg.value = "获取验证码";
           clearInterval(T);
         }
       }
     }, 1000);
 
-    has_get_code = true;
+    has_get_code.value = true;
 
     // 获取backcode
   } else {
     ElNotification({
-      title: 'Failed',
-      message: h('i', {style: 'color: red'}, '用户名为空'),
+      title: "Failed",
+      message: h("i", { style: "color: red" }, "用户名为空"),
     });
   }
 };
 const submit = () => {
-  console.log(form.code, 'input and back ', back_code);
+  console.log(form.code, "input and back ", back_code);
   // 检测验证码是否和后端一致，若一致则通过检查,若不一致则弹窗报错
   // 获取后端返回的验证码 backcode
 
   //验证是否一致
-  if (form.code == back_code) {
-    pass_check = true;
+  if (form.code == back_code.value) {
+    pass_check.value = true;
     ElNotification({
-      title: 'Success',
-      message: h('i', {style: 'color: teal'}, '验证成功，请修改密码'),
+      title: "Success",
+      message: h("i", { style: "color: teal" }, "验证成功，请修改密码"),
     });
   } else {
-    pass_check = false;
+    pass_check.value = false;
     ElNotification({
-      title: 'Failed',
-      message: h('i', {style: 'color: red'}, '验证码错误，请重试'),
+      title: "Failed",
+      message: h("i", { style: "color: red" }, "验证码错误，请重试"),
     });
   }
 };
@@ -513,23 +522,23 @@ const doubleCheck = () => {
       })
       .then((res) => {
         const token = res.data.data.token;
-        localStorage.setItem('token', token);
+        localStorage.setItem("token", token);
         ElNotification({
-          title: 'Success',
-          message: h('i', {style: 'color: teal'}, 'Login success'),
+          title: "Success",
+          message: h("i", { style: "color: teal" }, "Login success"),
         });
-        router.push('/back');
+        router.push("/back");
       });
   } else {
     // 弹窗报错，清空两个新密码
     // 弹窗报错
     ElNotification({
-      title: 'Failed',
-      message: h('i', {style: 'color: red'}, '两次密码输入不一致，请重试'),
+      title: "Failed",
+      message: h("i", { style: "color: red" }, "两次密码输入不一致，请重试"),
     });
     // 清空密码
-    form.newpwd = '';
-    form.newpwd2 = '';
+    form.newpwd = "";
+    form.newpwd2 = "";
   }
 };
 </script>
