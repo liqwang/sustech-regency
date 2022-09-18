@@ -145,6 +145,7 @@
 }
 
 #register_page {
+    overflow: hidden;
     margin: 0 0;
     background: hsl(0, 0%, 100%);
     width:38%;
@@ -388,16 +389,11 @@ const signup = () => {
         if (UserOrmerchant.value == '2') {
             id = 2;
         }
-        // console.log(UserOrmerchant)
-        // console.log(id)
-        // console.log(ruleForm)
         request.post('https://quanquancho.com:8080/user/register?roleId=' + id,{
             username:ruleForm.name,
             password:ruleForm.password,
         })
             .then(function (response) {
-                console.log(response.data)
-                console.log(id)
                 if (response.data.code === 200) {
                     ElNotification({
                         title: 'Success',

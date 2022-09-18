@@ -1,48 +1,30 @@
 <template>
+<merchant_drawer @cancel="getCancel" :value1="dialog"></merchant_drawer>
   <div id="top">
 
     <el-row id="r1">
       <el-col :span="1">
-        <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Previous Page</el-button>
       </el-col>
       <el-col :span="19"></el-col>
       <el-col :span="2">
-        <el-avatar :size="76" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-        <span class="text-large font-600 mr-3"> Username </span>
+        <el-avatar :size="66" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
       </el-col>
 
       <el-col :span="2">
-
-        <div id="drop">
-          <el-dropdown>
-            <el-button type="primary">
-              Options<el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </el-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
-                <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                <el-dropdown-item divided>Action 5</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
       </el-col>
     </el-row>
-  </div>
+    <el-row id="r2">
+      <el-col :span="1">
+        <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Previous Page</el-button>
+      </el-col>
+      <el-col :span = '19'></el-col>
+      <el-col :span="2">
+      <div style="position: relative;left:1vw"><b>{{username}}</b> </div>
 
-  <el-row id="r2">
-    <el-col :span="1">
-      <el-button type="primary" :icon="ArrowLeft">Previous Page</el-button>
-    </el-col>
-    <el-col :span="19"></el-col>
-    <el-col :span="4">
-      <div id="drop">
-        <el-dropdown>
+      </el-col>
+<el-col :span="1">
+  <div id="drop">
+        <el-dropdown @command="option">
           <el-button type="primary">
             Options<el-icon class="el-icon--right">
               <arrow-down />
@@ -50,21 +32,21 @@
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
-              <el-dropdown-item>Action 3</el-dropdown-item>
-              <el-dropdown-item disabled>Action 4</el-dropdown-item>
-              <el-dropdown-item divided>Action 5</el-dropdown-item>
+              <el-dropdown-item command="addNew" divided>Add a hotel</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
-    </el-col>
-  </el-row>
+</el-col>
+    </el-row>
+  </div>
+
+
   <el-row id="r3">
     <el-col :span="4">
+      <el-tag size="large" type="success" style="margin-left:1vw">My Hotels</el-tag>
       <div id="menu">
-        <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+        <el-menu default-active="2" class="el-menu-vertical-demo" 
           @select="selectMenu">
           <el-sub-menu index="1">
             <template #title>
@@ -109,7 +91,7 @@
       </div>
     </el-col>
     <el-col :span="16">
-      <el-scrollbar height="80vh">
+      <el-scrollbar height="80vh" >
         <el-descriptions class="margin-top" title="The Hotel" :column="3" size="large" border>
           <template #extra>
             <el-button @click="show_input=true" type="primary">Change name</el-button>
@@ -178,28 +160,31 @@
           <el-button type="primary" @click="f2">F2</el-button>
           <el-button type="primary" @click="f3">F3</el-button>
           <br>
-          <el-image v-show="v1" style="width: 100%; height: 100%" :src="image1" />
-          <el-image v-show="v2" style="width: 100%; height: 100%" :src="image2" />
-          <el-image v-show="v3" style="width: 100%; height: 100%" :src="image3" />
-
         </el-button-group>
+        <el-image v-show="v1" style="width: 100%; height: 100%" :src="image1" />
+        <el-image v-show="v2" style="width: 100%; height: 100%" :src="image2" />
+        <el-image v-show="v3" style="width: 100%; height: 100%" :src="image3" />
+        <!-- <div id="chart" style="width:80%;height:60%"></div> -->
       </el-scrollbar>
     </el-col>
     <el-col :span="4"></el-col>
   </el-row>
   <el-dialog v-model="show_input" title="This is a Dialog">
-    there is the floor picture
+    <!-- <div id="chart" style="width:80%;height:60%"></div> -->
+
   </el-dialog>
 </template>
   
 <script lang="ts" setup>
+import request from '../utils/request'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, h, onMounted } from 'vue'
 import {
   Document,
   Menu as IconMenu,
   Setting, ArrowLeft,
 } from '@element-plus/icons-vue'
+import { ElNotification, DialogBeforeCloseFn, ElDrawer, ElMessageBox } from 'element-plus'
 import {
   Iphone,
   Location,
@@ -208,19 +193,65 @@ import {
   User,
 } from '@element-plus/icons-vue'
 import router from '../router';
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
+import * as echarts from 'echarts';
+import Merchant_drawer from './merchant_drawer.vue'
+
+
+// onMounted(()=>{
+
+
+// var chartDom = document.getElementById('chart')!;
+// var myChart = echarts.init(chartDom);
+//   type EChartsOption = echarts.EChartsOption
+
+
+//   var option: EChartsOption;
+
+//   option = {
+//     xAxis: {
+//       type: 'category',
+//       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+//     },
+//     yAxis: {
+//       type: 'value'
+//     },
+//     series: [
+//       {
+//         data: [820, 932, 901, 934, 1290, 1330, 1320],
+//         type: 'line',
+//         smooth: true
+//       }
+//     ]
+//   };
+
+//   option && myChart.setOption(option);
+// })
+const getCancel=(cancel:boolean)=>{
+  dialog.value=cancel
 }
 const selectMenu = (index: string, path: string[],
   item: string) => {
   console.log(index, path, item)
 }
+const option = (command: string | number | object) => {
+
+  if (command == 'addNew') {
+    dialog.value = true
+  }
+}
+
 const goback = () => {
   router.push('/')
 }
+window.onbeforeunload = function () {
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+
+};
+
+const dialog = ref(false)
+const username = ref(localStorage.getItem('username')==null?'未登录':localStorage.getItem('username'))
+// const formLabelWidth = '30%'
 var image1 = ref('https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg')
 var image2 = ref('https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg')
 var image3 = ref('https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg')
@@ -229,7 +260,7 @@ var v2 = ref(false)
 var v3 = ref(false)
 const f1 = () => {
   v1.value = true
-  v2.value= false
+  v2.value = false
   v3.value = false
 }
 const f2 = () => {
@@ -247,7 +278,7 @@ const show_input = ref(false)
 </script>
 <style scoped lang="scss">
 #top {
-  background-color: rgb(128, 212, 238);
+  background-color: rgba(128, 212, 238, 0.101);
 }
 
 #menu {
@@ -270,22 +301,22 @@ const show_input = ref(false)
 
 @media screen and (min-width:950px) {
   #r2 {
-    display: none;
+    // display: none;
   }
 
   #r1 {
-    height: 15vh;
+    // height: 10vh;
   }
 
   #drop {
     position: relative;
     left: 0%;
-    top: 50%;
+    top: 0%;
   }
 
   #back {
     position: relative;
-    top: 20%;
+    top: 0%;
   }
 }
 

@@ -5,7 +5,6 @@ import {
   RouteRecordRaw,
   RouterView,
 } from 'vue-router';
-import HelloWorld from '../pages/HelloWorld.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import ChangePassword from '../pages/ChangePassword.vue';
 import register from '../pages/register3.vue';
@@ -19,6 +18,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/merchant',
+    name:'merchant',
     component: merchant,
   },
   {
@@ -40,7 +40,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
-  console.log(to.path);
   if (token || to.path == '/' || to.path == '/signup' || to.path == '/changepassword'|| to.path=='/merchant') {
     next();
   } else {

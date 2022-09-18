@@ -9,6 +9,7 @@ request.interceptors.request.use(function (config) {
   if (config && config.headers) {
     if (token) {
       config.headers['Authorization'] = token;
+      config.headers.token=token
     }
   }
   return config;

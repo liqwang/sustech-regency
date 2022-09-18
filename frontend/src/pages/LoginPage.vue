@@ -346,7 +346,8 @@ const username = ref('');
 const pwd = ref('');
 const dialog_visible = ref(false);
 const show_err_msg = ref(false);
-
+localStorage.removeItem("token");
+localStorage.removeItem("username");
 const Login = () => {
   request
     .post(`/user/login`, {
@@ -362,11 +363,18 @@ const Login = () => {
       } else {
         const token = res.data.data.token;
         localStorage.setItem('token', token);
+        localStorage.setItem('username', username.value);
         ElNotification({
           title: 'Success',
           message: h('i', { style: 'color: teal' }, 'Login success'),
         });
-        router.push('/back');
+        router.push('/merchant');
+        // router.push({
+        //   name:'merchant',
+        //   params:{
+        //     name:username.value
+        //   }
+        // })
       }
     });
 };
