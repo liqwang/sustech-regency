@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: quanquan
+    password: wlqyanyalun008++
+    url: jdbc:mysql://quanquancho.com:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+
+
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:/dao/**/*.xml
+
+#debug: true
+

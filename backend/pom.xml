@@ -21,6 +21,7 @@
         <module>sustech-regency-db</module>
         <module>sustech-regency-web</module>
         <module>sustech-regency-main</module>
+        <module>sustech-regency-info-importer</module>
     </modules>
 
     <build>
