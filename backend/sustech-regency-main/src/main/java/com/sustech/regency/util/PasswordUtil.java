@@ -21,9 +21,7 @@ public class PasswordUtil {
 		for (char c : password.toCharArray()) {
 			chars.add(c);
 		}
-		if(chars.size()<8 || chars.size()>30){
-			throw ApiException.badRequest("密码需要为8-30位");
-		}else if(noIntersect(chars,digits)){
+		if(noIntersect(chars,digits)){
 			throw ApiException.badRequest("密码必须包含数字");
 		}else if(noIntersect(chars,specialChars)){
 			throw ApiException.badRequest("密码必须包含特殊字符");

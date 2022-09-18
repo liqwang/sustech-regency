@@ -5,13 +5,13 @@ import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.ibatis.jdbc.Null;
-import org.hibernate.validator.constraints.Length;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 //Todo: API安全性校验是否是商家
@@ -22,28 +22,23 @@ public class MerchantController {
     @Autowired
     private MerchantService merchantService;
 
-    @ApiOperation("商家获取自己下面所有酒店")
-    @PostMapping("/hotel/all")
-    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId) {
-        int id = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getAllHotels(id, cityId));
-    }
-
     @ApiOperation("商家创建一个新的酒店")
     @PostMapping("/hotel/add")
-    public ApiResponse<Boolean> addNewHotel(@ApiParam(value = "纬度", required = true) @RequestParam Float latitude,
-                                            @ApiParam(value = "经度", required = true) @RequestParam Float longitude,
-                                            @ApiParam(value = "所在城市对应ID", required = true) @RequestParam Integer cityId,
-                                            @ApiParam(value = "酒店老板ID", required = true) @RequestParam Integer merchantId,
-                                            @ApiParam(value = "酒店名字", required = true) @RequestParam String name,
-                                            @ApiParam(value = "酒店座机电话", required = true) @RequestParam @Length(min = 12, max = 12) String tel
+    public ApiResponse<Boolean> addNewHotel(@ApiParam(value = "纬度", required = true) @RequestParam @NotNull Float latitude,
+                                            @ApiParam(value = "经度", required = true) @RequestParam @NotNull Float longitude,
+                                            @ApiParam(value = "所在区ID", required = true) @RequestParam @NotNull Integer regionId,
+                                            @ApiParam(value = "酒店名字", required = true) @RequestParam @NotEmpty String name,
+                                            @ApiParam(value = "酒店电话", required = true) @RequestParam @NotEmpty String tel,
+                                            @ApiParam(value = "区域内详细地址", required = true) @RequestParam @NotEmpty String address
     ) {
+        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Hotel hotel = Hotel.builder().latitude(latitude)
                 .longitude(longitude)
-                .cityId(cityId)
+                .regionId(regionId)
                 .merchantId(merchantId)
                 .name(name)
                 .tel(tel)
+                .address(address)
                 .build();
         return ApiResponse.success(merchantService.addNewHotel(hotel));
     }
@@ -58,26 +53,34 @@ public class MerchantController {
     @ApiOperation("商家更新一个酒店信息")
     @PostMapping("/hotel/update")
     public ApiResponse<Boolean> updateHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId,
-                                            @ApiParam(value = "纬度") @RequestParam Float latitude,
-                                            @ApiParam(value = "经度") @RequestParam Float longitude,
-                                            @ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId,
-                                            @ApiParam(value = "酒店名字", required = false) @RequestParam String name,
-                                            @ApiParam(value = "酒店座机电话", required = false) @RequestParam @Length(min = 12, max = 12) String tel) {
+                                            @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
+                                            @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
+                                            @ApiParam(value = "所在区ID") @RequestParam(required = false) Integer regionId,
+                                            @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
+                                            @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel,
+                                            @ApiParam(value = "区域内详细地址") @RequestParam(required = false) String address) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, cityId, merchantId, name, tel));
-
+        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, regionId, merchantId, name, tel,address));
     }
 
-    @ApiOperation("商家查询某一个酒店")
-    @PostMapping("/hotel/{id}")
-    public ApiResponse<Hotel> getOneHotel(@ApiParam(value = "酒店Id", required = false) @RequestParam Integer hotelId,
-                                          @ApiParam(value = "纬度", required = false) @RequestParam Float latitude,
-                                          @ApiParam(value = "经度", required = false) @RequestParam Float longitude,
-                                          @ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId,
-                                          @ApiParam(value = "酒店名字", required = false) @RequestParam String name,
-                                          @ApiParam(value = "酒店座机电话", required = false) @RequestParam @Length(min = 12, max = 12) String tel) {
+    @ApiOperation("商家获取自己下面所有酒店")
+    @GetMapping("/hotel/all")
+    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID") @RequestParam(required = false) Integer cityId,
+                                                 @ApiParam(value = "所在区ID", required = true) @RequestParam(required = false) Integer regionId
+                                                 ) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, cityId, merchantId, name, tel));
+        return ApiResponse.success(merchantService.getAllHotels(merchantId, cityId,regionId));
+    }
+
+    //TODO:通过省市区来查询
+    @ApiOperation("商家多参数查询一个酒店")
+    @GetMapping("/hotel/get")
+    public ApiResponse<Hotel> getOneHotel(@ApiParam(value = "酒店Id") @RequestParam(required = false) Integer hotelId,
+                                          @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
+                                          @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
+                                          @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
+                                          @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel) {
+        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude,merchantId, name, tel));
     }
 }
