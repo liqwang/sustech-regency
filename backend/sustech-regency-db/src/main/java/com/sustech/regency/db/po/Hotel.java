@@ -17,4 +17,5 @@ public class Hotel {
     private Integer merchantId;
     private String name;
     private String tel;
+    private String address;
 }

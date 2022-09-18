@@ -85,7 +85,7 @@ public class RoomServiceImpl implements RoomService {
     public Boolean updateRooms(Integer merchantId,Integer hotelId,Integer typeId,Float price,Float discount) {
         Hotel hotel = hotelDao.selectById(hotelId);
         if(Objects.equals(merchantId, hotel.getMerchantId())){
-            LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<Room>();
             if(hotelId!=null) wrapper.eq(Room::getHotelId,hotelId);
             if(typeId!=null) wrapper.eq(Room::getTypeId,typeId);
             List<Room> roomList = roomDao.selectList(wrapper);

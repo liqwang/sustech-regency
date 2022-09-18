@@ -26,17 +26,19 @@ public class MerchantController {
     @PostMapping("/hotel/add")
     public ApiResponse<Boolean> addNewHotel(@ApiParam(value = "纬度", required = true) @RequestParam Float latitude,
                                             @ApiParam(value = "经度", required = true) @RequestParam Float longitude,
-                                            @ApiParam(value = "所在城市对应ID", required = true) @RequestParam Integer cityId,
+                                            @ApiParam(value = "所在区ID", required = true) @RequestParam Integer regionId,
                                             @ApiParam(value = "酒店老板ID", required = true) @RequestParam Integer merchantId,
                                             @ApiParam(value = "酒店名字", required = true) @RequestParam String name,
-                                            @ApiParam(value = "酒店座机电话", required = true) @RequestParam @Length(min = 12, max = 12) String tel
+                                            @ApiParam(value = "酒店座机电话", required = true) @RequestParam @Length(min = 12, max = 12) String tel,
+                                            @ApiParam(value = "区域内详细地址", required = true) @RequestParam String address
     ) {
         Hotel hotel = Hotel.builder().latitude(latitude)
                 .longitude(longitude)
-                .cityId(cityId)
+                .regionId(regionId)
                 .merchantId(merchantId)
                 .name(name)
                 .tel(tel)
+                .address(address)
                 .build();
         return ApiResponse.success(merchantService.addNewHotel(hotel));
     }
@@ -64,9 +66,11 @@ public class MerchantController {
 
     @ApiOperation("商家获取自己下面所有酒店")
     @GetMapping("/hotel/all")
-    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID", required = false) @RequestParam Integer cityId) {
+    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID", required = false) @RequestParam(required = false) Integer cityId,
+                                                 @ApiParam(value = "所在区ID", required = true) @RequestParam Integer regionId
+                                                 ) {
         int id = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getAllHotels(id, cityId));
+        return ApiResponse.success(merchantService.getAllHotels(id, cityId,regionId));
     }
 
     @ApiOperation("商家多参数查询酒店")
