@@ -91,7 +91,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Boolean updateHotel(Integer hotelId, Float latitude, Float longitude, Integer regionId, Integer merchantId, String name, String tel) {
+    public Boolean updateHotel(Integer hotelId,Float latitude, Float longitude,Integer regionId, Integer merchantId, String name, String tel,String address) {
         QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         wrapper.eq("merchant_id", merchantId);
         wrapper.eq("id", hotelId);
@@ -114,14 +114,14 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Hotel getOneHotel(Integer hotelId, Float latitude, Float longitude, Integer cityId, Integer merchantId, String name, String tel) {
+    public Hotel getOneHotel(Integer hotelId,Float latitude, Float longitude, Integer merchantId, String name, String tel) {
         QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         if (hotelId != null) wrapper.eq("id", hotelId);
         if (latitude != null) wrapper.eq("latitude", latitude);
         if (longitude != null) wrapper.eq("longitude", longitude);
-        if (cityId != null) wrapper.eq("city_id", cityId);
         if (name != null) wrapper.eq("name", name);
         if (tel != null) wrapper.eq("tel", tel);
+
         Hotel hotel = hotelDao.selectOne(wrapper);
         if (Objects.equals(hotel.getMerchantId(), merchantId)) {
             return hotel;
