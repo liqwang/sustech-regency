@@ -25,7 +25,7 @@ jobs:
         shell: pwsh
         run: |
           # Diff HEAD with the previous commit
-          $diff = git diff --name-only HEAD^ HEAD
+          $diff = git diff --name-only
           # Check if a file under frontend/ has changed (added, modified, deleted)
           $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
           $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
