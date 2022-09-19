@@ -22,10 +22,10 @@ jobs:
           fetch-depth: 2
       - name: 计算commits数组大小
         env:
-          commits: ${{ github.event.commits }}
+          commits: ${{ toJSON(github.event.commits) }}
         run: |
-          echo ${#commits[@]}
-          echo "::set-output name=size::${#commits[@]}"
+          echo $commits
+          # echo "::set-output name=size::${#commits[@]}"
       - name: 执行Shell脚本
         id: check-file-changed
         shell: pwsh
