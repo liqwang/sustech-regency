@@ -1,17 +1,17 @@
 <template>
     <el-drawer ref="drawerRef" v-model="dialog.value1" title="To register a new hotel!"
-        :before-close="handleClose_drawer" direction="ltr" custom-class="demo-drawer">
+        :before-close="handleClose_drawer" direction="rtl" custom-class="demo-drawer">
         <div>
-            <el-form :inline="true" :model="form" class="demo-form-inline">
-                <el-form-item label="">
+            <el-form label-width="30%" :model="form">
+                <el-form-item label="Name">
                     <el-input size="large" v-model="form.name" placeholder="Hotel Name" />
                 </el-form-item>
-                <el-form-item>
+                <el-form-item label="Province">
                     <el-select v-model="form.province" @change="selectProvince" filterable placeholder="Select">
                         <el-option v-for="item in ps.provinces" :key="item.name" :value="item.id" :label="item.name" />
                     </el-select>
-                </el-form-item>
-                <el-form-item>
+                </el-form-item >
+                <el-form-item label="City">
                     <el-select v-model="form.city" @change="selectCity" filterable placeholder="Select">
                         <div v-for="item in cs.cities">
                             <el-option v-if="item.provinceId+''== form.province" :key="item.name" :value="item.id"
@@ -19,7 +19,7 @@
                         </div>
                     </el-select>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item label="Region">
                     <el-select v-model="form.region" filterable placeholder="Select">
                         <div v-for="item in rs.regions">
                             <el-option v-if="item.cityId+''== form.city" :key="item.name" :value="item.id"
@@ -27,21 +27,21 @@
                         </div>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="Address">
                     <el-input size="large" v-model="form.address" placeholder="Detailed Address" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="Latitude">
                     <el-input size="large" v-model="form.latitude" placeholder="The latitude of hotel" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="Longitude">
                     <el-input size="large" v-model="form.longitude" placeholder="The longitude of hotel" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="Tel">
                     <el-input size="large" v-model="form.tel" placeholder="The tel number" />
                 </el-form-item>
             </el-form>
-            <div>
-                <el-button @click="cancelForm">Cancel</el-button>
+            <div style="position:relative;left:30%">
+                <el-button  @click="cancelForm">Cancel</el-button>
                 <el-button type="primary" @click="submitNewHotel">{{
                 'Submit'
                 }}</el-button>
@@ -95,15 +95,17 @@ request.get('/info/province/all').then((response) => {
     // console.log(ps.provinces)
 })
 const selectProvince = () => {
+    form.city=''
+    form.region=''
     request.get('/info/city/all').then((response) => {
         cs.cities = response.data.data
         // console.log(cs.cities)
     })
 }
 const selectCity = () => {
+    form.region=''
     request.get('/info/region/all').then((response) => {
         rs.regions = response.data.data
-        // console.log(cs.cities)
     })
 }
 const form = reactive({
