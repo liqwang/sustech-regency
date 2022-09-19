@@ -9,14 +9,6 @@ on:
       - '.github/workflows/**'
 
 jobs:
-  log-contexts:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log array's length
-        run: |
-          echo '${{ toJSON(github.event.commits.size) }}'
-          echo '${{ toJSON(github.event.commits.length) }}'
-
   check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
     runs-on: ubuntu-latest
     outputs:
@@ -28,6 +20,12 @@ jobs:
         with:
           # Checkout as many commits as needed for the diff
           fetch-depth: 2
+      - name: 计算commits数组大小
+        env:
+          commits: ${{ github.event.commits }}
+        run: |
+          echo ${#commits[@]}
+          echo "::set-output name=size::${#commits[@]}"
       - name: 执行Shell脚本
         id: check-file-changed
         shell: pwsh
