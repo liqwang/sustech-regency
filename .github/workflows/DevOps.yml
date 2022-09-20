@@ -24,18 +24,22 @@ jobs:
         id: check-file-changed
         shell: pwsh
         run: |
-          # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html
+          # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html(示例2：使用字符串拆分字符串)
           $commitsStr='${{ toJSON(github.event.commits) }}'
-          echo '$commitsStr'
-          IFS='{ \"author\": { \"email\":' #定义分割符
-          read -ra splits <<<"$commitsStr" #生成splits数组
-          echo '$splits'
-          $commitsNumber=${#splits[@]}-1
+          delimiter='{ "author": { "email":'
+          s=$commitsStr$delimiter
+          splits=();
+          while [[ $s ]];
+          do
+          splits+=( "${s%%"$delimiter"*}" );
+          s=${s#*"$delimiter"};
+          done;
+          commitsNumber=$((${#splits[@]}-1))
 
           # 2.Diff HEAD with the commit number
-          echo $commitsNumber
+          echo "$commitsNumber"
           $diff = git diff --name-only HEAD~$commitsNumber
-          echo '$diff'
+          echo "$diff"
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
           $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
