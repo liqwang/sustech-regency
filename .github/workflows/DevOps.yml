@@ -20,24 +20,30 @@ jobs:
         with:
           # Checkout as many commits as needed for the diff
           fetch-depth: 2
-      - name: 计算commits数组大小
-        env:
-          commits: ${{ toJSON(github.event.commits) }}
-        run: |
-          echo $commits
-          # echo "::set-output name=size::${#commits[@]}"
       - name: 执行Shell脚本
         id: check-file-changed
         shell: pwsh
         run: |
-          # Diff HEAD with the previous commit
-          $diff = git diff --name-only
-          # Check if a file under frontend/ has changed (added, modified, deleted)
+          # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html
+          $commitsStr=${{ toJSON(github.event.commits) }}
+          echo $commitsStr
+          IFS='{ "author": { "email":' #定义分割符
+          read -ra splits <<<"$commitsStr" #生成splits数组
+          echo $splits
+          $commitsNumber=${#splits[@]}-1
+
+          # 2.Diff HEAD with the commit number
+          echo $commitsNumber
+          $diff = git diff --name-only HEAD~$commitsNumber
+          echo $commitsNumber
+
+          # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
           $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
           $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
           $FrontendHasDiff = $FrontendDiff.Length -gt 0
           $BackendHasDiff = $BackendDiff.Length -gt 0
-          # Set the output named "frontend_changed" and "backend_changed"
+
+          # 4.Set the output named "frontend_changed" and "backend_changed"
           Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
           Write-Host "::set-output name=backend_changed::$BackendHasDiff"
 
