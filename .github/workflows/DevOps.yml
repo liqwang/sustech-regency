@@ -56,7 +56,6 @@ jobs:
           else
               backendHasDiff='False'
           fi
-          echo "$backendHasDiff"
 
           # 4.Set the output named "frontend_changed" and "backend_changed"
           echo "::set-output name=frontend_changed::$frontendHasDiff"
