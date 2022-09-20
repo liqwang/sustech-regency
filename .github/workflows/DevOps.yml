@@ -48,7 +48,6 @@ jobs:
           else
               frontendHasDiff='False'
           fi
-              echo "$frontendHasDiff"
 
           if [[ $diff =~ 'backend/' || $diff =~ '.github/workflows/' ]]
           then
