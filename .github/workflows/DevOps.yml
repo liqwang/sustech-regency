@@ -23,7 +23,8 @@ jobs:
       - name: 执行Shell脚本
         id: check-file-changed
         run: |
-          # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html(示例2：使用字符串拆分字符串)
+          # 1.分割commits的Json字符串，获取commits数量
+          # https://www.yiibai.com/bash/bash-split-string.html(示例2：使用字符串拆分字符串)
           commitsStr='${{ toJSON(github.event.commits) }}'
           delimiter='"author": {' #设置分割字符串
           s=$commitsStr$delimiter
@@ -40,6 +41,7 @@ jobs:
           echo "$diff"
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
+          # https://www.cnblogs.com/drizzlewithwind/p/6281749.html(方法二)
           if [[ $diff =~ 'frontend/' || $diff =~ '.github/workflows/' ]]
           then
               frontendHasDiff='True'
@@ -57,8 +59,8 @@ jobs:
           echo "$backendHasDiff"
 
           # 4.Set the output named "frontend_changed" and "backend_changed"
-          Write-Host "::set-output name=frontend_changed::$frontendHasDiff"
-          Write-Host "::set-output name=backend_changed::$backendHasDiff"
+          echo "::set-output name=frontend_changed::$frontendHasDiff"
+          echo "::set-output name=backend_changed::$backendHasDiff"
 
   frontend-deploy:
     runs-on: ubuntu-latest
