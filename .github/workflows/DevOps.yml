@@ -25,7 +25,7 @@ jobs:
         shell: pwsh
         run: |
           # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html
-          $commitsStr=${{ toJSON(github.event.commits) }}
+          $commitsStr='${{ toJSON(github.event.commits) }}'
           echo $commitsStr
           IFS='{ "author": { "email":' #定义分割符
           read -ra splits <<<"$commitsStr" #生成splits数组
