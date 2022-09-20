@@ -37,7 +37,7 @@ jobs:
           commitsNumber=$((${#splits[@]}-1))
 
           # 2.Diff HEAD with the commit number
-          diff=$(git diff --name-only HEAD~"$commitsNumber")
+          diff=$(git diff --name-only HEAD~"$commitsNumber" --)
           echo "$diff"
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
