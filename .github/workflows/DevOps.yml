@@ -26,16 +26,16 @@ jobs:
         run: |
           # 1.分割commits的Json字符串，获取commits数量:https://www.yiibai.com/bash/bash-split-string.html
           $commitsStr='${{ toJSON(github.event.commits) }}'
-          echo $commitsStr
-          IFS='{ "author": { "email":' #定义分割符
+          echo '$commitsStr'
+          IFS='{ \"author\": { \"email\":' #定义分割符
           read -ra splits <<<"$commitsStr" #生成splits数组
-          echo $splits
+          echo '$splits'
           $commitsNumber=${#splits[@]}-1
 
           # 2.Diff HEAD with the commit number
           echo $commitsNumber
           $diff = git diff --name-only HEAD~$commitsNumber
-          echo $commitsNumber
+          echo '$diff'
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
           $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
