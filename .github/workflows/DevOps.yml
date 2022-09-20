@@ -18,7 +18,7 @@ jobs:
       - name: 迁出代码
         uses: actions/checkout@master
         with: #https://stackoverflow.com/questions/60052236/git-diff-gives-me-a-fatal-bad-revision-head1
-          fetch-depth: 200
+          fetch-depth: 0 # '0' indicates all history for all branches and tags
       - name: 执行Shell脚本
         id: check-file-changed
         run: |
