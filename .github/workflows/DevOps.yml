@@ -39,10 +39,12 @@ jobs:
           diff=$(git diff --name-only HEAD~"$commitsNumber")
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
-          frontendDiff=$($diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' })
-          backendDiff=$($diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' })
-          frontendHasDiff=$("$frontendDiff.Length" -gt 0)
-          backendHasDiff=$("$backendDiff.Length" -gt 0)
+          #frontendMatchResult=$($diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' })
+          #backendDiff=$($diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' })
+          frontendHasDiff=$("$diff"=~'frontend/'|"$diff"=~'.github/workflows/')
+          echo frontendHasDiff
+          backendHasDiff=$("$diff"=~'backend/'|"$diff"=~'.github/workflows/')
+          echo backendHasDiff
 
           # 4.Set the output named "frontend_changed" and "backend_changed"
           Write-Host "::set-output name=frontend_changed::$frontendHasDiff"
