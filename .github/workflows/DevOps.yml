@@ -36,19 +36,18 @@ jobs:
           commitsNumber=$((${#splits[@]}-1))
 
           # 2.Diff HEAD with the commit number
-          echo "$commitsNumber"
-          $diff = git diff --name-only HEAD~$commitsNumber
+          diff = git diff --name-only HEAD~$commitsNumber
           echo "$diff"
 
           # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
-          $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
-          $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
-          $FrontendHasDiff = $FrontendDiff.Length -gt 0
-          $BackendHasDiff = $BackendDiff.Length -gt 0
+          frontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
+          backendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
+          frontendHasDiff = $frontendDiff.Length -gt 0
+          backendHasDiff = $backendDiff.Length -gt 0
 
           # 4.Set the output named "frontend_changed" and "backend_changed"
-          Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
-          Write-Host "::set-output name=backend_changed::$BackendHasDiff"
+          Write-Host "::set-output name=frontend_changed::$frontendHasDiff"
+          Write-Host "::set-output name=backend_changed::$backendHasDiff"
 
   frontend-deploy:
     runs-on: ubuntu-latest
