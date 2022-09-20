@@ -17,9 +17,8 @@ jobs:
     steps:
       - name: 迁出代码
         uses: actions/checkout@master
-        with:
-          # Checkout as many commits as needed for the diff
-          fetch-depth: 2
+        with: #https://stackoverflow.com/questions/60052236/git-diff-gives-me-a-fatal-bad-revision-head1
+          fetch-depth: 200
       - name: 执行Shell脚本
         id: check-file-changed
         run: |
