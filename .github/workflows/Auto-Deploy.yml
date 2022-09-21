@@ -21,43 +21,7 @@ jobs:
           fetch-depth: 0 # '0' indicates all history for all branches and tags
       - name: 执行Shell脚本
         id: check-file-changed
-        run: |
-          # 1.分割commits的Json字符串，获取commits数量
-          # https://www.yiibai.com/bash/bash-split-string.html(示例2：使用字符串拆分字符串)
-          commitsStr='${{ toJSON(github.event.commits) }}'
-          delimiter='"author": {' #设置分割字符串
-          s=$commitsStr$delimiter
-          splits=();
-          while [[ $s ]];
-          do
-          splits+=( "${s%%"$delimiter"*}" );
-          s=${s#*"$delimiter"};
-          done;
-          commitsNumber=$((${#splits[@]}-1))
-
-          # 2.Diff HEAD with the commit number
-          diff=$(git diff --name-only HEAD~"$commitsNumber" --)
-          echo "$diff"
-
-          # 3.Check if a file under /frontend or /backend has changed (added, modified, deleted)
-          # https://www.cnblogs.com/drizzlewithwind/p/6281749.html(方法二)
-          if [[ $diff =~ 'frontend/' || $diff =~ '.github/workflows/' ]]
-          then
-              frontendHasDiff='True'
-          else
-              frontendHasDiff='False'
-          fi
-
-          if [[ $diff =~ 'backend/' || $diff =~ '.github/workflows/' ]]
-          then
-              backendHasDiff='True'
-          else
-              backendHasDiff='False'
-          fi
-
-          # 4.Set the output named "frontend_changed" and "backend_changed"
-          echo "::set-output name=frontend_changed::$frontendHasDiff"
-          echo "::set-output name=backend_changed::$backendHasDiff"
+        run: ./check-diff.sh
 
   frontend-deploy:
     runs-on: ubuntu-latest
@@ -75,13 +39,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - name: 安装依赖
-        run: |
-          cd frontend
-          npm ci
+        working-directory: frontend
+        run: npm ci
       - name: npm编译打包
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
       - name: 上传静态文件到阿里云
         uses: appleboy/scp-action@master
         with:
@@ -108,8 +70,8 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
       - name: Maven打包
+        working-directory: backend
         run: |
-          cd backend
           mvn clean
           mvn package -Dmaven.test.skip=true
       - name: 上传Jar包到阿里云
