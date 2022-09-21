@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0 # '0' indicates all history for all branches and tags
       - name: 执行Shell脚本
         id: check-file-changed
-        run: ./check-diff.sh
+        run: .github/workflows/check-diff.sh
 
   frontend-deploy:
     runs-on: ubuntu-latest
