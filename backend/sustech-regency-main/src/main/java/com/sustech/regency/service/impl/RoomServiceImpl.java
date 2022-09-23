@@ -1,24 +1,14 @@
 package com.sustech.regency.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sustech.regency.db.dao.HotelDao;
 import com.sustech.regency.db.dao.RoomDao;
-import com.sustech.regency.db.dao.UserDao;
 import com.sustech.regency.db.po.Hotel;
-import com.sustech.regency.db.po.Order;
 import com.sustech.regency.db.po.Room;
-import com.sustech.regency.db.po.User;
-import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.service.RoomService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.events.Event;
 
-import java.sql.Wrapper;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +28,6 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Boolean deleteRoom(Integer merchantId,Integer roomId) {
-
         LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<Room>()
                 .eq(Room::getId, roomId);
         Room room = roomDao.selectOne(roomLambdaQueryWrapper);
@@ -52,7 +41,6 @@ public class RoomServiceImpl implements RoomService {
             return true;
         }
         return false;
-
     }
 
     @Override
@@ -85,7 +73,7 @@ public class RoomServiceImpl implements RoomService {
     public Boolean updateRooms(Integer merchantId,Integer hotelId,Integer typeId,Float price,Float discount) {
         Hotel hotel = hotelDao.selectById(hotelId);
         if(Objects.equals(merchantId, hotel.getMerchantId())){
-            LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<Room>();
+            LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
             if(hotelId!=null) wrapper.eq(Room::getHotelId,hotelId);
             if(typeId!=null) wrapper.eq(Room::getTypeId,typeId);
             List<Room> roomList = roomDao.selectList(wrapper);
