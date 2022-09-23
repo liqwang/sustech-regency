@@ -1,6 +1,7 @@
 package com.sustech.regency.controller;
 
 import com.sustech.regency.db.po.Hotel;
+import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
@@ -63,13 +64,11 @@ public class MerchantController {
         return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, regionId, merchantId, name, tel,address));
     }
 
-    @ApiOperation("商家获取自己下面所有酒店")
+    @ApiOperation("商家获取自己下面所有酒店信息")
     @GetMapping("/hotel/all")
-    public ApiResponse<List<Hotel>> getAllHotels(@ApiParam(value = "所在城市对应ID") @RequestParam(required = false) Integer cityId,
-                                                 @ApiParam(value = "所在区ID", required = true) @RequestParam(required = false) Integer regionId
-                                                 ) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getAllHotels(merchantId, cityId,regionId));
+    public ApiResponse<List<HotelInfo>> getAllHotels() {
+        int merchantId = (int)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ApiResponse.success(merchantService.getAllHotelInfos(merchantId));
     }
 
     //TODO:通过省市区来查询
