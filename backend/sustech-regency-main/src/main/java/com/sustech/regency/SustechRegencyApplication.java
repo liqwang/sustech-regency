@@ -11,5 +11,4 @@ public class SustechRegencyApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SustechRegencyApplication.class, args);
 	}
-
 }

@@ -2,13 +2,8 @@ package com.sustech.regency.service;
 
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Order;
-import com.sustech.regency.db.po.Room;
-import com.sustech.regency.db.po.User;
 import com.sustech.regency.model.vo.HotelInfo;
-import io.swagger.models.auth.In;
-import org.apache.ibatis.jdbc.Null;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public interface MerchantService {
