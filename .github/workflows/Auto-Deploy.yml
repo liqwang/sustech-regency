@@ -22,6 +22,8 @@ jobs:
       - name: 执行Shell脚本
         id: check-file-changed
         working-directory: .github/workflows
+        env:
+          COMMITS: ${{ toJSON(github.event.commits) }}
         run: |
           sudo chmod +x check-diff.sh
           ./check-diff.sh

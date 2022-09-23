@@ -2,10 +2,9 @@
 # 1.分割commits的Json字符串，获取commits数量
 # https://www.yiibai.com/bash/bash-split-string.html(示例2：使用字符串拆分字符串)
 # shellcheck disable=SC2016
-commitsStr='${{ toJSON(github.event.commits) }}'
-echo "$commitsStr"
+echo "$COMMITS"
 delimiter='"author": {' #设置分割字符串
-s=$commitsStr$delimiter
+s=$COMMITS$delimiter
 splits=();
 while [[ $s ]];
 do
