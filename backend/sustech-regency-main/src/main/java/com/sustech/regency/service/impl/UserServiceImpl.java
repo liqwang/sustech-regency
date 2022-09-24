@@ -72,6 +72,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void findPassword(String verificationCode, String email, String username, String newPassword) {
+		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
+										 .eq(User::getName, username));
+		if(user==null){
+			throw ApiException.badRequest("用户名不存在");
+		}else if(!user.getEmail().equals(email)){
+			throw ApiException.badRequest("用户未绑定该邮箱");
+		}
+		String trueCode = redis.getObject("verification:" + email);
+		if(trueCode==null){
+			throw ApiException.badRequest("验证码已过期，请重新发送");
+		}else if(!trueCode.equals(verificationCode)){
+			throw ApiException.badRequest("验证码错误");
+		}
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userDao.update(user, new LambdaQueryWrapper<User>()
+						        .eq(User::getId,user.getId()));
+	}
+
+	@Override
 	public String login(String name, String password) {
 		//判断该name是否存在
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
@@ -104,6 +124,6 @@ public class UserServiceImpl implements UserService {
 		message.setText("验证码:"+randomCode);
 		javaMailSender.send(message);
 		//2.存入Redis
-		redis.setObject("verification:"+email,randomCode,60);
+		redis.setObject("verification:"+email,randomCode,120);
 	}
 }

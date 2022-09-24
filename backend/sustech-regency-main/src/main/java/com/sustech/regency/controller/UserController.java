@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Map;
 
@@ -49,6 +50,28 @@ public class UserController {
 		VerificationUtil.judge(loginParam.getPassword());
 		String jwt = userService.register(verificationCode,email,loginParam.getUsername(),loginParam.getPassword(),roleId);
 		return ApiResponse.success(Map.of("token",jwt));
+	}
+
+	@ApiOperation("找回密码")
+	@PostMapping("/find-password")
+	public ApiResponse findPassword(@ApiParam(value="验证码",required=true,example="114514")
+		                            @Size(min=6,max=6,message="验证码必须为6位")
+		                            @RequestParam String verificationCode,
+
+	                                @ApiParam(required=true)
+	                                @Email(message = "邮箱格式错误")
+	                                @RequestParam String email,
+
+	                                @ApiParam(required = true)
+	                                @NotEmpty(message = "Username shouldn't be null")
+	                                @RequestParam String username,
+
+	                                @ApiParam(required = true)
+	                                @Size(min=8,max=30,message = "密码需要为8-30位")
+	                                @RequestParam String newPassword){
+		VerificationUtil.judge(newPassword);
+		userService.findPassword(verificationCode,email,username,newPassword);
+		return ApiResponse.success();
 	}
 
 	@ApiOperation("登录")

@@ -5,5 +5,7 @@ public interface UserService {
 
 	String login(String name, String password);
 
+	void findPassword(String verificationCode,String email,String username,String newPassword);
+
 	void sendVerificationCode(String email);
 }
