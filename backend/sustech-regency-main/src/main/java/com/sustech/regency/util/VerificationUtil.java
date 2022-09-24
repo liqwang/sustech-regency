@@ -4,7 +4,7 @@ import com.sustech.regency.web.handler.ApiException;
 
 import java.util.*;
 
-public class PasswordUtil {
+public class VerificationUtil {
 	public static Set<Character> digits=Set.of('0','1','2','3','4','5','6','7','8','9');
 	public static Set<Character> specialChars=Set.of('`','~','!','@','#','$','%','^','&','*','(',')','_','-','+','=','{','[',']','}','|','\\',';',':','\'','\"',',','<','>','.','?','/');
 	public static Set<Character> upperChars=new HashSet<>();
