@@ -44,7 +44,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() //关闭Session(不通过Session获取SecurityContext)
 					.authorizeRequests(
 						authorize->authorize
-								  .antMatchers("/user/register","/user/login").anonymous() //只允许注册和登录接口匿名访问，认证通过后无法访问
+								  .antMatchers("/user/**").anonymous() //只允许/user/**匿名访问，认证通过后无法访问
 								  .antMatchers("/info/**").permitAll() //放行获取信息相关URL
 								  .antMatchers("/doc.html","/webjars/**","/img.icons/**","/swagger-resources","/v2/api-docs","/favicon.ico").permitAll() //放行Knife4j相关URL
 								  .anyRequest().authenticated()

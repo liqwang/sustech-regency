@@ -9,9 +9,12 @@ import com.sustech.regency.db.po.User;
 import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.service.UserService;
+import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +37,13 @@ public class UserServiceImpl implements UserService {
 	private LoginLogDao loginLogDao;
 
 	@Override
-	public String register(String name, String password, Integer roleId) {
+	public String register(String verificationCode, String email, String name, String password, Integer roleId) {
+		String trueCode = redis.getObject("verification:" + email);
+		if(trueCode==null){
+			throw ApiException.badRequest("验证码已过期，请重新发送");
+		}else if(!trueCode.equals(verificationCode)){
+			throw ApiException.badRequest("验证码错误");
+		}
 		//判断该name是否已经存在
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
 										 .eq(User::getName, name));
@@ -42,6 +51,7 @@ public class UserServiceImpl implements UserService {
 			user=User.builder()
 				.name(name)
 				.password(passwordEncoder.encode(password))
+				.email(email)
 				.build();
 			userDao.insert(user);
 		}else{//用户已存在
@@ -79,5 +89,21 @@ public class UserServiceImpl implements UserService {
 			redis.setObject("login:"+user.getId(),user,60*60*2); //把完整用户信息存入Redis, sid作为key, ttl为2h
 			return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
 		}
+	}
+
+	@Autowired
+	private JavaMailSender javaMailSender;
+	@Override
+	public void sendVerificationCode(String email) {
+		//1.发送验证码
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("836200779@qq.com");
+		message.setTo(email);
+		message.setSubject("SUSTech-Regency邮箱验证");
+		String randomCode = VerificationUtil.generateVerificationCode();
+		message.setText("验证码:"+randomCode);
+		javaMailSender.send(message);
+		//2.存入Redis
+		redis.setObject("verification:"+email,randomCode,60);
 	}
 }

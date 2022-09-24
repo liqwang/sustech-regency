@@ -40,4 +40,15 @@ public class VerificationUtil {
 		set.retainAll(setB);
 		return set.isEmpty();
 	}
+
+	/**
+	 * 生成六位数字验证码
+	 */
+	public static String generateVerificationCode(){
+		StringBuilder code = new StringBuilder((int) (Math.random() * (1e6)) + "");
+		while(code.length()!=6){
+			code.insert(0, "0");
+		}
+		return code.toString();
+	}
 }
