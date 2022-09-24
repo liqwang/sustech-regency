@@ -12,6 +12,7 @@ s=${s#*"$delimiter"};
 done;
 commitsNumber=$((${#splits[@]}-1))
 echo "commitsNumber:$commitsNumber"
+printf '\n'
 
 # 2.Diff HEAD with the commit number
 diff=$(git diff --name-only HEAD~"$commitsNumber" --)

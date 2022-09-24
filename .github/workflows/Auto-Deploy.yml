@@ -6,7 +6,6 @@ on:
     paths:
       - 'backend/**'
       - 'frontend/**'
-      - '.github/workflows/**'
 
 jobs:
   check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
