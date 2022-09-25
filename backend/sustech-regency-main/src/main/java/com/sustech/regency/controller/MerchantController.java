@@ -70,11 +70,10 @@ public class MerchantController {
         int merchantId = (int)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ApiResponse.success(merchantService.getAllHotelInfos(merchantId));
     }
-
     //TODO:通过省市区来查询
     @ApiOperation("商家多参数查询一个酒店")
     @GetMapping("/hotel/get")
-    public ApiResponse<Hotel> getOneHotel(@ApiParam(value = "酒店Id") @RequestParam(required = false) Integer hotelId,
+    public ApiResponse<HotelInfo> getOneHotel(@ApiParam(value = "酒店Id") @RequestParam(required = false) Integer hotelId,
                                           @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
                                           @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
                                           @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
