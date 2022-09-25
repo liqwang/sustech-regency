@@ -63,14 +63,10 @@ public class UserController {
 	                                @RequestParam String email,
 
 	                                @ApiParam(required = true)
-	                                @NotEmpty(message = "Username shouldn't be null")
-	                                @RequestParam String username,
-
-	                                @ApiParam(required = true)
 	                                @Size(min=8,max=30,message = "密码需要为8-30位")
 	                                @RequestParam String newPassword){
 		VerificationUtil.judge(newPassword);
-		userService.findPassword(verificationCode,email,username,newPassword);
+		userService.findPassword(verificationCode,email,newPassword);
 		return ApiResponse.success();
 	}
 
