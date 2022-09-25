@@ -75,10 +75,8 @@ public class UserServiceImpl implements UserService {
 	public void findPassword(String verificationCode, String email, String newPassword) {
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
 										 .eq(User::getEmail, email));
-		if(user==null){
-			throw ApiException.badRequest("邮箱未被绑定");
-		}
-		String trueCode = redis.getObject("verification:" + email);
+		if(user==null){throw ApiException.badRequest("邮箱未被绑定");}
+			String trueCode = redis.getObject("verification:" + email);
 		if(trueCode==null){
 			throw ApiException.badRequest("验证码已过期，请重新发送");
 		}else if(!trueCode.equals(verificationCode)){
@@ -113,15 +111,20 @@ public class UserServiceImpl implements UserService {
 	private JavaMailSender javaMailSender;
 	@Override
 	public void sendVerificationCode(String email) {
-		//1.发送验证码
+		//1.查询邮箱是否存在
+		User user =userDao.selectOne(new LambdaQueryWrapper<User>()
+									.select(User::getId)
+									.eq(User::getEmail, email));
+		if(user==null){throw ApiException.badRequest("邮箱未被绑定");}
+		//2.发送验证码
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom("836200779@qq.com");
 		message.setTo(email);
 		message.setSubject("SUSTech-Regency邮箱验证");
 		String randomCode = VerificationUtil.generateVerificationCode();
-		message.setText("验证码:"+randomCode);
+		message.setText("验证码:"+randomCode+", 有效期2分钟");
 		javaMailSender.send(message);
-		//2.存入Redis
+		//3.存入Redis
 		redis.setObject("verification:"+email,randomCode,120);
 	}
 }
