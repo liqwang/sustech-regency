@@ -16,7 +16,7 @@
           <el-row style="margin-bottom: 0">
             <el-col :span="3"></el-col>
             <el-col :span="10" style="display: flex; justify: start"
-              ><div class="msg">请输入用户名</div></el-col
+              ><div class="msg">请输入邮箱</div></el-col
             >
           </el-row>
           <el-row>
@@ -25,8 +25,7 @@
               <el-form-item label="" prop="username">
                 <el-input
                   type="text"
-                  maxlength="11"
-                  placeholder="用户名"
+                  placeholder="请输入邮箱"
                   v-model="form.username"
                   clearable
                 /> </el-form-item
@@ -71,7 +70,6 @@
               ><el-form-item label="" prop="newpwd" v-show="pass_check">
                 <el-input
                   type="text"
-                  maxlength="11"
                   placeholder="请输入新密码"
                   v-model="form.newpwd"
                 /> </el-form-item
@@ -91,7 +89,6 @@
               <el-form-item label="" prop="newpwd" v-show="pass_check">
                 <el-input
                   type="text"
-                  maxlength="11"
                   placeholder="请再次输入新密码"
                   v-model="form.newpwd2"
                 /> </el-form-item
@@ -105,7 +102,6 @@
               round
               id="btn_sub"
               v-show="!pass_check"
-              @click="submit"
               :disabled="!has_get_code"
               >提交</el-button
             ><el-button
@@ -114,14 +110,14 @@
               id="btn_submit"
               v-show="pass_check"
               @click="doubleCheck"
-              >提交并登陆账号</el-button
+              >提交</el-button
             >
             <el-button
               type="primary"
               round
               id="btn_get_pwd_back"
               @click="cancel"
-              >取消并返回</el-button
+              >取消</el-button
             >
           </div>
         </div>
@@ -443,7 +439,7 @@ let btn_msg = ref("获取验证码");
 const back_code = ref("");
 let btn_vaild = ref(true);
 let has_get_code = ref(false);
-let pass_check = ref(false);
+let pass_check = ref(true);
 const form = reactive({
   username: "",
   code: "",
@@ -474,6 +470,11 @@ const getCode = () => {
     has_get_code.value = true;
 
     // 获取backcode
+    request
+      .post(`/user/send-verification-code?email=` + form.username)
+      .then((res) => {
+        console.log(res.data);
+      });
   } else {
     ElNotification({
       title: "Failed",
@@ -481,45 +482,31 @@ const getCode = () => {
     });
   }
 };
-const submit = () => {
-  console.log(form.code, "input and back ", back_code);
-  // 检测验证码是否和后端一致，若一致则通过检查,若不一致则弹窗报错
-  // 获取后端返回的验证码 backcode
 
-  //验证是否一致
-  if (form.code == back_code.value) {
-    pass_check.value = true;
-    ElNotification({
-      title: "Success",
-      message: h("i", { style: "color: teal" }, "验证成功，请修改密码"),
-    });
-  } else {
-    pass_check.value = false;
-    ElNotification({
-      title: "Failed",
-      message: h("i", { style: "color: red" }, "验证码错误，请重试"),
-    });
-  }
-};
 const doubleCheck = () => {
   if (form.newpwd === form.newpwd2) {
     //修改密码，并用新密码登陆
     // 修改密码
-
-    // 登陆
     request
-      .post(`/user/login`, {
-        password: form.newpwd,
-        username: form.username,
+      .post(`/user/find-password`, {
+        email: form.username,
+        newPassword: form.newpwd,
+        verificationCode: form.code,
       })
       .then((res) => {
-        const token = res.data.data.token;
-        localStorage.setItem("token", token);
-        ElNotification({
-          title: "Success",
-          message: h("i", { style: "color: teal" }, "Login success"),
-        });
-        router.push("/back");
+        console.log(res.data);
+        if (res.data.code == 200) {
+          ElNotification({
+            title: "Success",
+            message: h("i", { style: "color: teal" }, "修改密码成功"),
+          });
+          router.push("/");
+        } else if (res.data.code == 400) {
+          ElNotification({
+            title: "Failed",
+            message: h("i", { style: "color: red" }, res.data.message),
+          });
+        }
       });
   } else {
     // 弹窗报错，清空两个新密码
