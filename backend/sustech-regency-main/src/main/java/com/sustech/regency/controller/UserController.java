@@ -60,6 +60,7 @@ public class UserController {
 
 	                                @ApiParam(required=true)
 	                                @Email(message = "邮箱格式错误")
+	                                @NotEmpty(message = "邮箱不能为空")
 	                                @RequestParam String email,
 
 	                                @ApiParam(required = true)
