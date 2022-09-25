@@ -94,8 +94,8 @@
                                         </el-icon>
                                     </template>
                                 </el-input>
-                                <el-button @click="send_phone" size="small" id="verify" type="success" round>发送验证码
-                                </el-button>
+                                <!-- <el-button @click="send_phone" size="small" id="verify" type="success" round>发送验证码 -->
+                                <!-- </el-button> -->
 
                             </el-form-item>
 
@@ -111,7 +111,9 @@
                                         </el-icon>
                                     </template>
                                 </el-input>
-                                <el-button @click="send_mail" size="small" id="verify" type="success" round>发送验证码
+                                <el-button :disabled="isDisabled" @click="send_mail" size="small" id="verify"
+                                    type="success" round>
+                                    {{button_msg}}
                                 </el-button>
 
                             </el-form-item>
@@ -148,7 +150,7 @@
     overflow: hidden;
     margin: 0 0;
     background: hsl(0, 0%, 100%);
-    width:38%;
+    width: 38%;
     height: 100%;
     position: relative;
     border-radius: 25px 25px 25px 25px;
@@ -176,7 +178,7 @@
     // margin: 0 0;
     border-radius: 0px 25px 25px 0px;
     position: relative;
-    left:-2%;
+    left: -2%;
     box-shadow: 10px 10px 5px #888888;
     background: url('../images/background.png') 0% 0% / cover no-repeat;
     // background-image: url('../images/background.png');
@@ -197,7 +199,8 @@
     .page {
         display: none;
     }
-    #register_page{
+
+    #register_page {
         width: 100%;
     }
 }
@@ -217,7 +220,7 @@
     position: absolute;
     left: 50px;
     // top: 530px;
-    top:82%;
+    top: 82%;
     width: 90px;
 }
 
@@ -252,16 +255,16 @@
     height: 50px;
     position: absolute;
     // top: 25px;
-    top:40%;
+    top: 40%;
     // left: 290px;
-    left:75%;
+    left: 75%;
 }
 </style>
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { h } from 'vue'
 import request from '../utils/request'
-import type { FormInstance } from 'element-plus'
+import { formContextKey, FormInstance } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { User, Lock, Message, Iphone } from '@element-plus/icons-vue'
 import axios from 'axios'
@@ -285,6 +288,8 @@ var IsComplete = {
     verify_phone: 0,
     user: 0
 }
+const isDisabled = ref(false)
+const button_msg = ref('发送验证码')
 const ruleFormRef = ref<FormInstance>()
 const checkName = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -371,10 +376,40 @@ const rules = reactive({
 
 
 const send_mail = () => {
-    ElNotification({
-        title: 'Success',
-        message: h('i', { style: 'color: teal' }, 'You will receive an E-mail for verification'),
-    })
+    if (ruleForm.mail != '') {
+        request.post('user/send-verification-code?email=' + ruleForm.mail)
+            .then(function (response) {
+                if (response.data.code == 200) {
+                    ElNotification({
+                        title: 'Success',
+                        message: h('i', { style: 'color: teal' }, 'You will receive an E-mail for verification'),
+                    })
+                    let timer = ref<number>(60)
+                    isDisabled.value = true
+                    const T = setInterval(function () {
+                        {
+                            timer.value--;
+                            button_msg.value = `${timer.value}s后重新获取`;
+                            if (timer.value == 0) {
+                                isDisabled.value = false;
+                                button_msg.value = "获取验证码";
+                                clearInterval(T);
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    ElNotification({
+                        title: 'Error',
+                        message: h('i', { style: 'color: red' }, 'Some error happen'),
+                    })
+                }
+            })
+    }else{
+        ElNotification({
+                        title: 'Error',
+                        message: h('i', { style: 'color: red' }, 'Please input correct email'),
+                    })
+    }
 }
 const send_phone = () => {
     ElNotification({
@@ -384,14 +419,14 @@ const send_phone = () => {
 }
 
 const signup = () => {
-    if (UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1  && IsComplete.mail == 1 && IsComplete.verify_mail == 1 ) {
+    if (UserOrmerchant.value != '' && IsComplete.name == 1 && IsComplete.password == 1 && IsComplete.checkPassword == 1 && IsComplete.mail == 1 && IsComplete.verify_mail == 1) {
         var id = 1;
         if (UserOrmerchant.value == '2') {
             id = 2;
         }
-        request.post('https://quanquancho.com:8080/user/register?roleId=' + id,{
-            username:ruleForm.name,
-            password:ruleForm.password,
+        request.post('https://quanquancho.com:8080/user/register?roleId=' + id + '&email=' + ruleForm.mail + '&verificationCode=' + ruleForm.verify_mail, {
+            username: ruleForm.name,
+            password: ruleForm.password,
         })
             .then(function (response) {
                 if (response.data.code === 200) {
