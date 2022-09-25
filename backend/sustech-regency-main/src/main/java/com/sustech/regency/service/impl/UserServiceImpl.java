@@ -111,12 +111,7 @@ public class UserServiceImpl implements UserService {
 	private JavaMailSender javaMailSender;
 	@Override
 	public void sendVerificationCode(String email) {
-		//1.查询邮箱是否存在
-		User user =userDao.selectOne(new LambdaQueryWrapper<User>()
-									.select(User::getId)
-									.eq(User::getEmail, email));
-		if(user==null){throw ApiException.badRequest("邮箱未被绑定");}
-		//2.发送验证码
+		//1.发送验证码
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom("836200779@qq.com");
 		message.setTo(email);
@@ -124,7 +119,7 @@ public class UserServiceImpl implements UserService {
 		String randomCode = VerificationUtil.generateVerificationCode();
 		message.setText("验证码:"+randomCode+", 有效期2分钟");
 		javaMailSender.send(message);
-		//3.存入Redis
+		//2.存入Redis
 		redis.setObject("verification:"+email,randomCode,120);
 	}
 }
