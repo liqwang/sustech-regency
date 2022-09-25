@@ -33,6 +33,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="addNew" >Add a hotel</el-dropdown-item>
+                <el-dropdown-item command="edit" >Edit profile</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -81,7 +82,9 @@ const option = (command: string | number | object) => {
     dialog.value = true
   }
 }
-
+const edit=()=>{
+  
+}
 const goback = () => {
   router.push('/')
 }

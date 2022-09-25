@@ -367,6 +367,7 @@ const Login = () => {
         ElNotification({
           title: 'Success',
           message: h('i', { style: 'color: teal' }, 'Login success'),
+          position : 'top-left'
         });
         router.push('/merchant');
         // router.push({

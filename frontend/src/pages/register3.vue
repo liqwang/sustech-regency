@@ -268,6 +268,7 @@ import { formContextKey, FormInstance } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { User, Lock, Message, Iphone } from '@element-plus/icons-vue'
 import axios from 'axios'
+import router from '../router/index'
 const UserOrmerchant = ref('')
 const ruleForm = reactive({
     name: '',
@@ -400,7 +401,7 @@ const send_mail = () => {
                 } else {
                     ElNotification({
                         title: 'Error',
-                        message: h('i', { style: 'color: red' }, 'Some error happen'),
+                        message: h('i', { style: 'color: red' }, response.data.message),
                     })
                 }
             })
@@ -410,12 +411,6 @@ const send_mail = () => {
                         message: h('i', { style: 'color: red' }, 'Please input correct email'),
                     })
     }
-}
-const send_phone = () => {
-    ElNotification({
-        title: 'Success',
-        message: h('i', { style: 'color: teal' }, 'You will receive a note for verification'),
-    })
 }
 
 const signup = () => {
@@ -434,6 +429,7 @@ const signup = () => {
                         title: 'Success',
                         message: h('i', { style: 'color: green' }, "Register Success")
                     })
+                    router.push('/')
                 } else {
                     ElNotification({
                         title: 'Fail ',
