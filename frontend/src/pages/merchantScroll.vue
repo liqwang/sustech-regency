@@ -12,7 +12,7 @@
                             <el-icon>
                                 <user />
                             </el-icon>
-                            Owner
+                            Name
                         </div>
                     </template>
                     {{hotel.detail.name}}
@@ -81,29 +81,108 @@
         <el-empty  />
     </div>
     </el-scrollbar>
-    <el-dialog v-model="show_input" title="This is a Dialog">
-        <!-- <div id="chart" style="width:80%;height:60%"></div> -->
-
+    <el-dialog v-model="show_input" title="Input the message you need">
+        <div style="position:relative;width: 80%;">
+        <el-form label-width="30%" :model="form">
+                <el-form-item label="Name">
+                    <el-input size="large" v-model="form.name" placeholder="Hotel Name" />
+                </el-form-item>
+                <el-form-item label="Province">
+                    <el-select v-model="form.province" @change="selectProvince" filterable placeholder="Select">
+                        <el-option v-for="item in ps.provinces" :key="item.name" :value="item.id" :label="item.name" />
+                    </el-select>
+                </el-form-item >
+                <el-form-item label="City">
+                    <el-select v-model="form.city" @change="selectCity" filterable placeholder="Select">
+                        <div v-for="item in cs.cities">
+                            <el-option v-if="item.provinceId+''== form.province" :key="item.name" :value="item.id"
+                                :label="item.name" />
+                        </div>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Region">
+                    <el-select v-model="form.region" filterable placeholder="Select">
+                        <div v-for="item in rs.regions">
+                            <el-option v-if="item.cityId+''== form.city" :key="item.name" :value="item.id"
+                                :label="item.name" />
+                        </div>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Address">
+                    <el-input size="large" v-model="form.address" placeholder="Detailed Address" />
+                </el-form-item>
+                <el-form-item label="Latitude">
+                    <el-input size="large" v-model="form.latitude" placeholder="The latitude of hotel" />
+                </el-form-item>
+                <el-form-item label="Longitude">
+                    <el-input size="large" v-model="form.longitude" placeholder="The longitude of hotel" />
+                </el-form-item>
+                <el-form-item label="Tel">
+                    <el-input size="large" v-model="form.tel" placeholder="The tel number" />
+                </el-form-item>
+            </el-form>
+            <el-button @click="update" style="position:relative;left:50%" size="large" type="success">
+                <b>update</b>
+            </el-button>
+        </div>
     </el-dialog>
 </template>
 <script lang ='ts' setup>
-import { ref, reactive,watch } from 'vue'
+import { ref, reactive,watch ,h} from 'vue'
 import request from '../utils/request';
+import { ElNotification } from 'element-plus'
+
 type props = {
     HotelId: string
 }
 var id_par = defineProps<props>()
-console.log(id_par)
-interface Hotel_type {
-    address: string,
-    id: number,
-    latitude: number,
-    longitude: number,
-    merchantId: number,
+    type Province = {
+    id: Number,
     name: string,
-    regionId: number,
-    tel: string
+    alias: string
 }
+interface provinces_reactive {
+    provinces: Array<Province>
+    provinceId: number
+};
+const ps: provinces_reactive = reactive({
+    provinces: [],
+    provinceId: -1
+})
+
+type City = {
+    id: Number,
+    provinceId: number,
+    name: string,
+    isProvincialCapital: boolean
+}
+interface cities_reactive {
+    cities: Array<City>
+};
+const cs: cities_reactive = reactive({
+    cities: []
+})
+type Region = {
+    id: Number,
+    name: string,
+    cityId: number
+}
+interface regions_reactive {
+    regions: Array<Region>
+};
+const rs: regions_reactive = reactive({
+    regions: []
+})
+const form = reactive({
+    name: '',
+    city: '',
+    address: '',
+    province: '',
+    tel: '',
+    region: '',
+    latitude: '',
+    longitude: ''
+})
 const show_content = ref(true)
 interface hotel_reactive {
     detail: any
@@ -111,6 +190,24 @@ interface hotel_reactive {
 const hotel: hotel_reactive = reactive({
     detail:{}
 })
+request.get('/info/province/all').then((response) => {
+    ps.provinces = response.data.data
+    // console.log(ps.provinces)
+})
+const selectProvince = () => {
+    form.city=''
+    form.region=''
+    request.get('/info/city/all').then((response) => {
+        cs.cities = response.data.data
+        // console.log(cs.cities)
+    })
+}
+const selectCity = () => {
+    form.region=''
+    request.get('/info/region/all').then((response) => {
+        rs.regions = response.data.data
+    })
+}
 watch(id_par,(new_val,old_val)=>{
     if (id_par.HotelId != 'kong') {
     request.get('merchant/hotel/get?hotelId=' + id_par.HotelId).then(function (response) {
@@ -134,6 +231,30 @@ var v1 = ref(true)
 var v2 = ref(false)
 var v3 = ref(false)
 const show_input = ref(false)
+const update=()=>{
+    let url=`merchant/hotel/update?hotelId=${id_par.HotelId}
+    &address=${form.address==''?hotel.detail.address:form.address}
+    &latitude=${form.latitude==''?hotel.detail.latitude:form.latitude}
+    &longitude=${form.longitude==''?hotel.detail.longitude:form.longitude}
+    &name=${form.name==''?hotel.detail.name:form.name}
+    &tel=${form.tel==''?hotel.detail.tel:form.tel}
+    ${form.region==''?'':'&regionId='}${form.region==''?'':form.region}`
+    // url=url+form.region==''?'':form.region
+    console.log(url)
+    request.post(url).then(function(response){
+        if(response.data.code==200){
+            ElNotification({
+            title: 'Success',
+            message: h('i', { style: 'color: green' }, "update successfully")
+        })
+        }else {
+            ElNotification({
+            title: 'Error',
+            message: h('i', { style: 'color: red' }, response.data.code)
+        })
+        }
+    })
+}
 const f1 = () => {
     v1.value = true
     v2.value = false
