@@ -15,7 +15,7 @@
     </el-row>
     <el-row id="r2">
       <el-col :span="1">
-        <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Previous Page</el-button>
+        <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Log out</el-button>
       </el-col>
       <el-col :span='19'></el-col>
       <el-col :span="2">
@@ -85,15 +85,14 @@ const option = (command: string | number | object) => {
 const goback = () => {
   router.push('/')
 }
-window.onbeforeunload = function () {
-  localStorage.removeItem("token");
-  localStorage.removeItem("username");
-
-};
+// window.onbeforeunload = function () {
+//   localStorage.removeItem("token");
+//   localStorage.removeItem("username");
+// };
 
 const dialog = ref(false)
 const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'))
-console.log(localStorage.getItem('token'))
+// console.log(localStorage.getItem('token'))
 
 
 </script>
