@@ -72,13 +72,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void findPassword(String verificationCode, String email, String username, String newPassword) {
+	public void findPassword(String verificationCode, String email, String newPassword) {
 		User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-										 .eq(User::getName, username));
+										 .eq(User::getEmail, email));
 		if(user==null){
-			throw ApiException.badRequest("用户名不存在");
-		}else if(!user.getEmail().equals(email)){
-			throw ApiException.badRequest("用户未绑定该邮箱");
+			throw ApiException.badRequest("邮箱未被绑定");
 		}
 		String trueCode = redis.getObject("verification:" + email);
 		if(trueCode==null){
