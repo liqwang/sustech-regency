@@ -4,7 +4,7 @@ import com.sustech.regency.web.handler.ApiException;
 
 import java.util.*;
 
-public class PasswordUtil {
+public class VerificationUtil {
 	public static Set<Character> digits=Set.of('0','1','2','3','4','5','6','7','8','9');
 	public static Set<Character> specialChars=Set.of('`','~','!','@','#','$','%','^','&','*','(',')','_','-','+','=','{','[',']','}','|','\\',';',':','\'','\"',',','<','>','.','?','/');
 	public static Set<Character> upperChars=new HashSet<>();
@@ -39,5 +39,16 @@ public class PasswordUtil {
 		Set<E> set = new HashSet<>(setA);
 		set.retainAll(setB);
 		return set.isEmpty();
+	}
+
+	/**
+	 * 生成六位数字验证码
+	 */
+	public static String generateVerificationCode(){
+		StringBuilder code = new StringBuilder((int) (Math.random() * (1e6)) + "");
+		while(code.length()!=6){
+			code.insert(0, "0");
+		}
+		return code.toString();
 	}
 }

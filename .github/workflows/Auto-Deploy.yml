@@ -6,7 +6,6 @@ on:
     paths:
       - 'backend/**'
       - 'frontend/**'
-      - '.github/workflows/**'
 
 jobs:
   check-file-changed: #https://www.meziantou.net/executing-github-actions-jobs-or-steps-only-when-specific-files-change.htm
@@ -17,23 +16,16 @@ jobs:
     steps:
       - name: 迁出代码
         uses: actions/checkout@master
-        with:
-          # Checkout as many commits as needed for the diff
-          fetch-depth: 2
+        with: #https://stackoverflow.com/questions/60052236/git-diff-gives-me-a-fatal-bad-revision-head1
+          fetch-depth: 0 # '0' indicates all history for all branches and tags
       - name: 执行Shell脚本
         id: check-file-changed
-        shell: pwsh
+        working-directory: .github/workflows
+        env:
+          COMMITS: ${{ toJSON(github.event.commits) }}
         run: |
-          # Diff HEAD with the previous commit
-          $diff = git diff --name-only HEAD^ HEAD
-          # Check if a file under frontend/ has changed (added, modified, deleted)
-          $FrontendDiff = $diff | Where-Object { $_ -match '^frontend/' -or $_ -match '^.github/workflows/' }
-          $BackendDiff = $diff | Where-Object { $_ -match '^backend/' -or $_ -match '^.github/workflows/' }
-          $FrontendHasDiff = $FrontendDiff.Length -gt 0
-          $BackendHasDiff = $BackendDiff.Length -gt 0
-          # Set the output named "frontend_changed" and "backend_changed"
-          Write-Host "::set-output name=frontend_changed::$FrontendHasDiff"
-          Write-Host "::set-output name=backend_changed::$BackendHasDiff"
+          sudo chmod +x check-diff.sh
+          ./check-diff.sh
 
   frontend-deploy:
     runs-on: ubuntu-latest
@@ -51,13 +43,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - name: 安装依赖
-        run: |
-          cd frontend
-          npm ci
+        working-directory: frontend
+        run: npm ci
       - name: npm编译打包
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
       - name: 上传静态文件到阿里云
         uses: appleboy/scp-action@master
         with:
@@ -84,8 +74,8 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
       - name: Maven打包
+        working-directory: backend
         run: |
-          cd backend
           mvn clean
           mvn package -Dmaven.test.skip=true
       - name: 上传Jar包到阿里云

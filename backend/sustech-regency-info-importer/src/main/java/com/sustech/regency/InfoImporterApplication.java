@@ -65,10 +65,11 @@ public class InfoImporterApplication implements ApplicationRunner {
 
 				Elements regionDoms = cityDom.select("em.thr");
 				for (Element regionDom : regionDoms) {
-					if(regionDom.ownText().equals("其他区")){continue;}
+					String resionName = regionDom.ownText();
+					if(resionName.equals("其他区")||resionName.equals("其它区")){continue;}
 					Region region = new Region();
 					region.setCityId(city.getId());
-					region.setName(regionDom.ownText());
+					region.setName(resionName);
 					regionDao.insert(region);
 				}
 				System.out.println(city.getName()+" 完成");

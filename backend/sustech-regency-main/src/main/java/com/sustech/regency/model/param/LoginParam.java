@@ -14,6 +14,6 @@ public class LoginParam {
 
 	@ApiModelProperty(required = true, example = "***********")
 	@Size(min=8, max=30, message = "密码需要为8-30位")
-	@NotEmpty(message = "Password shouldn't be null")
+	@NotEmpty
 	private String password;
 }
