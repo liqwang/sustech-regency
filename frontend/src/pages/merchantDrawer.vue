@@ -132,11 +132,8 @@ const  submitNewHotel = () => {
         })
     }
     else {
-        console.log(form)
-       request.post('/merchant/hotel/add?address=' + form.address +
-            '&name=' + form.name + '&tel=' + form.tel +
-            '&regionId=' + form.region + '&latitude=' + form.latitude +
-            '&longitude=' + form.longitude)
+        let url:string=`/merchant/hotel/add?address=${form.address}&name=${form.name}&tel=${form.tel}&regionId=${form.region}&latitude=${form.latitude}&longitude=${form.longitude}`
+       request.post(url)
             .then(function (response) {
                 console.log(response.data)
                 if (response.data.code === 200) {
