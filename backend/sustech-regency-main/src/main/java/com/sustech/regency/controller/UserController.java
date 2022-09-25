@@ -1,5 +1,6 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.model.param.FindPasswordParam;
 import com.sustech.regency.model.param.LoginParam;
 import com.sustech.regency.service.UserService;
 import com.sustech.regency.util.VerificationUtil;
@@ -27,6 +28,7 @@ public class UserController {
 	@PostMapping("/send-verification-code")
 	public ApiResponse sendVerificationCode(@ApiParam(required=true)
 	                                        @Email(message = "邮箱格式错误")
+											@NotEmpty(message = "邮箱不能为空")
 	                                        @RequestParam String email){
 		userService.sendVerificationCode(email);
 		return ApiResponse.success();
@@ -54,20 +56,11 @@ public class UserController {
 
 	@ApiOperation("找回密码")
 	@PostMapping("/find-password")
-	public ApiResponse findPassword(@ApiParam(value="验证码",required=true,example="114514")
-		                            @Size(min=6,max=6,message="验证码必须为6位")
-		                            @RequestParam String verificationCode,
-
-	                                @ApiParam(required=true)
-	                                @Email(message = "邮箱格式错误")
-	                                @NotEmpty(message = "邮箱不能为空")
-	                                @RequestParam String email,
-
-	                                @ApiParam(required = true)
-	                                @Size(min=8,max=30,message = "密码需要为8-30位")
-	                                @RequestParam String newPassword){
-		VerificationUtil.judge(newPassword);
-		userService.findPassword(verificationCode,email,newPassword);
+	public ApiResponse findPassword(@Validated @RequestBody FindPasswordParam findPasswordParam){
+		VerificationUtil.judge(findPasswordParam.getNewPassword());
+		userService.findPassword(findPasswordParam.getVerificationCode(),
+								 findPasswordParam.getEmail(),
+								 findPasswordParam.getNewPassword());
 		return ApiResponse.success();
 	}
 
