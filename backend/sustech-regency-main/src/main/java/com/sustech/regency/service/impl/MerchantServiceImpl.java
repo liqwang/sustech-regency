@@ -78,19 +78,24 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Hotel getOneHotel(Integer hotelId,Float latitude, Float longitude, Integer merchantId, String name, String tel) {
-        QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
-        if (hotelId != null) wrapper.eq("id", hotelId);
-        if (latitude != null) wrapper.eq("latitude", latitude);
-        if (longitude != null) wrapper.eq("longitude", longitude);
-        if (name != null) wrapper.eq("name", name);
-        if (tel != null) wrapper.eq("tel", tel);
+    public HotelInfo getOneHotel(Integer hotelId,Float latitude, Float longitude, Integer merchantId, String name, String tel) {
+//        QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
+        MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Hotel::getId,Hotel::getLatitude,Hotel::getLongitude,Hotel::getName,Hotel::getTel,Hotel::getAddress)
+                .selectAs(Province::getName,HotelInfo::getProvinceName)
+                .selectAs(City::getName,HotelInfo::getCityName)
+                .selectAs(Region::getName,HotelInfo::getRegionName);
+        if (hotelId != null) wrapper.eq(Hotel::getId,hotelId);
+        if (latitude != null) wrapper.eq(Hotel::getLatitude, latitude);
+        if (longitude != null) wrapper.eq(Hotel::getLongitude, longitude);
+        if (name != null) wrapper.eq(Hotel::getName, name);
+        if (tel != null) wrapper.eq(Hotel::getTel, tel);
 
-        Hotel hotel = hotelDao.selectOne(wrapper);
-        if (Objects.equals(hotel.getMerchantId(), merchantId)) {
-            return hotel;
-        }
-        return null;
+        wrapper .innerJoin(Region.class,Region::getId,Hotel::getRegionId)
+                .innerJoin(City.class,City::getId,Region::getCityId)
+                .innerJoin(Province.class,Province::getId,City::getProvinceId)
+                .eq(Hotel::getMerchantId,merchantId);
+        return hotelDao.selectJoinOne(HotelInfo.class,wrapper);
     }
 
     @Override
