@@ -4,7 +4,7 @@
         <div v-if="show_content">
             <el-descriptions class="margin-top" title="The Hotel" :column="3" size="large" border>
                 <template #extra>
-                    <el-button @click="show_input=true" type="primary">Change name</el-button>
+                    <el-button @click="show_input=true" type="primary">Modify hotel</el-button>
                 </template>
                 <el-descriptions-item>
                     <template #label>
