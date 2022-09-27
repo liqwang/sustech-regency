@@ -12,4 +12,6 @@ import java.util.Date;
 public class LoginLog {
 	private Integer userId;
 	private Date time;
+	private String ipAddress;
+	private Integer port;
 }

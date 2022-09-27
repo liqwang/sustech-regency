@@ -20,7 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Service
@@ -98,7 +101,11 @@ public class UserServiceImpl implements UserService {
 			throw new ApiException(400,"Password wrong");
 		}else{
 			//生成LoginLog
-			loginLogDao.insert(new LoginLog(user.getId(),new Date()));
+			@SuppressWarnings("ConstantConditions")
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+			String ipAddress = request.getRemoteAddr();
+			int port = request.getRemotePort();
+			loginLogDao.insert(new LoginLog(user.getId(),new Date(),ipAddress,port));
 			//直接认证通过，就不经过AuthenticationManager#authenticate了
 			Authentication authentication=new UsernamePasswordAuthenticationToken(user.getId(),user.getPassword(),null);
 			SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
