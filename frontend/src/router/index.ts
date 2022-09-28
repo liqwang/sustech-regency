@@ -1,15 +1,12 @@
 import {
   createRouter,
   createWebHistory,
-  createWebHashHistory,
   RouteRecordRaw,
-  RouterView,
 } from 'vue-router';
 import LoginPage from '../pages/LoginPage.vue';
 import ChangePassword from '../pages/ChangePassword.vue';
 import register from '../pages/register3.vue';
 import merchant from '../pages/merchant.vue'
-import FrontLayout from '../pages/back/BackLayout.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -34,7 +31,7 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: routes,
 });
 

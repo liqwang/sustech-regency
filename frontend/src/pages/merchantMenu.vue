@@ -36,7 +36,6 @@ import {
     Tickets,
     User,
 } from '@element-plus/icons-vue'
-import { fa, tr } from 'element-plus/es/locale';
 const emit = defineEmits(['select-hotel'])
 const selectMenu = (index: string, path: string[],
     item: string) => {
