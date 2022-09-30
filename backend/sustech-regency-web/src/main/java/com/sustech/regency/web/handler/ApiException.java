@@ -7,7 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public class ApiException extends RuntimeException{
-	public static final ApiException UNKNOWN_ERROR=new ApiException(500,"Unknown error");
+	public static final ApiException INTERNAL_SEVER_ERROR =new ApiException(500,"Internal server error");
 
 	private final int code;
 
