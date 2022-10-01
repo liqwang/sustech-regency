@@ -64,7 +64,7 @@ public class UserController {
 		return ApiResponse.success();
 	}
 
-	@ApiOperation("登录")
+	@ApiOperation(value = "登录",notes = "返回token")
 	@PostMapping("/login")
 	public ApiResponse<Map> login(@Validated @RequestBody LoginParam loginParam){
 		String jwt = userService.login(loginParam.getUsername(),loginParam.getPassword());

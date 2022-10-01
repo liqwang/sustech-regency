@@ -5,6 +5,10 @@ spring:
     pathmatch:
       #解决整合Swagger报错的问题->https://blog.csdn.net/dchua123/article/details/121918921
       matching-strategy: ant_path_matcher
+  servlet:
+    multipart: #文件上传的大小上限
+      max-file-size: 256MB
+      max-request-size: 256MB
   datasource:
     username: quanquan
     password: wlqyanyalun008++
