@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/info")
-public class InfoController {
+@RequestMapping("/public")
+public class PublicController {
 
 	@Autowired
 	private ProvinceDao provinceDao;
