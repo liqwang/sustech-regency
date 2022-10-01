@@ -144,7 +144,7 @@ var id_par = defineProps<props>()
 interface provinces_reactive {
     provinces: Array<Province>
     provinceId: number
-};
+}
 const ps: provinces_reactive = reactive({
     provinces: [],
     provinceId: -1
@@ -158,7 +158,7 @@ type City = {
 }
 interface cities_reactive {
     cities: Array<City>
-};
+}
 const cs: cities_reactive = reactive({
     cities: []
 })
@@ -169,7 +169,7 @@ type Region = {
 }
 interface regions_reactive {
     regions: Array<Region>
-};
+}
 const rs: regions_reactive = reactive({
     regions: []
 })
@@ -190,21 +190,21 @@ interface hotel_reactive {
 const hotel: hotel_reactive = reactive({
     detail:{}
 })
-request.get('/info/province/all').then((response) => {
+request.get('/public/province/all').then((response) => {
     ps.provinces = response.data.data
     // console.log(ps.provinces)
 })
 const selectProvince = () => {
     form.city=''
     form.region=''
-    request.get('/info/city/all').then((response) => {
+    request.get('/public/city/all').then((response) => {
         cs.cities = response.data.data
         // console.log(cs.cities)
     })
 }
 const selectCity = () => {
     form.region=''
-    request.get('/info/region/all').then((response) => {
+    request.get('/public/region/all').then((response) => {
         rs.regions = response.data.data
     })
 }
