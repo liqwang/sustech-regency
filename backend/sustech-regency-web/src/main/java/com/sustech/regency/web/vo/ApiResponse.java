@@ -1,5 +1,6 @@
 package com.sustech.regency.web.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,7 +11,9 @@ public class ApiResponse<T> {
 
 	public static final ApiResponse SUCCESS =new ApiResponse(200,"OK");
 
+	@ApiModelProperty(example="200")
 	private int code;
+	@ApiModelProperty(example="\"ok\"")
 	private String message;
 	private T data;
 

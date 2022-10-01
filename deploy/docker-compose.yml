@@ -31,6 +31,7 @@ services:
       - "8080:8080"
     volumes:
       - ./sustech-regency-main-0.0.1-SNAPSHOT.jar:/main.jar
+      - ./file:/file
     entrypoint: ["java","-jar","/main.jar","--spring.profiles.active=prod"]
     depends_on:
       - redis
