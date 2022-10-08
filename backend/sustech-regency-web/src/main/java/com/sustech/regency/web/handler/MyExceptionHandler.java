@@ -11,19 +11,19 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class MyExceptionHandler {
 
-	@SuppressWarnings("ConstantConditions")
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
-		return new ApiResponse(400,e.getBindingResult().getFieldError().getDefaultMessage());
-	}
+    @SuppressWarnings("ConstantConditions")
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return new ApiResponse(400, e.getBindingResult().getFieldError().getDefaultMessage());
+    }
 
-	@ExceptionHandler(ConstraintViolationException.class)
-	public ApiResponse handleConstraintViolationException(ConstraintViolationException e){
-		return new ApiResponse(400,e.getMessage().split(" ")[1]);
-	}
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
+        return new ApiResponse(400, e.getMessage().split(" ")[1]);
+    }
 
-	@ExceptionHandler(ApiException.class)
-	public ApiResponse handleApiException(ApiException e){
-		return new ApiResponse(e.getCode(),e.getMessage());
-	}
+    @ExceptionHandler(ApiException.class)
+    public ApiResponse handleApiException(ApiException e) {
+        return new ApiResponse(e.getCode(), e.getMessage());
+    }
 }

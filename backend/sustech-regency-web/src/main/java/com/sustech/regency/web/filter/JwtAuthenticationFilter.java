@@ -29,9 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDao userDao;
 
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest request,
-                                    @NotNull HttpServletResponse response,
-                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //每次请求都是一个独立的SecurityContext
         String token = request.getHeader("token");
         if (StringUtils.hasText(token)) {
@@ -40,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             User user = redis.getObject("login:" + id);
             if (user == null) { //Redis的User过期了，查询数据库
                 user = userDao.selectById(id);
-            } else { //如果Redis和数据库中都没有User，则SecurityContext中没有Authentication对象
+            }
+            if (user != null) { //如果Redis和数据库中都没有User，则SecurityContext中没有Authentication对象
                 redis.setObject("login:" + id, user, 60 * 60 * 2); //刷新ttl为2h
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
