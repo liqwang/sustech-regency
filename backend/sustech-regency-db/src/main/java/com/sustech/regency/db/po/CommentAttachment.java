@@ -1,19 +1,23 @@
 package com.sustech.regency.db.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
+/**
+ * 评论附带的图片或视频
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentPicture {
-    @TableId(type = IdType.AUTO)
-    private Integer id;
-    private String url;
+public class CommentAttachment {
+    private String id;
     private Integer orderId;
+    private Date uploadTime;
+    private String suffix;
+    private Boolean isPicture;
 }

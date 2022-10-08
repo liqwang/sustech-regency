@@ -4,6 +4,7 @@ server:
     key-store-password: VO8Pqyrl
     key-store-type: PKCS12
     key-store: classpath:7998226_quanquancho.com.pfx
+file-root-path: file #容器内的文件绝对路径
 
 spring:
   redis:

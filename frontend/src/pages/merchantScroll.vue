@@ -144,7 +144,7 @@ var id_par = defineProps<props>()
 interface provinces_reactive {
     provinces: Array<Province>
     provinceId: number
-};
+}
 const ps: provinces_reactive = reactive({
     provinces: [],
     provinceId: -1
@@ -158,7 +158,7 @@ type City = {
 }
 interface cities_reactive {
     cities: Array<City>
-};
+}
 const cs: cities_reactive = reactive({
     cities: []
 })
@@ -169,7 +169,7 @@ type Region = {
 }
 interface regions_reactive {
     regions: Array<Region>
-};
+}
 const rs: regions_reactive = reactive({
     regions: []
 })

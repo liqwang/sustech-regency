@@ -51,7 +51,7 @@
 </template>
 <script setup lang="ts">
 import request from '../utils/request'
-import { ref, reactive, h, onMounted } from 'vue'
+import { ref, reactive, h } from 'vue'
 import { ElNotification, DialogBeforeCloseFn, ElDrawer, ElMessageBox } from 'element-plus'
 type Province = {
     id: Number,
@@ -61,7 +61,7 @@ type Province = {
 interface provinces_reactive {
     provinces: Array<Province>
     provinceId: number
-};
+}
 const ps: provinces_reactive = reactive({
     provinces: [],
     provinceId: -1
@@ -75,7 +75,7 @@ type City = {
 }
 interface cities_reactive {
     cities: Array<City>
-};
+}
 const cs: cities_reactive = reactive({
     cities: []
 })
@@ -86,7 +86,7 @@ type Region = {
 }
 interface regions_reactive {
     regions: Array<Region>
-};
+}
 const rs: regions_reactive = reactive({
     regions: []
 })
