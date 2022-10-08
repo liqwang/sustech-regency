@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
 @RequestMapping("/info")
 public class InfoController {
 
-	@Autowired
+	@Resource
 	private ProvinceDao provinceDao;
 	@ApiOperation("获取所有省")
 	@GetMapping("/province/all")
@@ -28,7 +29,7 @@ public class InfoController {
 		return ApiResponse.success(provinces);
 	}
 
-	@Autowired
+	@Resource
 	private CityDao cityDao;
 	@ApiOperation("获取所有市")
 	@GetMapping("/city/all")
@@ -37,7 +38,7 @@ public class InfoController {
 		return ApiResponse.success(cities);
 	}
 
-	@Autowired
+	@Resource
 	private RegionDao regionDao;
 	@ApiOperation("获取所有区")
 	@GetMapping("/region/all")

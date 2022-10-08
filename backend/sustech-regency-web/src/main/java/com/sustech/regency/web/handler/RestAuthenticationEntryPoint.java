@@ -17,12 +17,12 @@ import java.io.OutputStream;
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-	@Override
-	public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException{
-		ApiResponse response = new ApiResponse(401, "Unauthorized, no JWT or the JWT may is expired");
-		OutputStream out = httpServletResponse.getOutputStream();
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(out, response);
-		out.flush();
-	}
+    @Override
+    public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
+        ApiResponse response = new ApiResponse(401, "Unauthorized, no JWT or the JWT may is expired");
+        OutputStream out = httpServletResponse.getOutputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(out, response);
+        out.flush();
+    }
 }

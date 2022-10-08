@@ -17,13 +17,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
+
 @Configuration
 @EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig implements WebMvcConfigurer {
-	@Autowired
+	@Resource
 	JwtAuthenticationFilter jwtAuthenticationFilter;
-	@Autowired
+	@Resource
 	AuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean

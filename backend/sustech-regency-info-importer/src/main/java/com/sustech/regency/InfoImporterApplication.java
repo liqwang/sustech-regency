@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 @MapperScan("com.sustech.regency.db.dao")
 @SpringBootApplication
 public class InfoImporterApplication implements ApplicationRunner {
-	@Autowired
+	@Resource
 	private ProvinceDao provinceDao;
-	@Autowired
+	@Resource
 	private CityDao cityDao;
-	@Autowired
+	@Resource
 	private RegionDao regionDao;
 
 	public static void main(String[] args) {

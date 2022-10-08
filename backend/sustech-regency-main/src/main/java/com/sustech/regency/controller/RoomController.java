@@ -10,11 +10,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
 @RequestMapping("/room")
 public class RoomController {
-    @Autowired
+    @Resource
     private RoomService roomService;
 
     @ApiOperation("添加一个房间")

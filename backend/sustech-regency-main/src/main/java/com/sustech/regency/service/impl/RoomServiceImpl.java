@@ -9,15 +9,16 @@ import com.sustech.regency.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    @Autowired
+    @Resource
     private RoomDao roomDao;
 
-    @Autowired
+    @Resource
     private HotelDao hotelDao;
 
     @Override
@@ -27,16 +28,16 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Boolean deleteRoom(Integer merchantId,Integer roomId) {
+    public Boolean deleteRoom(Integer merchantId, Integer roomId) {
         LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<Room>()
                 .eq(Room::getId, roomId);
         Room room = roomDao.selectOne(roomLambdaQueryWrapper);
         LambdaQueryWrapper<Hotel> hotelLambdaQueryWrapper = new LambdaQueryWrapper<Hotel>()
-                .eq(Hotel::getId,room.getHotelId());
+                .eq(Hotel::getId, room.getHotelId());
         Hotel hotel = hotelDao.selectOne(hotelLambdaQueryWrapper);
 
         //只有自己旗下的酒店才能删除
-        if(Objects.equals(hotel.getMerchantId(), merchantId)){
+        if (Objects.equals(hotel.getMerchantId(), merchantId)) {
             roomDao.delete(roomLambdaQueryWrapper);
             return true;
         }
@@ -44,25 +45,25 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Boolean updateOneRoom(Integer merchantId,Integer roomId,Integer roomNum, Float price, Integer floor, Integer typeId,Integer hotelId,Boolean isAvailable,Float discount) {
+    public Boolean updateOneRoom(Integer merchantId, Integer roomId, Integer roomNum, Float price, Integer floor, Integer typeId, Integer hotelId, Boolean isAvailable, Float discount) {
         LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<Room>()
                 .eq(Room::getId, roomId);
         Room roomQ = roomDao.selectOne(roomLambdaQueryWrapper);
         LambdaQueryWrapper<Hotel> hotelLambdaQueryWrapper = new LambdaQueryWrapper<Hotel>()
-                .eq(Hotel::getId,roomQ.getHotelId());
+                .eq(Hotel::getId, roomQ.getHotelId());
         Hotel hotel = hotelDao.selectOne(hotelLambdaQueryWrapper);
 
         //只有自己旗下的酒店才能删除
-        if(Objects.equals(hotel.getMerchantId(), merchantId)){
+        if (Objects.equals(hotel.getMerchantId(), merchantId)) {
             Room room = new Room();
-            if (roomId!=null) room.setId(roomId);
-            if (roomNum!=null) room.setRoomNum(roomNum);
-            if (price!=null) room.setPrice(price);
-            if (floor!=null) room.setFloor(floor);
-            if (typeId!=null) room.setTypeId(typeId);
-            if(hotelId!=null) room.setHotelId(hotelId);
-            if(isAvailable!=null) room.setIsAvailable(isAvailable);
-            if(discount!=null) room.setDiscount(discount);
+            if (roomId != null) room.setId(roomId);
+            if (roomNum != null) room.setRoomNum(roomNum);
+            if (price != null) room.setPrice(price);
+            if (floor != null) room.setFloor(floor);
+            if (typeId != null) room.setTypeId(typeId);
+            if (hotelId != null) room.setHotelId(hotelId);
+            if (isAvailable != null) room.setIsAvailable(isAvailable);
+            if (discount != null) room.setDiscount(discount);
             roomDao.updateById(room);
             return true;
         }
@@ -70,17 +71,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Boolean updateRooms(Integer merchantId,Integer hotelId,Integer typeId,Float price,Float discount) {
+    public Boolean updateRooms(Integer merchantId, Integer hotelId, Integer typeId, Float price, Float discount) {
         Hotel hotel = hotelDao.selectById(hotelId);
-        if(Objects.equals(merchantId, hotel.getMerchantId())){
+        if (Objects.equals(merchantId, hotel.getMerchantId())) {
             LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
-            if(hotelId!=null) wrapper.eq(Room::getHotelId,hotelId);
-            if(typeId!=null) wrapper.eq(Room::getTypeId,typeId);
+            if (hotelId != null) wrapper.eq(Room::getHotelId, hotelId);
+            if (typeId != null) wrapper.eq(Room::getTypeId, typeId);
             List<Room> roomList = roomDao.selectList(wrapper);
-            for (Room room:roomList
-                 ) {
-                if(price!=null) room.setPrice(price);
-                if(discount!=null) room.setDiscount(discount);
+            for (Room room : roomList
+            ) {
+                if (price != null) room.setPrice(price);
+                if (discount != null) room.setDiscount(discount);
                 roomDao.updateById(room);
             }
 

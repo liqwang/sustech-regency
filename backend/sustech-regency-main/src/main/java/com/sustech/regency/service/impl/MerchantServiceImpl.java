@@ -9,12 +9,13 @@ import com.sustech.regency.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class MerchantServiceImpl implements MerchantService {
-    @Autowired
+    @Resource
     private HotelDao hotelDao;
 
     @Override
@@ -22,14 +23,14 @@ public class MerchantServiceImpl implements MerchantService {
         return hotelDao.selectJoinList(
                 HotelInfo.class,
                 new MPJLambdaWrapper<HotelInfo>()
-                   .select(Hotel::getId,Hotel::getLatitude,Hotel::getLongitude,Hotel::getName,Hotel::getTel,Hotel::getAddress)
-                   .selectAs(Province::getName,HotelInfo::getProvinceName)
-                   .selectAs(City::getName,HotelInfo::getCityName)
-                   .selectAs(Region::getName,HotelInfo::getRegionName)
-                   .innerJoin(Region.class,Region::getId,Hotel::getRegionId)
-                   .innerJoin(City.class,City::getId,Region::getCityId)
-                   .innerJoin(Province.class,Province::getId,City::getProvinceId)
-                   .eq(Hotel::getMerchantId,merchantId));
+                        .select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
+                        .selectAs(Province::getName, HotelInfo::getProvinceName)
+                        .selectAs(City::getName, HotelInfo::getCityName)
+                        .selectAs(Region::getName, HotelInfo::getRegionName)
+                        .innerJoin(Region.class, Region::getId, Hotel::getRegionId)
+                        .innerJoin(City.class, City::getId, Region::getCityId)
+                        .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                        .eq(Hotel::getMerchantId, merchantId));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Boolean updateHotel(Integer hotelId,Float latitude, Float longitude,Integer regionId, Integer merchantId, String name, String tel,String address) {
+    public Boolean updateHotel(Integer hotelId, Float latitude, Float longitude, Integer regionId, Integer merchantId, String name, String tel, String address) {
         QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         wrapper.eq("merchant_id", merchantId);
         wrapper.eq("id", hotelId);
@@ -78,24 +79,24 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public HotelInfo getOneHotel(Integer hotelId,Float latitude, Float longitude, Integer merchantId, String name, String tel) {
+    public HotelInfo getOneHotel(Integer hotelId, Float latitude, Float longitude, Integer merchantId, String name, String tel) {
 //        QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Hotel::getId,Hotel::getLatitude,Hotel::getLongitude,Hotel::getName,Hotel::getTel,Hotel::getAddress)
-                .selectAs(Province::getName,HotelInfo::getProvinceName)
-                .selectAs(City::getName,HotelInfo::getCityName)
-                .selectAs(Region::getName,HotelInfo::getRegionName);
-        if (hotelId != null) wrapper.eq(Hotel::getId,hotelId);
+        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
+                .selectAs(Province::getName, HotelInfo::getProvinceName)
+                .selectAs(City::getName, HotelInfo::getCityName)
+                .selectAs(Region::getName, HotelInfo::getRegionName);
+        if (hotelId != null) wrapper.eq(Hotel::getId, hotelId);
         if (latitude != null) wrapper.eq(Hotel::getLatitude, latitude);
         if (longitude != null) wrapper.eq(Hotel::getLongitude, longitude);
         if (name != null) wrapper.eq(Hotel::getName, name);
         if (tel != null) wrapper.eq(Hotel::getTel, tel);
 
-        wrapper .innerJoin(Region.class,Region::getId,Hotel::getRegionId)
-                .innerJoin(City.class,City::getId,Region::getCityId)
-                .innerJoin(Province.class,Province::getId,City::getProvinceId)
-                .eq(Hotel::getMerchantId,merchantId);
-        return hotelDao.selectJoinOne(HotelInfo.class,wrapper);
+        wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
+                .innerJoin(City.class, City::getId, Region::getCityId)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .eq(Hotel::getMerchantId, merchantId);
+        return hotelDao.selectJoinOne(HotelInfo.class, wrapper);
     }
 
     @Override

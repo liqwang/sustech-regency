@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @SuppressWarnings({"unchecked", "ConstantConditions", "unused"})
 public class Redis {
-	@Autowired
+	@Resource
 	public RedisTemplate redisTemplate;
 
 	public <T> void setObject(String key, T value){
