@@ -447,7 +447,7 @@ const form = reactive({
   newpwd2: "",
 });
 const cancel = () => {
-  return router.push("/");
+  return router.push("/login");
 };
 const getCode = () => {
   //从后端获取验证码,btn_msg变成 “「60s」后再次获取” ，按钮在倒计时期间变成灰色
@@ -500,7 +500,7 @@ const doubleCheck = () => {
             title: "Success",
             message: h("i", { style: "color: teal" }, "修改密码成功"),
           });
-          router.push("/");
+          router.push("/login");
         } else if (res.data.code == 400) {
           ElNotification({
             title: "Failed",

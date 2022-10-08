@@ -77,7 +77,7 @@ const edit = () => {};
 const goback = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
-  router.push('/');
+  router.push('/login');
 };
 // window.onbeforeunload = function () {
 //   localStorage.removeItem("token");

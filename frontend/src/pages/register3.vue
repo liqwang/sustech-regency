@@ -423,7 +423,7 @@ const signup = () => {
             title: 'Success',
             message: h('i', {style: 'color: green'}, "Register Success")
           })
-          router.push('/')
+          router.push('/login')
         } else {
           ElNotification({
             title: 'Fail ',

@@ -12,8 +12,8 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>注册</el-dropdown-item>
-              <el-dropdown-item>登录</el-dropdown-item>
+              <el-dropdown-item @click="signup">注册</el-dropdown-item>
+              <el-dropdown-item @click="login">登录</el-dropdown-item>
               <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
