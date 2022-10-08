@@ -9,7 +9,7 @@ request.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
   if (config && config.headers) {
     if (token) {
-      config.headers.token = token
+      config.headers['token'] = token
     }
   }
   return config;

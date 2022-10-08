@@ -15,110 +15,73 @@
         <div id="input_area">
           <el-row style="margin-bottom: 0">
             <el-col :span="3"></el-col>
-            <el-col :span="10" style="display: flex; justify: start"
-              ><div class="msg">请输入邮箱</div></el-col
-            >
+            <el-col :span="10" style="display: flex; justify: start">
+              <div class="msg">请输入邮箱</div>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="3"></el-col>
             <el-col :span="18">
               <el-form-item label="" prop="username">
-                <el-input
-                  type="text"
-                  placeholder="请输入邮箱"
-                  v-model="form.username"
-                  clearable
-                /> </el-form-item
-            ></el-col>
+                <el-input type="text" placeholder="请输入邮箱" v-model="form.username" clearable />
+              </el-form-item>
+            </el-col>
             <el-col :span="3"></el-col>
           </el-row>
 
           <el-row style="margin-bottom: 0">
             <el-col :span="3"></el-col>
-            <el-col :span="10" style="display: flex; justify: start"
-              ><div class="msg">请输入验证码</div></el-col
-            >
+            <el-col :span="10" style="display: flex; justify: start">
+              <div class="msg">请输入验证码</div>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="3"></el-col>
             <el-col :span="13">
-              <el-input
-                type="text"
-                placeholder="验证码"
-                v-model="form.code"
-              /> </el-col
-            ><el-col :span="5">
-              <el-button
-                class="btn-orange"
-                @click="getCode"
-                :disabled="!btn_vaild"
-                >{{ btn_msg }}</el-button
-              >
+              <el-input type="text" placeholder="验证码" v-model="form.code" />
+            </el-col>
+            <el-col :span="5">
+              <el-button class="btn-orange" @click="getCode" :disabled="!btn_vaild">{{ btn_msg }}</el-button>
             </el-col>
             <el-col :span="3"></el-col>
           </el-row>
 
           <el-row style="margin-bottom: 0" v-show="pass_check">
             <el-col :span="3"></el-col>
-            <el-col :span="10" style="display: flex; justify: start"
-              ><div class="msg">请输入新密码</div></el-col
-            >
-          </el-row>
-          <el-row>
-            <el-col :span="3"></el-col>
-            <el-col :span="18"
-              ><el-form-item label="" prop="newpwd" v-show="pass_check">
-                <el-input
-                  type="text"
-                  placeholder="请输入新密码"
-                  v-model="form.newpwd"
-                /> </el-form-item
-            ></el-col>
-            <el-col :span="3"></el-col>
-          </el-row>
-
-          <el-row style="margin-bottom: 0" v-show="pass_check">
-            <el-col :span="3"></el-col>
-            <el-col :span="10" style="display: flex; justify: start"
-              ><div class="msg">再次输入密码</div></el-col
-            >
+            <el-col :span="10" style="display: flex; justify: start">
+              <div class="msg">请输入新密码</div>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="3"></el-col>
             <el-col :span="18">
               <el-form-item label="" prop="newpwd" v-show="pass_check">
-                <el-input
-                  type="text"
-                  placeholder="请再次输入新密码"
-                  v-model="form.newpwd2"
-                /> </el-form-item
-            ></el-col>
+                <el-input type="text" placeholder="请输入新密码" v-model="form.newpwd" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="3"></el-col>
+          </el-row>
+
+          <el-row style="margin-bottom: 0" v-show="pass_check">
+            <el-col :span="3"></el-col>
+            <el-col :span="10" style="display: flex; justify: start">
+              <div class="msg">再次输入密码</div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"></el-col>
+            <el-col :span="18">
+              <el-form-item label="" prop="newpwd" v-show="pass_check">
+                <el-input type="text" placeholder="请再次输入新密码" v-model="form.newpwd2" />
+              </el-form-item>
+            </el-col>
             <el-col :span="3"></el-col>
           </el-row>
 
           <div id="btn_area">
-            <el-button
-              type="primary"
-              round
-              id="btn_sub"
-              v-show="!pass_check"
-              :disabled="!has_get_code"
-              >提交</el-button
-            ><el-button
-              type="primary"
-              round
-              id="btn_submit"
-              v-show="pass_check"
-              @click="doubleCheck"
-              >提交</el-button
-            >
-            <el-button
-              type="primary"
-              round
-              id="btn_get_pwd_back"
-              @click="cancel"
-              >取消</el-button
-            >
+            <el-button type="primary" round id="btn_sub" v-show="!pass_check" :disabled="!has_get_code">提交</el-button>
+            <el-button type="primary" round id="btn_submit" v-show="pass_check" @click="doubleCheck">提交</el-button>
+            <el-button type="primary" round id="btn_get_pwd_back" @click="cancel">取消</el-button>
           </div>
         </div>
       </div>
@@ -150,6 +113,7 @@
 #input_area {
   text-align: center;
 }
+
 #bigg {
   background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
   width: auto;
@@ -172,12 +136,14 @@
 
 /* 在850px以下直接用left */
 @media screen and (max-width: 850px) {
+
   #btn_sign,
   #btn_get_pwd_back,
   #btn_sub,
   #btn_submit {
     margin: 0;
   }
+
   #right {
     display: none;
   }
@@ -402,6 +368,7 @@
     justify-content: center;
     gap: 1vw;
   }
+
   #btn_get_pwd_back,
   #btn_sub,
   #btn_submit {
@@ -413,9 +380,11 @@
 .el-row {
   margin-bottom: 20px;
 }
+
 .el-row:last-child {
   margin-bottom: 0;
 }
+
 .el-col {
   border-radius: 4px;
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="big">
     <div id="main">
-      <div id='register_page' class="flex justify-center">
+      <div id='register_page'>
         <el-row>
           <el-col :span="18">
             <div id="title_setup">
@@ -10,7 +10,7 @@
           </el-col>
           <el-col span>
             <div id="icon1">
-              <img src="../images/hotel.png" id='hotel_img'/>
+              <img src="../images/hotel.png" id='hotel_img' />
             </div>
           </el-col>
         </el-row>
@@ -20,10 +20,10 @@
               <p class="text_area">用户名</p>
               <el-form-item prop="name">
                 <el-input class="input" size='large' v-model="ruleForm.name" autocomplete="off"
-                          placeholder="Please input">
+                  placeholder="Please input">
                   <template #prefix>
                     <el-icon>
-                      <User/>
+                      <User />
                     </el-icon>
                   </template>
                 </el-input>
@@ -33,10 +33,10 @@
               <p class="text_area">邮箱</p>
               <el-form-item prop="mail">
                 <el-input class="input" size='large' v-model="ruleForm.mail" autocomplete="off"
-                          placeholder="Please input">
+                  placeholder="Please input">
                   <template #prefix>
                     <el-icon>
-                      <Message/>
+                      <Message />
                     </el-icon>
                   </template>
                 </el-input>
@@ -46,10 +46,10 @@
               <p class="text_area">手机</p>
               <el-form-item prop="phone">
                 <el-input class="input" size='large' v-model="ruleForm.phone" autocomplete="off"
-                          placeholder="Please input">
+                  placeholder="Please input">
                   <template #prefix>
                     <el-icon>
-                      <Iphone/>
+                      <Iphone />
                     </el-icon>
                   </template>
                 </el-input>
@@ -58,11 +58,11 @@
             <div class="input_area">
               <p class="text_area">密码</p>
               <el-form-item prop="password">
-                <el-input class="input" size='large' v-model="ruleForm.password" type="password"
-                          autocomplete="off" placeholder="Please input password">
+                <el-input class="input" size='large' v-model="ruleForm.password" type="password" autocomplete="off"
+                  placeholder="Please input password">
                   <template #prefix>
                     <el-icon>
-                      <Lock/>
+                      <Lock />
                     </el-icon>
                   </template>
                 </el-input>
@@ -71,11 +71,11 @@
             <div class="input_area">
               <p class="text_area">再次输入</p>
               <el-form-item prop="checkPassword">
-                <el-input class="input" size='large' v-model="ruleForm.checkPassword" type="password"
-                          autocomplete="off" placeholder="Please input password again">
+                <el-input class="input" size='large' v-model="ruleForm.checkPassword" type="password" autocomplete="off"
+                  placeholder="Please input password again">
                   <template #prefix>
                     <el-icon>
-                      <Lock/>
+                      <Lock />
                     </el-icon>
                   </template>
                 </el-input>
@@ -85,10 +85,10 @@
               <p class="text_area">手机验证码</p>
               <el-form-item prop="verify_phone">
                 <el-input class="input" size='large' v-model="ruleForm.verify_phone" autocomplete="off"
-                          placeholder="Please input">
+                  placeholder="Please input">
                   <template #prefix>
                     <el-icon>
-                      <Iphone/>
+                      <Iphone />
                     </el-icon>
                   </template>
                 </el-input>
@@ -102,15 +102,14 @@
               <p class="text_area">邮箱验证码</p>
               <el-form-item prop="verify_mail">
                 <el-input class="input" size='large' v-model="ruleForm.verify_mail" autocomplete="off"
-                          placeholder="Please input">
+                  placeholder="Please input">
                   <template #prefix>
                     <el-icon>
-                      <Message/>
+                      <Message />
                     </el-icon>
                   </template>
                 </el-input>
-                <el-button :disabled="isDisabled" @click="send_mail" size="small" id="verify"
-                           type="success" round>
+                <el-button :disabled="isDisabled" @click="send_mail" size="small" id="verify" type="success" round>
                   {{ button_msg }}
                 </el-button>
 
@@ -258,12 +257,12 @@
 }
 </style>
 <script lang="ts" setup>
-import {ref, reactive} from 'vue'
-import {h} from 'vue'
+import { ref, reactive } from 'vue'
+import { h } from 'vue'
 import request from '../utils/request'
-import {formContextKey, FormInstance} from 'element-plus'
-import {ElNotification} from 'element-plus'
-import {User, Lock, Message, Iphone} from '@element-plus/icons-vue'
+import { formContextKey, FormInstance } from 'element-plus'
+import { ElNotification } from 'element-plus'
+import { User, Lock, Message, Iphone } from '@element-plus/icons-vue'
 import axios from 'axios'
 import router from '../router/index'
 
@@ -360,13 +359,13 @@ const checkMail_verify = (rule: any, value: any, callback: any) => {
 }
 
 const rules = reactive({
-  password: [{validator: checkPassword, trigger: 'blur'}],
-  checkPassword: [{validator: checkPassword2, trigger: 'blur'}],
-  name: [{validator: checkName, trigger: 'blur'}],
-  mail: [{validator: checkMail, trigger: 'blur'}],
-  phone: [{validator: checkPhone, trigger: 'blur'}],
-  verify_phone: [{validator: checkPhone_verify, trigger: 'blur'}],
-  verify_mail: [{validator: checkMail_verify, trigger: 'blur'}],
+  password: [{ validator: checkPassword, trigger: 'blur' }],
+  checkPassword: [{ validator: checkPassword2, trigger: 'blur' }],
+  name: [{ validator: checkName, trigger: 'blur' }],
+  mail: [{ validator: checkMail, trigger: 'blur' }],
+  phone: [{ validator: checkPhone, trigger: 'blur' }],
+  verify_phone: [{ validator: checkPhone_verify, trigger: 'blur' }],
+  verify_mail: [{ validator: checkMail_verify, trigger: 'blur' }],
 })
 
 
@@ -377,7 +376,7 @@ const send_mail = () => {
         if (response.data.code == 200) {
           ElNotification({
             title: 'Success',
-            message: h('i', {style: 'color: teal'}, 'You will receive an E-mail for verification'),
+            message: h('i', { style: 'color: teal' }, 'You will receive an E-mail for verification'),
           })
           let timer = ref<number>(60)
           isDisabled.value = true
@@ -395,14 +394,14 @@ const send_mail = () => {
         } else {
           ElNotification({
             title: 'Error',
-            message: h('i', {style: 'color: red'}, response.data.message),
+            message: h('i', { style: 'color: red' }, response.data.message),
           })
         }
       })
   } else {
     ElNotification({
       title: 'Error',
-      message: h('i', {style: 'color: red'}, 'Please input correct email'),
+      message: h('i', { style: 'color: red' }, 'Please input correct email'),
     })
   }
 }
@@ -421,20 +420,20 @@ const signup = () => {
         if (response.data.code === 200) {
           ElNotification({
             title: 'Success',
-            message: h('i', {style: 'color: green'}, "Register Success")
+            message: h('i', { style: 'color: green' }, "Register Success")
           })
           router.push('/login')
         } else {
           ElNotification({
             title: 'Fail ',
-            message: h('i', {style: 'color: red'}, "The username already exists")
+            message: h('i', { style: 'color: red' }, "The username already exists")
           })
         }
       })
   } else {
     ElNotification({
       title: 'Fail',
-      message: h('i', {style: 'color: red'}, "Please complete your infomation")
+      message: h('i', { style: 'color: red' }, "Please complete your infomation")
     })
   }
 

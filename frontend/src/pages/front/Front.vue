@@ -4,20 +4,27 @@
       <el-col :span="8" background-color="red"> SUSTECH Rengency </el-col>
       <el-col :span="12">国内搜索</el-col>
       <el-col :span="4">
-        <el-button @click="login" type="primary" round bg>登录</el-button>
-        <el-button @click="signup" type="primary" round bg>注册</el-button>
+        <span v-if="!token">
+          <el-button @click="login" type="primary" round bg>登录</el-button>
+          <el-button @click="signup" type="primary" round bg>注册</el-button>
+        </span>
         <el-dropdown trigger="click">
           <span style="margin-left: 12px">
             <el-avatar :icon="UserFilled"></el-avatar>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="signup">注册</el-dropdown-item>
-              <el-dropdown-item @click="login">登录</el-dropdown-item>
-              <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
+              <span v-if="!token">
+                <el-dropdown-item @click="signup">注册</el-dropdown-item>
+                <el-dropdown-item @click="login">登录</el-dropdown-item>
+              </span>
+              <span v-if="token">
+                <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
+              </span>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <div>{{ username }}</div>
       </el-col>
     </el-row>
     <el-carousel height="150px">
@@ -31,6 +38,9 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue';
 import router from '../../router';
+
+const token = $ref(localStorage.getItem('token'))
+const username = $ref(localStorage.getItem('username'))
 
 const signup = () => {
   router.push('/signup');
