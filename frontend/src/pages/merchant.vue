@@ -1,26 +1,24 @@
 <template>
   <merchant_drawer @cancel="getCancel" :value1="dialog"></merchant_drawer>
   <div id="top">
-
     <el-row id="r1">
-      <el-col :span="1">
-      </el-col>
+      <el-col :span="1"> </el-col>
       <el-col :span="19"></el-col>
       <el-col :span="2">
         <el-avatar :size="66" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
       </el-col>
 
-      <el-col :span="2">
-      </el-col>
+      <el-col :span="2"> </el-col>
     </el-row>
     <el-row id="r2">
       <el-col :span="1">
         <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Log out</el-button>
       </el-col>
-      <el-col :span='19'></el-col>
+      <el-col :span="19"></el-col>
       <el-col :span="2">
-        <div style="position: relative;left:1vw"><b>{{username}}</b> </div>
-
+        <div style="position: relative; left: 1vw">
+          <b>{{ username }}</b>
+        </div>
       </el-col>
       <el-col :span="1">
         <div id="drop">
@@ -32,8 +30,8 @@
             </el-button>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="addNew" >Add a hotel</el-dropdown-item>
-                <el-dropdown-item command="edit" >profile</el-dropdown-item>
+                <el-dropdown-item command="addNew">Add a hotel</el-dropdown-item>
+                <el-dropdown-item command="edit">profile</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -41,7 +39,6 @@
       </el-col>
     </el-row>
   </div>
-
 
   <el-row id="r3">
     <el-col :span="4">
@@ -52,75 +49,64 @@
     </el-col>
     <el-col :span="4"></el-col>
   </el-row>
-
 </template>
-  
+
 <script lang="ts" setup>
-import request from '../utils/request'
-import { ArrowDown } from '@element-plus/icons-vue'
-import { ref, reactive, h, onMounted } from 'vue'
-import {
-  Document,
-  Menu as IconMenu,
-  Setting, ArrowLeft,
-} from '@element-plus/icons-vue'
+import request from '../utils/request';
+import { ArrowDown } from '@element-plus/icons-vue';
+import { ref, reactive, h, onMounted } from 'vue';
+import { Document, Menu as IconMenu, Setting, ArrowLeft } from '@element-plus/icons-vue';
 import router from '../router';
 import * as echarts from 'echarts';
-import Merchant_drawer from './merchantDrawer.vue'
-import merchant_scroll from './merchantScroll.vue'
-import MerchantMenu from './merchantMenu.vue'
+import Merchant_drawer from './merchantDrawer.vue';
+import merchant_scroll from './merchantScroll.vue';
+import MerchantMenu from './merchantMenu.vue';
 const getCancel = (cancel: boolean) => {
-  dialog.value = cancel
-}
-const hotelId=ref('kong')
-const load_hotel=(index:string)=>{
-  hotelId.value= index
-}
+  dialog.value = cancel;
+};
+const hotelId = ref('kong');
+const load_hotel = (index: string) => {
+  hotelId.value = index;
+};
 const option = (command: string | number | object) => {
-
   if (command == 'addNew') {
-    dialog.value = true
+    dialog.value = true;
   }
-}
-const edit=()=>{
-  
-}
+};
+const edit = () => {};
 const goback = () => {
-  router.push('/')
-}
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  router.push('/');
+};
 // window.onbeforeunload = function () {
 //   localStorage.removeItem("token");
 //   localStorage.removeItem("username");
 // };
 
-const dialog = ref(false)
-const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'))
+const dialog = ref(false);
+const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'));
 // console.log(localStorage.getItem('token'))
-
-
 </script>
 <style scoped lang="scss">
 #top {
   background-color: rgba(128, 212, 238, 0.101);
 }
 
-
-
-@media screen and (max-width:950px) {
+@media screen and (max-width: 950px) {
   #r1 {
     display: none;
-
   }
 
-  #r2 {}
+  #r2 {
+  }
 
   #drop {
     top: 0;
   }
-
 }
 
-@media screen and (min-width:950px) {
+@media screen and (min-width: 950px) {
   #r2 {
     // display: none;
   }

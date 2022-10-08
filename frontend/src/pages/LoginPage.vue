@@ -13,34 +13,15 @@
         </div>
         <div class="input_login">
           <div id="username">用户名/邮箱</div>
-          <el-input
-            v-model="username"
-            placeholder="请输入用户名/邮箱"
-            :prefix-icon="User"
-            clearable
-            id="input_username" />
+          <el-input v-model="username" placeholder="请输入用户名/邮箱" :prefix-icon="User" clearable id="input_username" />
           <div id="pwd">密码</div>
-          <el-input
-            v-model="pwd"
-            type="password"
-            placeholder="请输入密码"
-            :prefix-icon="Lock"
-            show-password
-            id="input_pwd"
+          <el-input v-model="pwd" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password id="input_pwd"
             @keyup.enter="Login" />
 
           <div id="btn_area">
-            <el-button type="primary" round id="btn_login" @click="Login"
-              >登陆账号</el-button
-            ><el-button type="primary" round id="btn_sign" @click="SignUp"
-              >注册账号</el-button
-            ><el-button
-              type="primary"
-              round
-              id="btn_get_pwd_back"
-              @click="ChangePwd"
-              >忘记密码</el-button
-            >
+            <el-button type="primary" round id="btn_login" @click="Login">登录账号</el-button>
+            <el-button type="primary" round id="btn_sign" @click="SignUp">注册账号</el-button>
+            <el-button type="primary" round id="btn_get_pwd_back" @click="ChangePwd">忘记密码</el-button>
           </div>
         </div>
       </div>
@@ -81,10 +62,12 @@
 
 /* 在850px以下直接用left */
 @media screen and (max-width: 850px) {
+
   #btn_sign,
   #btn_get_pwd_back {
     margin: 0;
   }
+
   #right {
     display: none;
   }
@@ -326,6 +309,7 @@
     flex-direction: row;
     gap: 1vw;
   }
+
   #btn_get_pwd_back,
   #btn_sign,
   #btn_login {
@@ -346,19 +330,17 @@ const username = ref('');
 const pwd = ref('');
 const dialog_visible = ref(false);
 const show_err_msg = ref(false);
-localStorage.removeItem("token");
-localStorage.removeItem("username");
 const Login = () => {
   request
     .post(`/user/login`, {
       password: pwd.value,
-      username: username.value,
+      username: username.value
     })
     .then((res) => {
       if (res.data.code === 400) {
         ElNotification({
           title: 'Failed',
-          message: h('i', { style: 'color: red' }, '用户名或密码错误'),
+          message: h('i', { style: 'color: red' }, '用户名或密码错误')
         });
       } else {
         const token = res.data.data.token;
@@ -367,9 +349,9 @@ const Login = () => {
         ElNotification({
           title: 'Success',
           message: h('i', { style: 'color: teal' }, 'Login success'),
-          position : 'top-left'
+          position: 'top-left'
         });
-        router.push('/merchant');
+        router.push('/');
         // router.push({
         //   name:'merchant',
         //   params:{

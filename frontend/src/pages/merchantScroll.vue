@@ -190,21 +190,21 @@ interface hotel_reactive {
 const hotel: hotel_reactive = reactive({
     detail:{}
 })
-request.get('/info/province/all').then((response) => {
+request.get('/public/province/all').then((response) => {
     ps.provinces = response.data.data
     // console.log(ps.provinces)
 })
 const selectProvince = () => {
     form.city=''
     form.region=''
-    request.get('/info/city/all').then((response) => {
+    request.get('/public/city/all').then((response) => {
         cs.cities = response.data.data
         // console.log(cs.cities)
     })
 }
 const selectCity = () => {
     form.region=''
-    request.get('/info/region/all').then((response) => {
+    request.get('/public/region/all').then((response) => {
         rs.regions = response.data.data
     })
 }

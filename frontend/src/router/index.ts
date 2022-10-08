@@ -7,15 +7,17 @@ import LoginPage from '../pages/LoginPage.vue';
 import ChangePassword from '../pages/ChangePassword.vue';
 import register from '../pages/register3.vue';
 import merchant from '../pages/merchant.vue'
+import Front from '../pages/front/Front.vue'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
+    path: '/login',
+    name: 'login',
     component: LoginPage,
   },
   {
     path: '/merchant',
-    name:'merchant',
+    name: 'merchant',
     component: merchant,
   },
   {
@@ -28,6 +30,11 @@ const routes: RouteRecordRaw[] = [
     name: 'changepassword',
     component: ChangePassword,
   },
+  {
+    path: '/',
+    name: 'front',
+    component: Front
+  }
 ];
 
 const router = createRouter({
@@ -37,10 +44,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
-  if (token || to.path == '/' || to.path == '/signup' || to.path == '/changepassword'|| to.path=='/merchant') {
+  if (token || to.path == '/' || to.path == '/login' || to.path == '/signup' || to.path == '/changepassword') {
     next();
   } else {
-    next('/');
+    next('/login');
   }
 });
 
