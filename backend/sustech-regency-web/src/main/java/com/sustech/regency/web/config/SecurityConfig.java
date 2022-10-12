@@ -47,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 					.authorizeRequests(
 						authorize->authorize
 								  .antMatchers("/user/**").anonymous() //只允许/user/**匿名访问，认证通过后无法访问
-								  .antMatchers("/info/**").permitAll() //放行获取信息相关URL
+								  .antMatchers("/public/**").permitAll() //放行获取信息相关URL
 								  .antMatchers("/doc.html","/webjars/**","/img.icons/**","/swagger-resources","/v2/api-docs","/favicon.ico").permitAll() //放行Knife4j相关URL
 								  .anyRequest().authenticated()
 					)
