@@ -32,6 +32,7 @@
               <el-dropdown-menu>
                 <el-dropdown-item command="addNew">Add a hotel</el-dropdown-item>
                 <el-dropdown-item command="edit">profile</el-dropdown-item>
+                <el-dropdown-item @click="toUserPage">用户端</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -52,14 +53,10 @@
 </template>
 
 <script lang="ts" setup>
-import request from '../utils/request';
-import { ArrowDown } from '@element-plus/icons-vue';
-import { ref, reactive, h, onMounted } from 'vue';
-import { Document, Menu as IconMenu, Setting, ArrowLeft } from '@element-plus/icons-vue';
+import { ArrowDown, ArrowLeft, UserFilled } from '@element-plus/icons-vue';
+import { ref } from 'vue';
 import router from '../router';
-import * as echarts from 'echarts';
 import Merchant_drawer from './merchantDrawer.vue';
-import merchant_scroll from './merchantScroll.vue';
 import MerchantMenu from './merchantMenu.vue';
 const getCancel = (cancel: boolean) => {
   dialog.value = cancel;
@@ -73,16 +70,16 @@ const option = (command: string | number | object) => {
     dialog.value = true;
   }
 };
-const edit = () => {};
+const edit = () => { };
 const goback = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
   router.push('/login');
 };
-// window.onbeforeunload = function () {
-//   localStorage.removeItem("token");
-//   localStorage.removeItem("username");
-// };
+
+const toUserPage = () => {
+  router.push('/');
+}
 
 const dialog = ref(false);
 const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'));
@@ -98,8 +95,7 @@ const username = ref(localStorage.getItem('username') == null ? '未登录' : lo
     display: none;
   }
 
-  #r2 {
-  }
+  #r2 {}
 
   #drop {
     top: 0;
