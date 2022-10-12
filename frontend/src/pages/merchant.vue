@@ -1,5 +1,5 @@
 <template>
-  <merchant_drawer @cancel="getCancel" :value1="dialog"></merchant_drawer>
+  <merchant-drawer @cancel="getCancel" :value1="dialog" />
   <div id="top">
     <el-row id="r1">
       <el-col :span="1"> </el-col>
@@ -46,7 +46,7 @@
       <merchant-menu @select-hotel="load_hotel"></merchant-menu>
     </el-col>
     <el-col :span="16">
-      <merchant_scroll :HotelId="hotelId"></merchant_scroll>
+      <merchant-scroll :HotelId="hotelId" />
     </el-col>
     <el-col :span="4"></el-col>
   </el-row>
@@ -56,7 +56,8 @@
 import { ArrowDown, ArrowLeft, UserFilled } from '@element-plus/icons-vue';
 import { ref } from 'vue';
 import router from '../router';
-import Merchant_drawer from './merchantDrawer.vue';
+import MerchantDrawer from './merchantDrawer.vue';
+import MerchantScroll from './merchantScroll.vue'
 import MerchantMenu from './merchantMenu.vue';
 const getCancel = (cancel: boolean) => {
   dialog.value = cancel;
@@ -70,7 +71,7 @@ const option = (command: string | number | object) => {
     dialog.value = true;
   }
 };
-const edit = () => { };
+
 const goback = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
@@ -83,7 +84,6 @@ const toUserPage = () => {
 
 const dialog = ref(false);
 const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'));
-// console.log(localStorage.getItem('token'))
 </script>
 <style scoped lang="scss">
 #top {
@@ -113,13 +113,13 @@ const username = ref(localStorage.getItem('username') == null ? '未登录' : lo
 
   #drop {
     position: relative;
-    left: 0%;
-    top: 0%;
+    left: 0;
+    top: 0;
   }
 
   #back {
     position: relative;
-    top: 0%;
+    top: 0;
   }
 }
 
