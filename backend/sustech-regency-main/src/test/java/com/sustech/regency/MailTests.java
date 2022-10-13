@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 @SpringBootTest
 public class MailTests {
-	@Resource
+//	@Resource
 	private JavaMailSender javaMailSender;
 
 	@Test

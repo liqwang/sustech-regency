@@ -7,12 +7,17 @@ import com.sustech.regency.db.dao.RegionDao;
 import com.sustech.regency.db.po.City;
 import com.sustech.regency.db.po.Province;
 import com.sustech.regency.db.po.Region;
+import com.sustech.regency.model.param.LocationParam;
+import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +30,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/public")
 public class PublicController {
+	@Autowired
+	private PublicService publicService;
 
 	@Autowired
 	private ProvinceDao provinceDao;
@@ -79,5 +86,11 @@ public class PublicController {
 			throw ApiException.INTERNAL_SEVER_ERROR;
 		}
 		return ApiResponse.success();
+	}
+
+	@ApiOperation("根据省市区酒店名字获得酒店信息")
+	@GetMapping("/public/getHotelByLocation")
+	public ApiResponse<List<HotelInfo>> getHotels(@Validated @RequestBody LocationParam locationParam){
+		return ApiResponse.success(publicService.getHotelsByLocation(locationParam.getProvince(),locationParam.getCity(),locationParam.getRegion(),locationParam.getName()));
 	}
 }
