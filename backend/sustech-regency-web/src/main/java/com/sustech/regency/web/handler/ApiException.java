@@ -3,7 +3,7 @@ package com.sustech.regency.web.handler;
 import lombok.Getter;
 
 /**
- * Refer: https://www.devglan.com/spring-security/exception-handling-in-spring-security
+ * Refer: <a href="https://www.devglan.com/spring-security/exception-handling-in-spring-security">Exception handling in Spring Security</a>
  */
 @Getter
 public class ApiException extends RuntimeException {
