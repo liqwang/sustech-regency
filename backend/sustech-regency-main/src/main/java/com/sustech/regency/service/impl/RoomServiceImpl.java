@@ -6,7 +6,6 @@ import com.sustech.regency.db.dao.RoomDao;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.service.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -78,13 +77,11 @@ public class RoomServiceImpl implements RoomService {
             if (hotelId != null) wrapper.eq(Room::getHotelId, hotelId);
             if (typeId != null) wrapper.eq(Room::getTypeId, typeId);
             List<Room> roomList = roomDao.selectList(wrapper);
-            for (Room room : roomList
-            ) {
+            for (Room room : roomList) {
                 if (price != null) room.setPrice(price);
                 if (discount != null) room.setDiscount(discount);
                 roomDao.updateById(room);
             }
-
             return true;
         }
         return false;

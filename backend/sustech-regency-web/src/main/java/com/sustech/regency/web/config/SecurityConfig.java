@@ -1,7 +1,6 @@
 package com.sustech.regency.web.config;
 
 import com.sustech.regency.web.filter.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

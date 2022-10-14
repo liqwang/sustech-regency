@@ -12,7 +12,6 @@ import com.sustech.regency.service.UserService;
 import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
