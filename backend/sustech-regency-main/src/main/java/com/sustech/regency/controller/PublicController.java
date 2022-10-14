@@ -1,6 +1,7 @@
 package com.sustech.regency.controller;
 
 import cn.hutool.core.io.FileUtil;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
@@ -13,12 +14,10 @@ import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -49,21 +48,35 @@ public class PublicController {
     @Resource
     private CityDao cityDao;
 
-    @ApiOperation("获取所有市")
+    @ApiOperation("获取一个省的所有市")
     @GetMapping("/city/all")
-    public ApiResponse<List<City>> getAllCities() {
-        List<City> cities = cityDao.selectList(null);
-        return ApiResponse.success(cities);
+    public ApiResponse<List<City>> getAllCities(@RequestParam(required = false) String province) {
+        MPJLambdaWrapper<City> wrapper = new MPJLambdaWrapper<>();
+        wrapper.selectAll(City.class)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId);
+        if (Strings.isNotEmpty(province)) {
+            wrapper.eq(Province::getName, province);
+        }
+        return ApiResponse.success(cityDao.selectJoinList(City.class, wrapper));
     }
 
     @Resource
     private RegionDao regionDao;
 
-    @ApiOperation("获取所有区")
+    @ApiOperation("获取一个城市的所有区")
     @GetMapping("/region/all")
-    public ApiResponse<List<Region>> getAllRegions() {
-        List<Region> regions = regionDao.selectList(null);
-        return ApiResponse.success(regions);
+    public ApiResponse<List<Region>> getAllRegions(@RequestParam(required = false) String province, @RequestParam(required = false) String city) {
+        MPJLambdaWrapper<Region> wrapper = new MPJLambdaWrapper<>();
+        wrapper.selectAll(Region.class)
+                .innerJoin(City.class, City::getId, Region::getCityId)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId);
+        if (Strings.isNotEmpty(province)) {
+            wrapper.eq(Province::getName, province);
+        }
+        if (Strings.isNotEmpty(city)) {
+            wrapper.eq(City::getName, city);
+        }
+        return ApiResponse.success(regionDao.selectJoinList(Region.class, wrapper));
     }
 
     @Value("${file-root-path}")
