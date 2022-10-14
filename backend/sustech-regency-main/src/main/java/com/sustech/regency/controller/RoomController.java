@@ -5,10 +5,12 @@ import com.sustech.regency.service.RoomService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -27,8 +29,7 @@ public class RoomController {
                                            @ApiParam(value = "房间类型", required = true) @RequestParam Integer typeId,
                                            @ApiParam(value = "属于哪个酒店", required = true) @RequestParam Integer hotelId,
                                            @ApiParam(value = "是否空置中", required = true) @RequestParam Boolean isAvailable,
-                                           @ApiParam(value = "折扣率", required = true) @RequestParam Float discount)
-    {
+                                           @ApiParam(value = "折扣率", required = true) @RequestParam Float discount) {
         Room room = Room.builder().roomNum(roomNum)
                 .price(price)
                 .floor(floor)
@@ -56,9 +57,9 @@ public class RoomController {
                                               @ApiParam(value = "房间类型") @RequestParam(required = false) Integer typeId,
                                               @ApiParam(value = "属于哪个酒店") @RequestParam(required = false) Integer hotelId,
                                               @ApiParam(value = "是否空置中") @RequestParam(required = false) Boolean isAvailable,
-                                              @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount){
+                                              @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(roomService.updateOneRoom(merchantId,roomId,roomNum,price,floor,typeId,hotelId,isAvailable,discount));
+        return ApiResponse.success(roomService.updateOneRoom(merchantId, roomId, roomNum, price, floor, typeId, hotelId, isAvailable, discount));
     }
 
     @ApiOperation("商家更新一些房间信息")
@@ -66,9 +67,9 @@ public class RoomController {
     public ApiResponse<Boolean> updateOneRooms(@ApiParam(value = "价格") @RequestParam(required = false) Float price,
                                                @ApiParam(value = "房间类型") @RequestParam(required = false) Integer typeId,
                                                @ApiParam(value = "属于哪个酒店") @RequestParam(required = false) Integer hotelId,
-                                               @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount){
+                                               @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(roomService.updateRooms(merchantId,hotelId,typeId,price,discount));
+        return ApiResponse.success(roomService.updateRooms(merchantId, hotelId, typeId, price, discount));
     }
 
 

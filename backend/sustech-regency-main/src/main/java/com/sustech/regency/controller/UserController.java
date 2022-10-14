@@ -8,10 +8,10 @@ import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	@Autowired
+	@Resource
 	private UserService userService;
 
 	@ApiOperation("发送验证码到邮箱")

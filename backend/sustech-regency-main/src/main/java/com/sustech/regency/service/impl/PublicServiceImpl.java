@@ -1,19 +1,19 @@
 package com.sustech.regency.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.sustech.regency.db.dao.*;
-import com.sustech.regency.db.po.*;
+import com.sustech.regency.db.dao.HotelDao;
+import com.sustech.regency.db.po.City;
+import com.sustech.regency.db.po.Hotel;
+import com.sustech.regency.db.po.Province;
+import com.sustech.regency.db.po.Region;
 import com.sustech.regency.model.vo.HotelInfo;
-import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.service.PublicService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PublicServiceImpl implements PublicService {
@@ -27,13 +27,13 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(Province::getName, HotelInfo::getProvinceName)
                 .selectAs(City::getName, HotelInfo::getCityName)
                 .selectAs(Region::getName, HotelInfo::getRegionName);
-        if (province!=null && province!="") wrapper.eq(Province::getName,province);
-        if(city!=null &&city!="") wrapper.eq(City::getName,city);
-        if(region!=null && region!="") wrapper.eq(Region::getName,region);
-        if(hotelName!=null &&region!="") wrapper.eq(Hotel::getName,hotelName);
+        if (Strings.isNotEmpty(province)) wrapper.eq(Province::getName, province);
+        if (Strings.isNotEmpty(city)) wrapper.eq(City::getName, city);
+        if (Strings.isNotEmpty(region)) wrapper.eq(Region::getName, region);
+        if (Strings.isNotEmpty(hotelName)) wrapper.eq(Hotel::getName, hotelName);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        return hotelDao.selectJoinList(HotelInfo.class,wrapper);
+        return hotelDao.selectJoinList(HotelInfo.class, wrapper);
     }
 }

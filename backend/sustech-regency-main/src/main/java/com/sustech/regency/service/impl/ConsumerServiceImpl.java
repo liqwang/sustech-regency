@@ -5,13 +5,13 @@ import com.sustech.regency.db.dao.CommentAttachmentDao;
 import com.sustech.regency.db.po.CommentAttachment;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.web.handler.ApiException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private static final SimpleDateFormat DATE_FORMAT=new SimpleDateFormat("/yyyy/MM/dd/");
 	@Value("${file-root-path}")
 	private String fileRootPath; //保存文件的根路径
-	@Autowired
+	@Resource
 	private CommentAttachmentDao commentAttachmentDao;
 	@Override
 	@SuppressWarnings("ResultOfMethodCallIgnored")
