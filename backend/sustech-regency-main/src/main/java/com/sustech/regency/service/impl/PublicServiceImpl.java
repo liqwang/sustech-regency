@@ -27,10 +27,10 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(Province::getName, HotelInfo::getProvinceName)
                 .selectAs(City::getName, HotelInfo::getCityName)
                 .selectAs(Region::getName, HotelInfo::getRegionName);
-        if (province!=null) wrapper.eq(Province::getName,province);
-        if(city!=null) wrapper.eq(City::getName,city);
-        if(region!=null) wrapper.eq(Region::getName,region);
-        if(hotelName!=null) wrapper.eq(Hotel::getName,hotelName);
+        if (province!=null && province!="") wrapper.eq(Province::getName,province);
+        if(city!=null &&city!="") wrapper.eq(City::getName,city);
+        if(region!=null && region!="") wrapper.eq(Region::getName,region);
+        if(hotelName!=null &&region!="") wrapper.eq(Hotel::getName,hotelName);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId);
