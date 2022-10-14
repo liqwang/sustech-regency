@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Refer: https://www.devglan.com/spring-security/exception-handling-in-spring-security
+ * Refer: <a href="https://www.devglan.com/spring-security/exception-handling-in-spring-security">Exception handling in Spring Security</a>
  */
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
