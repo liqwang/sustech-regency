@@ -23,6 +23,17 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
+                .selectAs(Province::getName, HotelInfo::getProvinceName)
+                .selectAs(City::getName, HotelInfo::getCityName)
+                .selectAs(Region::getName, HotelInfo::getRegionName);
+        if (province!=null) wrapper.eq(Province::getName,province);
+        if(city!=null) wrapper.eq(City::getName,city);
+        if(region!=null) wrapper.eq(Region::getName,region);
+        if(hotelName!=null) wrapper.eq(Hotel::getName,hotelName);
+        wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
+                .innerJoin(City.class, City::getId, Region::getCityId)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId);
         return hotelDao.selectJoinList(HotelInfo.class,wrapper);
     }
 }

@@ -16,10 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,7 +86,7 @@ public class PublicController {
 	}
 
 	@ApiOperation("根据省市区酒店名字获得酒店信息")
-	@GetMapping("/public/getHotelByLocation")
+	@GetMapping("/get-hotel-by-location")
 	public ApiResponse<List<HotelInfo>> getHotels(@Validated @RequestBody LocationParam locationParam){
 		return ApiResponse.success(publicService.getHotelsByLocation(locationParam.getProvince(),locationParam.getCity(),locationParam.getRegion(),locationParam.getName()));
 	}
