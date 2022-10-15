@@ -47,21 +47,27 @@ public class UserServiceImpl implements UserService {
         } else if (!trueCode.equals(verificationCode)) {
             throw ApiException.badRequest("验证码错误");
         }
-        //判断该name是否已经存在
+        //判断该email是否已被注册
         User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getName, name));
-        if (user == null) {
-            user = User.builder()
-                    .name(name)
-                    .password(passwordEncoder.encode(password))
-                    .email(email)
-                    .build();
+                                         .eq(User::getEmail, email));
+        if (user == null) { //email未被注册
+            user=userDao.selectOne(new LambdaQueryWrapper<User>()
+                                      .eq(User::getName,name));
+            if(user!=null){
+                throw ApiException.badRequest("该用户名已被注册");
+            }
+            user=User.builder()
+                     .name(name)
+                     .password(passwordEncoder.encode(password))
+                     .email(email)
+                     .build();
             userDao.insert(user);
-        } else {//用户已存在
+        } else {//email已被注册
             //查询是否已为该role
-            UserWithRole userWithRole = userWithRoleDao.selectOne(new LambdaQueryWrapper<UserWithRole>()
-                    .eq(UserWithRole::getUserId, user.getId())
-                    .eq(UserWithRole::getRoleId, roleId));
+            UserWithRole userWithRole = userWithRoleDao.selectOne(
+                                         new LambdaQueryWrapper<UserWithRole>()
+                                            .eq(UserWithRole::getUserId, user.getId())
+                                            .eq(UserWithRole::getRoleId, roleId));
             if (userWithRole != null) {
                 throw new ApiException(400, "无法重复注册" + (roleId == 1 ? "消费者" : "商家"));
             }
@@ -88,8 +94,7 @@ public class UserServiceImpl implements UserService {
             throw ApiException.badRequest("验证码错误");
         }
         user.setPassword(passwordEncoder.encode(newPassword));
-        userDao.update(user, new LambdaQueryWrapper<User>()
-                .eq(User::getId, user.getId()));
+        userDao.updateById(user);
     }
 
     @Override
