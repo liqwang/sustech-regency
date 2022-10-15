@@ -10,7 +10,6 @@ import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.service.UserService;
 import com.sustech.regency.util.VerificationUtil;
-import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.util.JwtUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,6 +24,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+
+import static com.sustech.regency.web.util.AssertUtil.asserts;
+import static com.sustech.regency.util.VerificationUtil.validateCode;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,20 +44,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public String register(String verificationCode, String email, String name, String password, Integer roleId) {
         String trueCode = redis.getObject("verification:" + email);
-        if (trueCode == null) {
-            throw ApiException.badRequest("验证码已过期，请重新发送");
-        } else if (!trueCode.equals(verificationCode)) {
-            throw ApiException.badRequest("验证码错误");
-        }
+        validateCode(verificationCode,trueCode);
         //判断该email是否已被注册
         User user = userDao.selectOne(new LambdaQueryWrapper<User>()
                                          .eq(User::getEmail, email));
         if (user == null) { //email未被注册
             user=userDao.selectOne(new LambdaQueryWrapper<User>()
                                       .eq(User::getName,name));
-            if(user!=null){
-                throw ApiException.badRequest("该用户名已被注册");
-            }
+            asserts(user==null,"该用户名已被注册");
             user=User.builder()
                      .name(name)
                      .password(passwordEncoder.encode(password))
@@ -68,9 +64,7 @@ public class UserServiceImpl implements UserService {
                                          new LambdaQueryWrapper<UserWithRole>()
                                             .eq(UserWithRole::getUserId, user.getId())
                                             .eq(UserWithRole::getRoleId, roleId));
-            if (userWithRole != null) {
-                throw new ApiException(400, "无法重复注册" + (roleId == 1 ? "消费者" : "商家"));
-            }
+            asserts(userWithRole==null,"无法重复注册"+(roleId==1?"消费者":"商家"));
         }
         userWithRoleDao.insert(new UserWithRole(user.getId(), roleId, new Date()));
         //直接认证通过，就不经过AuthenticationManager#authenticate了
@@ -83,16 +77,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void findPassword(String verificationCode, String email, String newPassword) {
         User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getEmail, email));
-        if (user == null) {
-            throw ApiException.badRequest("邮箱未被绑定");
-        }
+                                         .eq(User::getEmail, email));
+        asserts(user!=null,"邮箱未被绑定");
         String trueCode = redis.getObject("verification:" + email);
-        if (trueCode == null) {
-            throw ApiException.badRequest("验证码已过期，请重新发送");
-        } else if (!trueCode.equals(verificationCode)) {
-            throw ApiException.badRequest("验证码错误");
-        }
+        validateCode(verificationCode,trueCode);
         user.setPassword(passwordEncoder.encode(newPassword));
         userDao.updateById(user);
     }
@@ -101,24 +89,20 @@ public class UserServiceImpl implements UserService {
     public String login(String name, String password) {
         //判断该name是否存在
         User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getName, name));
-        if (user == null) {
-            throw new ApiException(400, "User doesn't exists, please register first");
-        } else if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new ApiException(400, "Password wrong");
-        } else {
-            //生成LoginLog
-            @SuppressWarnings("ConstantConditions")
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String ipAddress = request.getRemoteAddr();
-            int port = request.getRemotePort();
-            loginLogDao.insert(new LoginLog(user.getId(), new Date(), ipAddress, port));
-            //直接认证通过，就不经过AuthenticationManager#authenticate了
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
-            SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
-            redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
-            return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
-        }
+                                         .eq(User::getName, name));
+        asserts(user!=null,"User doesn't exists, please register first");
+        asserts(passwordEncoder.matches(password, user.getPassword()),"Password wrong");
+        //生成LoginLog
+        @SuppressWarnings("ConstantConditions")
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String ipAddress = request.getRemoteAddr();
+        int port = request.getRemotePort();
+        loginLogDao.insert(new LoginLog(user.getId(), new Date(), ipAddress, port));
+        //直接认证通过，就不经过AuthenticationManager#authenticate了
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
+        SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
+        redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
+        return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
     }
 
     @Resource
