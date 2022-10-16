@@ -1,8 +1,8 @@
 <template>
   <div class="header">
     <el-row>
-      <el-col :span="8" background-color="red"> SUSTECH Rengency</el-col>
-      <el-col :span="4" :offset="2">国内搜索</el-col>
+      <el-col :span="6" :offset="2" background-color="red"> SUSTECH Rengency</el-col>
+      <el-col :span="3" :offset="3">国内搜索</el-col>
       <el-col :span="4" :offset="6">
         <span v-if="!token">
           <el-button @click="login" type="primary" round bg>登录</el-button>
@@ -24,7 +24,7 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <div>{{ username }}</div>
+        <div class="ml-4">{{ username }}</div>
       </el-col>
     </el-row>
     <!--    <el-carousel height="500px">-->
@@ -65,9 +65,10 @@
       <el-col v-for="col in 3" :key="col" :span="6">
         <el-image :src="url" />
         南科大专家公寓
-        <el-rate class="ml-5" v-model="rating" disabled show-score text-color="#ff9900" score-template="{value}分" />
+        <span class="ml-12">8888条评论</span>
+        <span class="ml-12">￥8888起</span>
         <br>
-        8888条评论
+        <el-rate v-model="rating" disabled show-score text-color="#ff9900" score-template="{value}分" />
       </el-col>
     </el-row>
   </div>
@@ -98,7 +99,7 @@ interface Region {
 }
 
 const token = $ref(localStorage.getItem('token'))
-const username = $ref(localStorage.getItem('username'))
+const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
 const rating = $ref(3.6)
 let province = $ref('')
@@ -123,7 +124,7 @@ const login = () => {
 
 const logout = () => {
   localStorage.removeItem('token')
-  localStorage.removeItem('username')
+  localStorage.clear()
   router.push('/login')
 }
 

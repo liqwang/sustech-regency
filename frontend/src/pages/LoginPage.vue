@@ -320,16 +320,16 @@
 </style>
 
 <script lang="ts" setup>
-import { ElNotification } from 'element-plus';
-import { ref, h } from 'vue';
-import { User, Lock } from '@element-plus/icons-vue';
-import request from '../utils/request';
-import router from '../router';
+import { ElNotification } from 'element-plus'
+import { ref, h } from 'vue'
+import { User, Lock } from '@element-plus/icons-vue'
+import request from '../utils/request'
+import router from '../router'
 
-const username = ref('');
-const pwd = ref('');
-const dialog_visible = ref(false);
-const show_err_msg = ref(false);
+const username = ref('')
+const pwd = ref('')
+const dialog_visible = ref(false)
+const show_err_msg = ref(false)
 const Login = () => {
   request
     .post(`/user/login`, {
@@ -341,31 +341,26 @@ const Login = () => {
         ElNotification({
           title: 'Failed',
           message: h('i', { style: 'color: red' }, res.data.message)
-        });
+        })
       } else {
-        const token = res.data.data.token;
-        localStorage.setItem('token', token);
-        localStorage.setItem('username', username.value);
+        const token = res.data.data.token
+        const user = res.data.data.userInfo
+        localStorage.setItem('token', token)
+        localStorage.setItem('user', JSON.stringify(user))
         ElNotification({
           title: 'Success',
           message: h('i', { style: 'color: teal' }, 'Login success'),
           position: 'top-left'
-        });
-        router.push('/');
-        // router.push({
-        //   name:'merchant',
-        //   params:{
-        //     name:username.value
-        //   }
-        // })
+        })
+        router.push('/')
       }
-    });
-};
+    })
+}
 const SignUp = () => {
-  router.push('/signup');
-};
+  router.push('/signup')
+}
 const ChangePwd = () => {
-  console.log('change page to change pwd');
-  router.push('/changepassword');
-};
+  console.log('change page to change pwd')
+  router.push('/changepassword')
+}
 </script>
