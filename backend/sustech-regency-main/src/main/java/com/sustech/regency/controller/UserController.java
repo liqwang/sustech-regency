@@ -50,7 +50,7 @@ public class UserController {
 
 	                                 @Validated @RequestBody LoginParam loginParam){
 		VerificationUtil.judge(loginParam.getPassword());
-		String jwt = userService.register(verificationCode,email,loginParam.getUsername(),loginParam.getPassword(),roleId);
+		String jwt = userService.register(verificationCode,email,loginParam.getUsernameOrEmail(),loginParam.getPassword(),roleId);
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 
@@ -67,7 +67,7 @@ public class UserController {
 	@ApiOperation(value = "登录",notes = "返回token")
 	@PostMapping("/login")
 	public ApiResponse<Map> login(@Validated @RequestBody LoginParam loginParam){
-		String jwt = userService.login(loginParam.getUsername(),loginParam.getPassword());
+		String jwt = userService.login(loginParam.getUsernameOrEmail(),loginParam.getPassword());
 		return ApiResponse.success(Map.of("token",jwt));
 	}
 }

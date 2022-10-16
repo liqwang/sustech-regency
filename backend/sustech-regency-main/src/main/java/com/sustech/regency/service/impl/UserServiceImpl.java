@@ -86,10 +86,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String name, String password) {
-        //判断该name是否存在
-        User user = userDao.selectOne(new LambdaQueryWrapper<User>()
-                                         .eq(User::getName, name));
+    public String login(String usernameOrEmail, String password) {
+        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
+        if(usernameOrEmail.contains("@")){ //邮箱
+            wrapper.eq(User::getEmail,usernameOrEmail);
+        }else{wrapper.eq(User::getName,usernameOrEmail);}//用户名
+        User user = userDao.selectOne(wrapper);
         asserts(user!=null,"User doesn't exists, please register first");
         asserts(passwordEncoder.matches(password, user.getPassword()),"Password wrong");
         //生成LoginLog
