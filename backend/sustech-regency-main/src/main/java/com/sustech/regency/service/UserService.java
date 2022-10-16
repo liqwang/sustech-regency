@@ -1,9 +1,17 @@
 package com.sustech.regency.service;
 
-public interface UserService {
-	String register(String verificationCode, String email, String name, String password, Integer roleId);
+import java.util.Map;
 
-	String login(String usernameOrEmail, String password);
+public interface UserService {
+	/**
+	 * @return token以及用户的详细信息
+	 */
+	Map<String,Object> register(String verificationCode, String email, String username, String password, Integer roleId);
+
+	/**
+	 * @return token以及用户的详细信息
+	 */
+	Map<String,Object> login(String usernameOrEmail, String password);
 
 	void findPassword(String verificationCode,String email,String newPassword);
 

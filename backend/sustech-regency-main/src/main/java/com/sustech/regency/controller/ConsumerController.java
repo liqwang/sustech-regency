@@ -22,15 +22,15 @@ public class ConsumerController {
 	@Resource
 	private ConsumerService consumerService;
 
-	@ApiOperation(value = "上传评论图片或视频",notes = "为指定的订单(orderId)上传评论图片(jpg,jpeg,png)或视频(mkv,avi,mp4,mov,wmv),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+	@ApiOperation(value = "上传评论图片或视频",notes = "为指定的订单(orderId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
 	@PostMapping("/upload")
-	public ApiResponse<Map> uploadPicture(@ApiParam(required = true)
-										  @NotNull(message = "file shouldn't be null")
-										  @RequestParam MultipartFile picture,
+	public ApiResponse<Map> upload (@ApiParam(required = true)
+									@NotNull(message = "file shouldn't be null")
+									@RequestParam MultipartFile picture,
 
-										  @ApiParam(value = "订单id",required = true)
-										  @NotNull(message = "orderId shouldn't be null")
-										  @RequestParam Integer orderId){
+									@ApiParam(value = "订单id",required = true)
+									@NotNull(message = "orderId shouldn't be null")
+									@RequestParam Integer orderId){
 		String url = consumerService.uploadFile(picture,orderId);
 		return ApiResponse.success(Map.of("url",url));
 	}

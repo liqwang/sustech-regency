@@ -371,7 +371,7 @@ const rules = reactive({
 
 const send_mail = () => {
   if (ruleForm.mail != '') {
-    request.post('user/send-verification-code?email=' + ruleForm.mail)
+    request.post('/user/send-verification-code?email=' + ruleForm.mail)
       .then(function (response) {
         if (response.data.code == 200) {
           ElNotification({
@@ -412,7 +412,10 @@ const signup = () => {
     if (UserOrmerchant.value == '2') {
       id = 2;
     }
-    request.post('/user/register?roleId=' + id + '&email=' + ruleForm.mail + '&verificationCode=' + ruleForm.verify_mail, {
+    request.post('/user/register', {
+      roleId: id,
+      email: ruleForm.mail,
+      verificationCode: ruleForm.verify_mail,
       username: ruleForm.name,
       password: ruleForm.password,
     })
@@ -426,7 +429,7 @@ const signup = () => {
         } else {
           ElNotification({
             title: 'Fail ',
-            message: h('i', { style: 'color: red' }, "The username already exists")
+            message: h('i', { style: 'color: red' }, response.data.message)
           })
         }
       })

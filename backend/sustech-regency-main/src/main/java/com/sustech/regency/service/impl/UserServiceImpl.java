@@ -8,6 +8,7 @@ import com.sustech.regency.db.po.LoginLog;
 import com.sustech.regency.db.po.User;
 import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
+import com.sustech.regency.model.vo.UserInfo;
 import com.sustech.regency.service.UserService;
 import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.util.JwtUtil;
@@ -24,6 +25,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 import static com.sustech.regency.util.VerificationUtil.validateCode;
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private LoginLogDao loginLogDao;
 
     @Override
-    public String register(String verificationCode, String email, String name, String password, Integer roleId) {
+    public Map<String,Object> register(String verificationCode, String email, String username, String password, Integer roleId) {
         String trueCode = redis.getObject("verification:" + email);
         validateCode(verificationCode,trueCode);
         //判断该email是否已被注册
@@ -50,10 +52,10 @@ public class UserServiceImpl implements UserService {
                                          .eq(User::getEmail, email));
         if (user == null) { //email未被注册
             user=userDao.selectOne(new LambdaQueryWrapper<User>()
-                                      .eq(User::getName,name));
+                                      .eq(User::getName,username));
             asserts(user==null,"该用户名已被注册");
             user=User.builder()
-                     .name(name)
+                     .name(username)
                      .password(passwordEncoder.encode(password))
                      .email(email)
                      .build();
@@ -64,14 +66,16 @@ public class UserServiceImpl implements UserService {
                                          new LambdaQueryWrapper<UserWithRole>()
                                             .eq(UserWithRole::getUserId, user.getId())
                                             .eq(UserWithRole::getRoleId, roleId));
-            asserts(userWithRole==null,"无法重复注册"+(roleId==1?"消费者":"商家"));
+            asserts(userWithRole==null,"该邮箱已被注册为"+(roleId==1?"消费者":"商家"));
         }
         userWithRoleDao.insert(new UserWithRole(user.getId(), roleId, new Date()));
         //直接认证通过，就不经过AuthenticationManager#authenticate了
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
         SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
         redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
-        return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
+        String jwt = JwtUtil.createJwt(String.valueOf(user.getId()));//使用id生成JWT返回
+        return Map.of("token",jwt,
+                      "userInfo",new UserInfo(user.getId(),username,email));
     }
 
     @Override
@@ -86,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String usernameOrEmail, String password) {
+    public Map<String,Object> login(String usernameOrEmail, String password) {
         LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
         if(usernameOrEmail.contains("@")){ //邮箱
             wrapper.eq(User::getEmail,usernameOrEmail);
@@ -104,7 +108,9 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
         SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
         redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
-        return JwtUtil.createJwt(String.valueOf(user.getId())); //使用id生成JWT返回
+        String jwt = JwtUtil.createJwt(String.valueOf(user.getId()));//使用id生成JWT返回
+        return Map.of("token",jwt,
+                      "userInfo",new UserInfo(user.getId(),user.getName(),user.getEmail()));
     }
 
     @Resource

@@ -39,9 +39,6 @@ public class PublicController {
     @Resource
     private ProvinceDao provinceDao;
 
-    public PublicController() {
-    }
-
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
     public ApiResponse<List<Province>> getAllProvinces() {
@@ -89,8 +86,8 @@ public class PublicController {
     @SuppressWarnings("CommentedOutCode")
     @ApiOperation(value = "获取文件", hidden = true)
     @GetMapping("/file/**")
-    public ApiResponse getFile(HttpServletResponse response, HttpServletRequest request) {
-        String path = request.getRequestURI().replace("/info/file", "");
+    public void getFile(HttpServletResponse response, HttpServletRequest request) {
+        String path = request.getRequestURI().replace("/public/file", "");
         File file = new File(fileRootPath + path);
         if (!file.exists()) {
             throw ApiException.badRequest("文件不存在");
@@ -109,7 +106,6 @@ public class PublicController {
             e.printStackTrace();
             throw ApiException.INTERNAL_SEVER_ERROR;
         }
-        return ApiResponse.success();
     }
 
     @ApiOperation("根据省市区酒店名字获得酒店信息")
