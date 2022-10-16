@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 评论附带的图片或视频
+ * 房间种类的图片和视频
  */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentAttachment {
-    private String fileId;
-    private Integer orderId;
+@Data
+public class RoomTypeExhibition {
+	private String fileId;
+	private Integer roomTypeId;
 }

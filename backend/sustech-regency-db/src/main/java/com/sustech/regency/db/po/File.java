@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 评论附带的图片或视频
- */
-@Data
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentAttachment {
-    private String fileId;
-    private Integer orderId;
+@Data
+public class File {
+	private String id;
+	private Date uploadTime;
+	private Date deleteTime;
+	private String suffix;
 }

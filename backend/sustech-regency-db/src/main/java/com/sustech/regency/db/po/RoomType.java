@@ -19,4 +19,5 @@ public class RoomType {
     private Integer capacity;
     private Integer toiletNum;
     private Boolean hasLivingRoom;
+    private String coverId;
 }
