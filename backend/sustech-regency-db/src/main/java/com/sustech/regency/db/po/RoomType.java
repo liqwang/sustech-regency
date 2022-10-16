@@ -15,7 +15,6 @@ public class RoomType {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String name;
-    private Integer roomNum;
     private Integer capacity;
     private Integer toiletNum;
     private Boolean hasLivingRoom;
