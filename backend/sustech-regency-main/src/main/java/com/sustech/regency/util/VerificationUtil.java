@@ -1,5 +1,6 @@
 package com.sustech.regency.util;
 
+import static com.sustech.regency.web.util.AssertUtil.asserts;
 import com.sustech.regency.web.handler.ApiException;
 
 import java.util.*;
@@ -50,5 +51,10 @@ public class VerificationUtil {
 			code.insert(0, "0");
 		}
 		return code.toString();
+	}
+
+	public static void validateCode(String code,String trueCode){
+		asserts(trueCode!=null,"验证码已过期，请重新发送");
+		asserts(trueCode.equals(code),"验证码错误");
 	}
 }

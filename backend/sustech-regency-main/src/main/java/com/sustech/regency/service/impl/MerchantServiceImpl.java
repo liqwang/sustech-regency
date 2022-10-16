@@ -19,8 +19,8 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<HotelInfo> getAllHotelInfos(Integer merchantId) {
         return hotelDao.selectJoinList(
-                HotelInfo.class,
-                new MPJLambdaWrapper<HotelInfo>()
+                     HotelInfo.class,
+                     new MPJLambdaWrapper<HotelInfo>()
                         .select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
                         .selectAs(Province::getName, HotelInfo::getProvinceName)
                         .selectAs(City::getName, HotelInfo::getCityName)
@@ -39,8 +39,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Boolean deleteHotel(Integer merchantId, Integer hotelId) {
-//        new LambdaQueryWrapper<Hotel>()
-//                .eq(Hotel::getId,)
         QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         wrapper.eq("merchant_id", merchantId);
         wrapper.eq("id", hotelId);
@@ -75,6 +73,7 @@ public class MerchantServiceImpl implements MerchantService {
         return true;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public HotelInfo getOneHotel(Integer hotelId, Float latitude, Float longitude, Integer merchantId, String name, String tel) {
 //        QueryWrapper<Hotel> wrapper = new QueryWrapper<>();

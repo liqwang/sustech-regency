@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 评论附带的图片或视频
+ * 酒店的图片或视频
  */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentAttachment {
-    private String fileId;
-    private Integer orderId;
+@Data
+public class HotelExhibition {
+	private Integer hotelId;
+	private String fileId;
 }

@@ -1,18 +1,16 @@
-package com.sustech.regency.db.po;
+package com.sustech.regency.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 评论附带的图片或视频
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentAttachment {
-    private String fileId;
-    private Integer orderId;
+public class UserInfo {
+	private Integer id;
+	private String name;
+	private String email;
 }

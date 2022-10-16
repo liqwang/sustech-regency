@@ -14,5 +14,3 @@ spring:
     url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
 #    port: 6379
 #    database: 0 #数据库编号
-
-debug: true
