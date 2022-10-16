@@ -3,7 +3,7 @@
     <div v-if="show_content">
       <el-descriptions class="margin-top" title="The Hotel" :column="3" size="large" border>
         <template #extra>
-          <el-button @click="show_input = true" type="primary">Modify hotel</el-button>
+          <el-button @click="edit" type="primary">Modify hotel</el-button>
         </template>
         <el-descriptions-item>
           <template #label>
@@ -36,7 +36,7 @@
               Place
             </div>
           </template>
-          CityName
+          {{hotel.detail.cityName}}{{hotel.detail.regionName}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -171,7 +171,7 @@ interface regions_reactive {
 const rs: regions_reactive = reactive({
   regions: []
 });
-const form = reactive({
+var form = reactive({
   name: '',
   city: '',
   address: '',
@@ -192,6 +192,18 @@ request.get('/public/province/all').then((response) => {
   ps.provinces = response.data.data;
   // console.log(ps.provinces)
 });
+const edit =()=>{
+  console.log(hotel.detail)
+  form.address = hotel.detail.address
+  form.tel = hotel.detail.tel
+  form.longitude = hotel.detail.longitude
+  form.latitude = hotel.detail.latitude
+  form.name = hotel.detail.name
+  form.province = hotel.detail.provinceName
+  form.city = hotel.detail.cityName
+  form.region = hotel.detail.regionName
+  show_input.value = true
+}
 const selectProvince = () => {
   form.city = '';
   form.region = '';
@@ -234,14 +246,9 @@ var v2 = ref(false);
 var v3 = ref(false);
 const show_input = ref(false);
 const update = () => {
-  let url = `merchant/hotel/update?hotelId=${id_par.HotelId}
-    &address=${form.address == '' ? hotel.detail.address : form.address}
-    &latitude=${form.latitude == '' ? hotel.detail.latitude : form.latitude}
-    &longitude=${form.longitude == '' ? hotel.detail.longitude : form.longitude}
-    &name=${form.name == '' ? hotel.detail.name : form.name}
-    &tel=${form.tel == '' ? hotel.detail.tel : form.tel}
-    ${form.region == '' ? '' : '&regionId='}${form.region == '' ? '' : form.region}`;
-  // url=url+form.region==''?'':form.region
+  let url = `merchant/hotel/update?hotelId=${id_par.HotelId}&address=${form.address}
+  &latitude=${form.latitude}&longitude=${form.longitude}&name=${form.name}&tel=${form.tel}
+ `
   console.log(url);
   request.post(url).then(function (response) {
     if (response.data.code == 200) {
@@ -249,6 +256,8 @@ const update = () => {
         title: 'Success',
         message: h('i', { style: 'color: green' }, 'update successfully')
       });
+      show_input.value=false
+      window.location.reload()
     } else {
       ElNotification({
         title: 'Error',
