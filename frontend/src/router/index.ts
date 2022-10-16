@@ -1,6 +1,5 @@
 import {
-  createRouter,
-  createWebHistory,
+  createRouter, createWebHashHistory,
   RouteRecordRaw,
 } from 'vue-router';
 import LoginPage from '../pages/LoginPage.vue';
@@ -38,7 +37,7 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: routes,
 });
 
