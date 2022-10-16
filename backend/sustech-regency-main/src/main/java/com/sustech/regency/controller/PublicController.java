@@ -8,13 +8,16 @@ import com.sustech.regency.db.dao.RegionDao;
 import com.sustech.regency.db.po.City;
 import com.sustech.regency.db.po.Province;
 import com.sustech.regency.db.po.Region;
+import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.logging.log4j.util.Strings;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -109,8 +113,14 @@ public class PublicController {
     }
 
     @ApiOperation("根据省市区酒店名字获得酒店信息")
-    @GetMapping("/get-hotel-by-location")
+    @GetMapping("/get-hotels-by-location")
     public ApiResponse<List<HotelInfo>> getHotels(@Validated @RequestBody LocationParam locationParam) {
         return ApiResponse.success(publicService.getHotelsByLocation(locationParam.getProvince(), locationParam.getCity(), locationParam.getRegion(), locationParam.getName()));
+    }
+
+    @ApiOperation("根据酒店ID获取对应所有的房间")
+    @GetMapping("/get-rooms-by-hotel")
+    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
     }
 }
