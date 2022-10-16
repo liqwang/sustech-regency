@@ -334,13 +334,13 @@ const Login = () => {
   request
     .post(`/user/login`, {
       password: pwd.value,
-      username: username.value
+      usernameOrEmail: username.value
     })
     .then((res) => {
       if (res.data.code === 400) {
         ElNotification({
           title: 'Failed',
-          message: h('i', { style: 'color: red' }, '用户名或密码错误')
+          message: h('i', { style: 'color: red' }, res.data.message)
         });
       } else {
         const token = res.data.data.token;
