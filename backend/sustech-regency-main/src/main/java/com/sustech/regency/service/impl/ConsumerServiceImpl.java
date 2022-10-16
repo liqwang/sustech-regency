@@ -18,7 +18,7 @@ import static com.sustech.regency.web.util.AssertUtil.asserts;
 public class ConsumerServiceImpl implements ConsumerService {
 
 	private static final Set<String> VALID_PICTURE_SUFFIXES=Set.of("jpg","jpeg","png");
-	private static final Set<String> VALID_VIDEO_SUFFIXES=Set.of("mkv","avi","mp4","mov","wmv");
+	private static final Set<String> VALID_VIDEO_SUFFIXES=Set.of("mp4");
 	@Resource
 	private CommentAttachmentDao commentAttachmentDao;
 	@Resource
