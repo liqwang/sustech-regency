@@ -54,7 +54,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Boolean updateHotel(Integer hotelId, Float latitude, Float longitude, Integer regionId, Integer merchantId, String name, String tel, String address) {
+    public Boolean updateHotel(Integer hotelId, Float latitude, Float longitude, Integer merchantId, String name, String tel, String address) {
         QueryWrapper<Hotel> wrapper = new QueryWrapper<>();
         wrapper.eq("merchant_id", merchantId);
         wrapper.eq("id", hotelId);
@@ -67,7 +67,6 @@ public class MerchantServiceImpl implements MerchantService {
             if (hotelId != null) hotel.setId(hotelId);
             if (latitude != null) hotel.setLatitude(latitude);
             if (longitude != null) hotel.setLongitude(longitude);
-            if (regionId != null) hotel.setRegionId(regionId);
             if (merchantId != null) hotel.setMerchantId(merchantId); //比如酒店转让
             if (name != null) hotel.setName(name);
             if (tel != null) hotel.setTel(tel);
