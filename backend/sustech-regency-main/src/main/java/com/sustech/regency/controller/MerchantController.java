@@ -108,15 +108,16 @@ public class MerchantController {
         return ApiResponse.success(Map.of("url",url));
     }
 
-//    @ApiOperation(value = "商家删除酒店图片或视频",notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
-//    @PostMapping("hotel/delete-media")
-//    public ApiResponse<Map> deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid",required = true)
-//                                             @NotNull(message = "mediaId shouldn't be null")
-//                                             @RequestParam String mediaId,
-//
-//                                             @ApiParam(value = "酒店id",required = true)
-//                                             @NotNull(message = "hotelId shouldn't be null")
-//                                             @RequestParam Integer hotelId){
-//        return null;
-//    }
+    @ApiOperation(value = "商家删除酒店图片或视频",notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
+    @PostMapping("hotel/delete-media")
+    public ApiResponse deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid",required = true)
+                                        @NotNull(message = "mediaId shouldn't be null")
+                                        @RequestParam String mediaId,
+
+                                        @ApiParam(value = "酒店id",required = true)
+                                        @NotNull(message = "hotelId shouldn't be null")
+                                        @RequestParam Integer hotelId){
+        merchantService.deleteHotelMedia(mediaId,hotelId);
+        return ApiResponse.success();
+    }
 }

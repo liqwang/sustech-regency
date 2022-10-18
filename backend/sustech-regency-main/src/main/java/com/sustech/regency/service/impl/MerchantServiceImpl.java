@@ -1,5 +1,6 @@
 package com.sustech.regency.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.FileDao;
@@ -120,7 +121,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public String uploadHotelMedia(MultipartFile file, Integer hotelId) {
         checkMediaSuffix(file);
-        checkHotelAndOwner(hotelDao.selectById(hotelId));
+        checkHotelAndOwner(hotelId);
 
         String uuid = getUUID();
         String url = fileUtil.uploadFile(file,uuid);
@@ -155,9 +156,30 @@ public class MerchantServiceImpl implements MerchantService {
         return url;
     }
 
+    @Override
+    public void deleteHotelMedia(String mediaId, Integer hotelId) {
+        checkHotelAndOwner(hotelId);
+        asserts(fileDao.selectById(mediaId)!=null,"该文件不存在");
+        HotelExhibition hotelExhibition=hotelExhibitionDao.selectOne(
+                                             new LambdaQueryWrapper<HotelExhibition>()
+                                                .eq(HotelExhibition::getHotelId, hotelId)
+                                                .eq(HotelExhibition::getFileId, mediaId));
+        asserts(hotelExhibition!=null,"该文件不是该酒店的展示图片或视频");
+        File file = fileDao.selectById(hotelExhibition.getFileId());
+        asserts(file.getDeleteTime()==null,"该文件已经被删除");
+
+        //只需更新file表的delete_time行
+        file.setDeleteTime(new Date());
+        fileDao.updateById(file);
+    }
+
     private void checkHotelAndOwner(Hotel hotel){
         asserts(hotel!=null,"酒店不存在");
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         asserts(merchantId==hotel.getMerchantId(),"该酒店属于别人");
+    }
+
+    private void checkHotelAndOwner(Integer hotelId){
+        checkHotelAndOwner(hotelDao.selectById(hotelId));
     }
 }

@@ -30,4 +30,6 @@ public interface MerchantService {
      * @return 获取上传文件的URL
      */
     String uploadHotelCover(MultipartFile picture, Integer hotelId);
+
+    void deleteHotelMedia(String mediaId, Integer hotelId);
 }
