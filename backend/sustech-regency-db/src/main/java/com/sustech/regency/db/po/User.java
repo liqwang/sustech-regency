@@ -19,4 +19,5 @@ public class User {
 	private String phone;
 	private String email;
 	private String idNumber;
+	private String headshotId;
 }

@@ -22,4 +22,5 @@ public class Hotel {
     private String tel;
     private String address;
     private Integer stars;
+    private String coverId;
 }

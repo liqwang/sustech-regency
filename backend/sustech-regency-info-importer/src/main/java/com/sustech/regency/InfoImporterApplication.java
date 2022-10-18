@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @MapperScan("com.sustech.regency.db.dao")
 @SpringBootApplication
@@ -50,8 +49,7 @@ public class InfoImporterApplication implements ApplicationRunner {
             provinceDao.insert(province);
 
             List<String> cityNames = proviceDom.select("div.twoBox > em.two").stream()
-                    .map(Element::ownText)
-                    .collect(Collectors.toList());
+                    .map(Element::ownText).toList();
             Elements cityDoms = proviceDom.select("div.twoBox > div.thrBox");
             for (int i = 0; i < cityNames.size(); i++) {
                 City city = new City();

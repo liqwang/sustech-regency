@@ -1,6 +1,7 @@
 package com.sustech.regency.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.HotelDao;
 import com.sustech.regency.db.dao.RoomDao;
@@ -11,7 +12,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Wrapper;
 import java.util.List;
 
 @Service
@@ -41,7 +41,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<Room> getRoomsByHotel(Integer hotelId) {
-        MPJLambdaWrapper<Room> wrapper = new MPJLambdaWrapper<>();
+        LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Room::getHotelId, hotelId);
         return roomDao.selectList(wrapper);
     }

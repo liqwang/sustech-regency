@@ -19,5 +19,8 @@ public class HotelInfo {
 	private String provinceName;
 	private String cityName;
 	private String regionName;
-	private String stars;
+	private Float stars;
+	private String comment;
+	private String picture_url;
+	private String video_url;
 }

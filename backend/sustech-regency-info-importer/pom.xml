@@ -10,7 +10,7 @@
     </parent>
     <artifactId>sustech-regency-info-importer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sustech-regency-main</name>
+    <name>sustech-regency-info-importer</name>
     <properties>
         <java.version>17</java.version>
     </properties>

@@ -74,7 +74,7 @@ const option = (command: string | number | object) => {
 
 const goback = () => {
   localStorage.removeItem('token');
-  localStorage.removeItem('username');
+  localStorage.clear();
   router.push('/login');
 };
 

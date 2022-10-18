@@ -56,12 +56,11 @@ public class MerchantController {
     public ApiResponse<Boolean> updateHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId,
                                             @ApiParam(value = "纬度") @RequestParam(required = false) Float latitude,
                                             @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
-                                            @ApiParam(value = "所在区ID") @RequestParam(required = false) Integer regionId,
                                             @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
                                             @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel,
                                             @ApiParam(value = "区域内详细地址") @RequestParam(required = false) String address) {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, regionId, merchantId, name, tel, address));
+        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude,merchantId, name, tel, address));
     }
 
     @ApiOperation("商家获取自己下面所有酒店信息")

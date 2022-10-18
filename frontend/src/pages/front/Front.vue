@@ -1,8 +1,8 @@
 <template>
   <div class="header">
     <el-row>
-      <el-col :span="8" background-color="red"> SUSTECH Rengency</el-col>
-      <el-col :span="4" :offset="2">国内搜索</el-col>
+      <el-col :span="6" :offset="2" background-color="red"> SUSTECH Rengency</el-col>
+      <el-col :span="3" :offset="3">国内搜索</el-col>
       <el-col :span="4" :offset="6">
         <span v-if="!token">
           <el-button @click="login" type="primary" round bg>登录</el-button>
@@ -20,12 +20,11 @@
               </span>
               <span v-if="token">
                 <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
-                <el-dropdown-item divided @click="toMerchantPage">管理端</el-dropdown-item>
               </span>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <div>{{ username }}</div>
+        <div class="ml-4">{{ username }}</div>
       </el-col>
     </el-row>
     <!--    <el-carousel height="500px">-->
@@ -40,118 +39,122 @@
     <el-row justify="center">
       <el-col :span="4">
         省
-        <el-select v-model="value" placeholder="Select">
-          <el-option-group v-for="group in options" :key="group.label" :label="group.label">
-            <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value" />
-          </el-option-group>
+        <el-select v-model="province" placeholder="Select">
+          <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
         </el-select>
       </el-col>
 
       <el-col :span="4">
         市
-        <el-select v-model="value" placeholder="Select">
-          <el-option-group v-for="group in options" :key="group.label" :label="group.label">
-            <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value" />
-          </el-option-group>
+        <el-select v-model="city" placeholder="Select">
+          <el-option v-for="city in cities" :key="city" :value="city" @click="changeRegion(province, city)" />
         </el-select>
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span=" 4">
         区
-        <el-select v-model="value" placeholder="Select">
-          <el-option-group v-for="group in options" :key="group.label" :label="group.label">
-            <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value" />
-          </el-option-group>
+        <el-select v-model="region" placeholder="Select">
+          <el-option v-for="region in regions" :key="region" :value="region" />
         </el-select>
       </el-col>
     </el-row>
   </div>
-  <br><br><br>
+  <br /><br /><br />
   <div>
     <el-row v-for="row in 5" justify="space-evenly" :key="row" style="margin-bottom: 20px">
       <el-col v-for="col in 3" :key="col" :span="6">
         <el-image :src="url" />
-        <div>
-          独立房间, · 1张床
-        </div>
-        <div>
-          Brixton O2顶层公寓套房
-        </div>
-        <el-rate v-model="rating" disabled show-score text-color="#ff9900" score-template="{value} points" />
+        南科大专家公寓
+        <span class="ml-12">8888条评论</span>
+        <span class="ml-12">￥8888起</span>
+        <br>
+        <el-rate v-model="rating" disabled show-score text-color="#ff9900" score-template="{value}分" />
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { UserFilled } from '@element-plus/icons-vue';
-import router from '../../router';
-import { ref } from "vue";
+import { UserFilled } from '@element-plus/icons-vue'
+import router from '../../router'
+import request from '../../utils/request'
+
+interface Province {
+  id: number,
+  name: string,
+  abbreviation: string
+}
+
+interface City {
+  id: number,
+  name: string,
+  provinceId: number,
+  isProvincialCapital: boolean
+}
+
+interface Region {
+  id: number,
+  name: string,
+  cityId: number
+}
 
 const token = $ref(localStorage.getItem('token'))
-const username = $ref(localStorage.getItem('username'))
+const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
 const rating = $ref(3.6)
-const value = $ref('')
+let province = $ref('')
+let city = $ref('')
+let region = $ref('')
 
-const url = "https://z1.muscache.cn/im/pictures/24e8ce37-6b7a-41f7-99b1-e21319705bb0.jpg?aki_policy=large"
+const url = 'https://z1.muscache.cn/im/pictures/24e8ce37-6b7a-41f7-99b1-e21319705bb0.jpg?aki_policy=large'
 
-const urls = ['https://z1.muscache.cn/im/pictures/642803/e0a0ddc9_original.jpg?aki_policy=large', 'https://z1.muscache.cn/im/pictures/miso/Hosting-45337054/original/d0e063e3-f760-4160-8f56-ec1dcc7d7392.jpeg?aki_policy=large', 'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large']
+const urls = [
+  'https://z1.muscache.cn/im/pictures/642803/e0a0ddc9_original.jpg?aki_policy=large',
+  'https://z1.muscache.cn/im/pictures/miso/Hosting-45337054/original/d0e063e3-f760-4160-8f56-ec1dcc7d7392.jpeg?aki_policy=large',
+  'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large'
+]
 
 const signup = () => {
-  router.push('/signup');
+  router.push('/signup')
 }
 
 const login = () => {
-  router.push('/login');
+  router.push('/login')
 }
 
 const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('username');
-  router.push('/login');
-};
-
-const toMerchantPage = () => {
-  router.push('/merchant');
+  localStorage.removeItem('token')
+  localStorage.clear()
+  router.push('/login')
 }
 
-const options = [
-  {
-    label: 'Popular cities',
-    options: [
-      {
-        value: 'Shanghai',
-        label: 'Shanghai',
-      },
-      {
-        value: 'Beijing',
-        label: 'Beijing',
-      },
-    ],
-  },
-  {
-    label: 'City name',
-    options: [
-      {
-        value: 'Chengdu',
-        label: 'Chengdu',
-      },
-      {
-        value: 'Shenzhen',
-        label: 'Shenzhen',
-      },
-      {
-        value: 'Guangzhou',
-        label: 'Guangzhou',
-      },
-      {
-        value: 'Dalian',
-        label: 'Dalian',
-      },
-    ],
-  },
-]
+let provinces: string[] = $ref<string[]>([])
+let cities: string[] = $ref<string[]>([])
+let regions = $ref<string[]>([])
+
+request.get('/public/province/all').then(res => {
+  const provinceList = res.data.data as City[]
+  provinces = provinceList.map(p => p.name)
+})
+
+const changeCity = (province: string) => {
+  request.get(`/public/city/all?province=${province}`).then(res => {
+    const cityList = res.data.data as Province[]
+    cities = cityList.map(c => c.name)
+    city = ''
+    region = ''
+    console.log(cities)
+  })
+}
+
+const changeRegion = (province: string, city: string) => {
+  request.get(`/public/region/all?province=${province}&&city=${city}`).then(res => {
+    const regionList = res.data.data as Province[]
+    regions = regionList.map(c => c.name)
+    region = ''
+    console.log(cities)
+  })
+}
 </script>
 
 <style scoped>
