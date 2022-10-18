@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class HotelInfo {
 	private String cityName;
 	private String regionName;
 	private Float stars;
-	private String comment;
-	private String picture_url;
-	private String video_url;
+	private String coverUrl;
+	private List<String> videoUrls;
+	private List<String> pictureUrls;
 }

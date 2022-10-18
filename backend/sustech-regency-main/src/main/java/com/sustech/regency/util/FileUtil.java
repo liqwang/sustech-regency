@@ -71,4 +71,11 @@ public class FileUtil {
 		asserts(VALID_PICTURE_SUFFIXES.contains(suffix) || VALID_VIDEO_SUFFIXES.contains(suffix),
 				"文件格式不支持");
 	}
+
+	public static String getUrl(com.sustech.regency.db.po.File file){
+		@SuppressWarnings("ConstantConditions")
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String dateDir=DATE_FORMAT.format(file.getUploadTime());
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+ "/public/file" + dateDir +file.getId()+"."+file.getSuffix();
+	}
 }
