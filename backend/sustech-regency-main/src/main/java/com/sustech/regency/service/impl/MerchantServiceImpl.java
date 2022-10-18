@@ -128,4 +128,10 @@ public class MerchantServiceImpl implements MerchantService {
         hotelExhibitionDao.insert(hotelExhibition);
         return url;
     }
+
+    private void checkHotelAndOwner(Hotel hotel){
+        asserts(hotel!=null,"酒店不存在");
+        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        asserts(merchantId==hotel.getMerchantId(),"该酒店属于别人");
+    }
 }
