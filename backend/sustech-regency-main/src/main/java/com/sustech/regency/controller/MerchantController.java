@@ -95,18 +95,19 @@ public class MerchantController {
         return ApiResponse.success(Map.of("url",url));
     }
 
-//    @ApiOperation(value = "商家设置酒店封面",notes = "为指定的酒店(hotelId)设置指定的封面(pictureId)")
-//    @PostMapping("hotel/set-cover")
-//    public ApiResponse<Map> setHotelCover(@ApiParam(value = "封面的32位uuid",required = true)
-//                                          @NotNull(message = "coverId shouldn't be null")
-//                                          @RequestParam String pictureId,
-//
-//                                          @ApiParam(value = "酒店id",required = true)
-//                                          @NotNull(message = "hotelId shouldn't be null")
-//                                          @RequestParam Integer hotelId){
-//        return null;
-//    }
-//
+    @ApiOperation(value = "商家上传酒店封面",notes = "为指定的酒店(hotelId)上传封面(jpg,jpeg,png),,返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @PostMapping("hotel/upload-cover")
+    public ApiResponse<Map> uploadHotelCover(@ApiParam(required = true)
+                                             @NotNull(message = "Picture shouldn't be null")
+                                             @RequestParam MultipartFile picture,
+
+                                             @ApiParam(value = "酒店id",required = true)
+                                             @NotNull(message = "hotelId shouldn't be null")
+                                             @RequestParam Integer hotelId){
+        String url = merchantService.uploadHotelCover(picture, hotelId);
+        return ApiResponse.success(Map.of("url",url));
+    }
+
 //    @ApiOperation(value = "商家删除酒店图片或视频",notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
 //    @PostMapping("hotel/delete-media")
 //    public ApiResponse<Map> deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid",required = true)

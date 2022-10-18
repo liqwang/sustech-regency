@@ -129,6 +129,32 @@ public class MerchantServiceImpl implements MerchantService {
         return url;
     }
 
+    @Resource
+    private FileDao fileDao;
+    @Override
+    public String uploadHotelCover(MultipartFile picture, Integer hotelId) {
+        String originalFilename = picture.getOriginalFilename();
+        String suffix = getSuffix(originalFilename);
+        asserts(VALID_PICTURE_SUFFIXES.contains(suffix),"图片格式不支持，仅支持"+VALID_PICTURE_SUFFIXES);
+        Hotel hotel = hotelDao.selectById(hotelId);
+        checkHotelAndOwner(hotel);
+
+        //1.如果有原封面，需要删除
+        if(hotel.getCoverId()!=null){
+            fileDao.updateById(File.builder()
+                                   .id(hotel.getCoverId())
+                                   .deleteTime(new Date())
+                                   .build());
+        }
+        //2.上传封面
+        String uuid = getUUID();
+        String url = fileUtil.uploadFile(picture, uuid);
+        //3.更换封面
+        hotel.setCoverId(uuid);
+        hotelDao.updateById(hotel);
+        return url;
+    }
+
     private void checkHotelAndOwner(Hotel hotel){
         asserts(hotel!=null,"酒店不存在");
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
