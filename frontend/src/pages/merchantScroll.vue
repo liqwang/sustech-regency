@@ -75,10 +75,16 @@
       <el-image v-show="v2" style="width: 100%; height: 100%" :src="image2" />
       <el-image v-show="v3" style="width: 100%; height: 100%" :src="image3" />
       <!-- <div id="chart" style="width:80%;height:60%"></div> -->
+
+
     </div>
+
     <div v-else>
       <el-empty />
     </div>
+    <div v-show="show_content" id="graph" style="position:relative;width: 60vw;height: 500%;">
+
+</div>
   </el-scrollbar>
   <el-dialog v-model="show_input" title="Input the message you need">
     <div style="position: relative; width: 80%">
@@ -86,34 +92,8 @@
         <el-form-item label="Name">
           <el-input size="large" v-model="form.name" placeholder="Hotel Name" />
         </el-form-item>
-        <el-form-item label="Province">
-          <el-select v-model="form.province" @change="selectProvince" filterable placeholder="Select">
-            <el-option v-for="item in ps.provinces" :key="item.name" :value="item.id" :label="item.name" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="City">
-          <el-select v-model="form.city" @change="selectCity" filterable placeholder="Select">
-            <div v-for="item in cs.cities">
-              <el-option v-if="item.provinceId + '' == form.province" :key="item.name" :value="item.id"
-                :label="item.name" />
-            </div>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Region">
-          <el-select v-model="form.region" filterable placeholder="Select">
-            <div v-for="item in rs.regions">
-              <el-option v-if="item.cityId + '' == form.city" :key="item.name" :value="item.id" :label="item.name" />
-            </div>
-          </el-select>
-        </el-form-item>
         <el-form-item label="Address">
           <el-input size="large" v-model="form.address" placeholder="Detailed Address" />
-        </el-form-item>
-        <el-form-item label="Latitude">
-          <el-input size="large" v-model="form.latitude" placeholder="The latitude of hotel" />
-        </el-form-item>
-        <el-form-item label="Longitude">
-          <el-input size="large" v-model="form.longitude" placeholder="The longitude of hotel" />
         </el-form-item>
         <el-form-item label="Tel">
           <el-input size="large" v-model="form.tel" placeholder="The tel number" />
@@ -126,9 +106,55 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, h } from 'vue';
+import {onMounted, ref, reactive, watch, h } from 'vue';
 import request from '../utils/request';
 import { ElNotification } from 'element-plus';
+import * as echarts from 'echarts/core';
+import {
+    GridComponent,
+    GridComponentOption
+} from 'echarts/components';
+import {
+    LineChart,
+    LineSeriesOption
+} from 'echarts/charts';
+import {
+    UniversalTransition
+} from 'echarts/features';
+import {
+    CanvasRenderer
+} from 'echarts/renderers';
+onMounted(()=>{
+  echarts.use(
+    [GridComponent, LineChart, CanvasRenderer, UniversalTransition]
+);
+
+type EChartsOption = echarts.ComposeOption<
+    GridComponentOption | LineSeriesOption
+>
+
+var chartDom = document.getElementById('graph')!;
+var myChart = echarts.init(chartDom);
+var option: EChartsOption;
+
+option = {
+  xAxis: {
+    type: 'category',
+    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      data: [150, 230, 224, 218, 135, 147, 260],
+      type: 'line'
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+})
 
 type props = {
   HotelId: string;
@@ -196,8 +222,6 @@ const edit =()=>{
   console.log(hotel.detail)
   form.address = hotel.detail.address
   form.tel = hotel.detail.tel
-  form.longitude = hotel.detail.longitude
-  form.latitude = hotel.detail.latitude
   form.name = hotel.detail.name
   form.province = hotel.detail.provinceName
   form.city = hotel.detail.cityName
