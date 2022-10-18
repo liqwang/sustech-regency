@@ -3,6 +3,7 @@ package com.sustech.regency.service;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,4 +20,9 @@ public interface MerchantService {
     HotelInfo getOneHotel(Integer hotelId,Float latitude, Float longitude,Integer merchantId, String name, String tel);
     //查询某个商家的所有订单
     List<Order> getOrders(Integer merchantId,Integer hotelId,Integer roomId,Integer cityId);
+
+    /**
+     * @return 获取上传文件的URL
+     */
+    String uploadHotelMedia(MultipartFile file, Integer hotelId);
 }

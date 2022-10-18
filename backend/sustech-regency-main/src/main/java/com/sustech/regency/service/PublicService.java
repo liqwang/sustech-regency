@@ -10,4 +10,12 @@ public interface PublicService {
     List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName);
 
     List<Room> getRoomsByHotel(Integer hotelId);
+
+
+    List<String> getPictureUrls(Integer hotelId);
+
+    List<String> getVideoUrls(Integer hotelId);
+
+    Float getMinPriceOfHotel(Integer hotelId);
+
 }

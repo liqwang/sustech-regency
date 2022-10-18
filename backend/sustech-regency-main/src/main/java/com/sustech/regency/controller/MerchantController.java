@@ -6,16 +6,17 @@ import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
-//Todo: API安全性校验是否是商家
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
 @RequestMapping("/merchant")
@@ -70,7 +71,6 @@ public class MerchantController {
         return ApiResponse.success(merchantService.getAllHotelInfos(merchantId));
     }
 
-    //TODO:通过省市区来查询
     @ApiOperation("商家多参数查询一个酒店")
     @GetMapping("/hotel/get")
     public ApiResponse<HotelInfo> getOneHotel(@ApiParam(value = "酒店Id") @RequestParam(required = false) Integer hotelId,
@@ -81,4 +81,41 @@ public class MerchantController {
         int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, merchantId, name, tel));
     }
+
+    @ApiOperation(value = "商家上传酒店图片或视频",notes = "为指定的酒店(hotelId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @PostMapping("hotel/upload-media")
+    public ApiResponse<Map> uploadHotelMedia (@ApiParam(required = true)
+                                              @NotNull(message = "Picture or video shouldn't be null")
+                                              @RequestParam MultipartFile file,
+
+                                              @ApiParam(value = "酒店id",required = true)
+                                              @NotNull(message = "hotelId shouldn't be null")
+                                              @RequestParam Integer hotelId){
+        String url = merchantService.uploadHotelMedia(file, hotelId);
+        return ApiResponse.success(Map.of("url",url));
+    }
+
+//    @ApiOperation(value = "商家设置酒店封面",notes = "为指定的酒店(hotelId)设置指定的封面(pictureId)")
+//    @PostMapping("hotel/set-cover")
+//    public ApiResponse<Map> setHotelCover(@ApiParam(value = "封面的32位uuid",required = true)
+//                                          @NotNull(message = "coverId shouldn't be null")
+//                                          @RequestParam String pictureId,
+//
+//                                          @ApiParam(value = "酒店id",required = true)
+//                                          @NotNull(message = "hotelId shouldn't be null")
+//                                          @RequestParam Integer hotelId){
+//        return null;
+//    }
+//
+//    @ApiOperation(value = "商家删除酒店图片或视频",notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
+//    @PostMapping("hotel/delete-media")
+//    public ApiResponse<Map> deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid",required = true)
+//                                             @NotNull(message = "mediaId shouldn't be null")
+//                                             @RequestParam String mediaId,
+//
+//                                             @ApiParam(value = "酒店id",required = true)
+//                                             @NotNull(message = "hotelId shouldn't be null")
+//                                             @RequestParam Integer hotelId){
+//        return null;
+//    }
 }

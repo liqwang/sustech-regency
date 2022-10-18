@@ -3,13 +3,19 @@ package com.sustech.regency.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.HotelDao;
+import com.sustech.regency.db.dao.HotelExhibitionDao;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
+import com.sustech.regency.util.FileUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.sustech.regency.util.FileUtil.checkSuffix;
+import static com.sustech.regency.util.FileUtil.getUUID;
 
 @Service
 public class MerchantServiceImpl implements MerchantService {
@@ -99,5 +105,19 @@ public class MerchantServiceImpl implements MerchantService {
     public List<Order> getOrders(Integer merchantId, Integer hotelId, Integer roomId, Integer cityId) {
         //晚些实现，到时候看看前端需要那些参数可以查订单
         return null;
+    }
+
+    @Resource
+    private FileUtil fileUtil;
+    @Resource
+    private HotelExhibitionDao hotelExhibitionDao;
+    @Override
+    public String uploadHotelMedia(MultipartFile file, Integer hotelId) {
+        checkSuffix(file);
+        String uuid = getUUID();
+        String url = fileUtil.uploadFile(file,uuid);
+        HotelExhibition hotelExhibition = new HotelExhibition(hotelId, uuid);
+        hotelExhibitionDao.insert(hotelExhibition);
+        return url;
     }
 }
