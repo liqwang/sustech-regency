@@ -82,7 +82,7 @@ public class MerchantController {
         return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, merchantId, name, tel));
     }
 
-    @ApiOperation(value = "商家上传酒店图片或视频",notes = "为指定的酒店(hotelId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @ApiOperation(value = "商家上传酒店展示图片或视频",notes = "为指定的酒店(hotelId)上传展示图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("hotel/upload-media")
     public ApiResponse<Map> uploadHotelMedia (@ApiParam(required = true)
                                               @NotNull(message = "Picture or video shouldn't be null")

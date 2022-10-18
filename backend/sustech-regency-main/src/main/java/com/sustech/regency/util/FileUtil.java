@@ -26,7 +26,7 @@ public class FileUtil {
 	private String fileRootPath; //保存文件的根路径
 	@Resource
 	private FileDao fileDao;
-	private static final Set<String> VALID_PICTURE_SUFFIXES=Set.of("jpg","jpeg","png");
+	public static final Set<String> VALID_PICTURE_SUFFIXES=Set.of("jpg","jpeg","png");
 	private static final Set<String> VALID_VIDEO_SUFFIXES=Set.of("mp4");
 
 	private static final SimpleDateFormat DATE_FORMAT=new SimpleDateFormat("/yyyy/MM/dd/");
@@ -65,11 +65,11 @@ public class FileUtil {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	public static void checkSuffix(MultipartFile file){
+	public static void checkMediaSuffix(MultipartFile file){
 		String originalFilename = file.getOriginalFilename();
 		String suffix = getSuffix(originalFilename);
 		asserts(VALID_PICTURE_SUFFIXES.contains(suffix) || VALID_VIDEO_SUFFIXES.contains(suffix),
-				"文件格式不支持");
+				"文件格式不支持，仅支持"+VALID_PICTURE_SUFFIXES+VALID_VIDEO_SUFFIXES);
 	}
 
 	public static String getUrl(com.sustech.regency.db.po.File file){

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
-import static com.sustech.regency.util.FileUtil.checkSuffix;
+import static com.sustech.regency.util.FileUtil.checkMediaSuffix;
 import static com.sustech.regency.util.FileUtil.getUUID;
 
 @Service
@@ -20,7 +20,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private FileUtil fileUtil;
 	@Override
 	public String uploadFile(MultipartFile file,Integer orderId){
-		checkSuffix(file);
+		checkMediaSuffix(file);
 		String uuid = getUUID();
 		String url = fileUtil.uploadFile(file,uuid);
 		commentAttachmentDao.insert(new CommentAttachment(uuid,orderId));
