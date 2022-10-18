@@ -114,7 +114,6 @@
             <area shape="rect" coords="540,120,595,260" @click="click_room('206')">
             <area shape="rect" coords="611,120,666,260" @click="click_room('207')">
             <area shape="rect" coords="682,120,737,260" @click="click_room('208')">
-
             <area shape="rect" coords="185,315,240,430" @click="click_room('209')">
             <area shape="rect" coords="256,315,311,430" @click="click_room('210')">
             <area shape="rect" coords="327,315,382,430" @click="click_room('211')">
