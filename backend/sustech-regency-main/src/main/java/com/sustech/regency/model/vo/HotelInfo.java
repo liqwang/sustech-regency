@@ -20,4 +20,7 @@ public class HotelInfo {
 	private String cityName;
 	private String regionName;
 	private Float stars;
+	private String comment;
+	private String picture_url;
+	private String video_url;
 }
