@@ -119,4 +119,10 @@ public class PublicController {
     public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
         return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
     }
+    @ApiOperation("根据酒店ID获取房间最低价格")
+    @GetMapping("/get-min_price-by-hotel")
+    public ApiResponse<Float> getMinPriceByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getMinPriceOfHotel(hotelId));
+    }
+
 }

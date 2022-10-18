@@ -15,6 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Resource
     private HotelExhibitionDao hotelExhibitionDao;
+
 
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
@@ -110,5 +112,19 @@ public class PublicServiceImpl implements PublicService {
 
         }
         return videoList;
+    }
+
+    @Override
+    public Float getMinPriceOfHotel(Integer hotelId) {
+        LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Room::getHotelId,hotelId);
+        List<Room> roomList = roomDao.selectList(wrapper);
+        float min_price= Float.MAX_VALUE;
+        for (Room r:
+             roomList) {
+            float curr_price=r.getPrice()*r.getDiscount();
+            if( curr_price <min_price) min_price=curr_price;
+        }
+        return min_price;
     }
 }
