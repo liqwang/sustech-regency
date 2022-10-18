@@ -3,10 +3,7 @@ package com.sustech.regency.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.sustech.regency.db.dao.FileDao;
-import com.sustech.regency.db.dao.HotelDao;
-import com.sustech.regency.db.dao.HotelExhibitionDao;
-import com.sustech.regency.db.dao.RoomDao;
+import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.PublicService;
@@ -33,6 +30,8 @@ public class PublicServiceImpl implements PublicService {
     @Resource
     private HotelExhibitionDao hotelExhibitionDao;
 
+    @Resource
+    private OrderDao orderDao;
 
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
@@ -123,8 +122,25 @@ public class PublicServiceImpl implements PublicService {
         for (Room r:
              roomList) {
             float curr_price=r.getPrice()*r.getDiscount();
-            if( curr_price <min_price) min_price=curr_price;
+            if( curr_price < min_price) min_price=curr_price;
         }
         return min_price;
+    }
+
+    @Override
+    public Integer getCommentsNumberByHotel(Integer hotelId) {
+        LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Room::getHotelId,hotelId);
+        List<Room> roomList = roomDao.selectList(wrapper);
+        int cnt = 0;
+        for (Room r:
+             roomList) {
+            int room_id=r.getId();
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderLambdaQueryWrapper.eq(Order::getRoomId,room_id);
+            List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
+            cnt+=orderList.size();
+        }
+        return cnt;
     }
 }

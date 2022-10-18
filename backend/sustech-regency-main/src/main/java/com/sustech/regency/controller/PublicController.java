@@ -125,4 +125,10 @@ public class PublicController {
         return ApiResponse.success(publicService.getMinPriceOfHotel(hotelId));
     }
 
+    @ApiOperation("根据酒店ID获取评论数量")
+    @GetMapping("/get-comment_number-by-hotel")
+    public ApiResponse<Integer> getCommentOfHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getCommentsNumberByHotel(hotelId));
+    }
+
 }

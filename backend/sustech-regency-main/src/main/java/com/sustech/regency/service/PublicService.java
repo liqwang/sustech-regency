@@ -18,4 +18,6 @@ public interface PublicService {
 
     Float getMinPriceOfHotel(Integer hotelId);
 
+    Integer getCommentsNumberByHotel(Integer hotelId);
+
 }
