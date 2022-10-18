@@ -57,7 +57,7 @@ public class PublicServiceImpl implements PublicService {
             fileLambdaQueryWrapper.eq(File::getId, a.getCoverUrl());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
             if(file!=null){
-                a.setCoverUrl(FileUtil.getUrl(file));
+                if(file.getDeleteTime()==null) a.setCoverUrl(FileUtil.getUrl(file));
             }
             a.setPictureUrls(getPictureUrls(a.getId()));
             a.setVideoUrls(getVideoUrls(a.getId()));
@@ -85,8 +85,9 @@ public class PublicServiceImpl implements PublicService {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if (!file.getSuffix().equals("mp4")) {
-                pictureList.add(FileUtil.getUrl(file));
+            if (file!=null && !file.getSuffix().equals("mp4")) {
+                if(file.getDeleteTime()==null) pictureList.add(FileUtil.getUrl(file));
+
             }
         }
         return pictureList;
@@ -105,8 +106,8 @@ public class PublicServiceImpl implements PublicService {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if (file.getSuffix().equals("mp4")) {
-                videoList.add(FileUtil.getUrl(file));
+            if (file!=null &&file.getSuffix().equals("mp4")) {
+                if(file.getDeleteTime()==null) videoList.add(FileUtil.getUrl(file));
             }
 
         }
