@@ -17,3 +17,5 @@ public class File {
 	private Date deleteTime;
 	private String suffix;
 }
+
+
