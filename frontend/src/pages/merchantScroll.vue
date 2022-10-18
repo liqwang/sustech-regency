@@ -61,20 +61,95 @@
           {{ hotel.detail.address }}
         </el-descriptions-item>
       </el-descriptions>
+      <el-button @click="show_floor=true" type="primary" id="floor">Floor Graph</el-button>
 
-      <el-button-group class="ml-4">
-        <br />
-        <br />
-        <br />
-        <el-button type="primary" @click="f1">F1</el-button>
-        <el-button type="primary" @click="f2">F2</el-button>
-        <el-button type="primary" @click="f3">F3</el-button>
-        <br />
-      </el-button-group>
-      <el-image v-show="v1" style="width: 100%; height: 100%" :src="image1" />
-      <el-image v-show="v2" style="width: 100%; height: 100%" :src="image2" />
-      <el-image v-show="v3" style="width: 100%; height: 100%" :src="image3" />
-      <!-- <div id="chart" style="width:80%;height:60%"></div> -->
+
+
+
+
+
+
+
+
+      <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
+        <div v-show="which_floor==''">
+        <el-button-group class="ml-4">
+          <el-button type="primary" @click="f1">F1</el-button>
+          <el-button type="primary" @click="f2">F2</el-button>
+          <el-button type="primary" @click="f3">F3</el-button>
+          <br />
+        </el-button-group>
+        <el-button type="success" @click="show_floor=false;which_floor=''"> cancel</el-button>
+
+        <div v-show="v1" style="width: 100%; height: 100%">
+          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+          <img src="../images/floor1.png" usemap="#floor_1" />
+          <map name="floor_1">
+            <area shape="rect" coords="185,120,240,260" @click="click_room('101')">
+            <area shape="rect" coords="256,120,311,260" @click="click_room('102')">
+            <area shape="rect" coords="327,120,382,260" @click="click_room('103')">
+            <area shape="rect" coords="398,120,453,260" @click="click_room('104')">
+            <area shape="rect" coords="469,120,524,260" @click="click_room('105')">
+            <area shape="rect" coords="540,120,595,260" @click="click_room('106')">
+            <area shape="rect" coords="611,120,666,260" @click="click_room('107')">
+            <area shape="rect" coords="682,120,737,260" @click="click_room('108')">
+
+            <area shape="rect" coords="185,315,240,430" @click="click_room('109')">
+            <area shape="rect" coords="256,315,311,430" @click="click_room('110')">
+            <area shape="rect" coords="327,315,382,430" @click="click_room('111')">
+            <area shape="rect" coords="398,315,453,430" @click="click_room('112')">
+          </map>
+        </div>
+
+
+        <div v-show="v2" style="width: 100%; height: 100%">
+          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+          <img src="../images/floor2.png" usemap="#floor_2" />
+          <map name="floor_2">
+            <area shape="rect" coords="185,120,240,260" @click="click_room('201')">
+            <area shape="rect" coords="256,120,311,260" @click="click_room('202')">
+            <area shape="rect" coords="327,120,382,260" @click="click_room('203')">
+            <area shape="rect" coords="398,120,453,260" @click="click_room('204')">
+            <area shape="rect" coords="469,120,524,260" @click="click_room('205')">
+            <area shape="rect" coords="540,120,595,260" @click="click_room('206')">
+            <area shape="rect" coords="611,120,666,260" @click="click_room('207')">
+            <area shape="rect" coords="682,120,737,260" @click="click_room('208')">
+
+            <area shape="rect" coords="185,315,240,430" @click="click_room('209')">
+            <area shape="rect" coords="256,315,311,430" @click="click_room('210')">
+            <area shape="rect" coords="327,315,382,430" @click="click_room('211')">
+            <area shape="rect" coords="398,315,453,430" @click="click_room('212')">
+          </map>
+        </div>
+
+
+        <div v-show="v3" style="width: 100%; height: 100%">
+          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+          <img src="../images/floor3.png" usemap="#floor_3" />
+          <map name="floor_3">
+            <area shape="rect" coords="185,120,240,260" @click="click_room('301')">
+            <area shape="rect" coords="256,120,311,260" @click="click_room('302')">
+            <area shape="rect" coords="327,120,382,260" @click="click_room('303')">
+            <area shape="rect" coords="398,120,453,260" @click="click_room('304')">
+            <area shape="rect" coords="469,120,524,260" @click="click_room('305')">
+            <area shape="rect" coords="540,120,595,260" @click="click_room('306')">
+            <area shape="rect" coords="611,120,666,260" @click="click_room('307')">
+            <area shape="rect" coords="682,120,737,260" @click="click_room('308')">
+
+            <area shape="rect" coords="185,315,240,430" @click="click_room('309')">
+            <area shape="rect" coords="256,315,311,430" @click="click_room('310')">
+            <area shape="rect" coords="327,315,382,430" @click="click_room('311')">
+            <area shape="rect" coords="398,315,453,430" @click="click_room('312')">
+          </map>
+        </div>
+        <!-- <div id="chart" style="width:80%;height:60%"></div> -->
+      </div>
+      <div v-show="which_floor!=''">
+      您点击了{{which_floor}}
+      <el-button type="success" @click="which_floor=''"> back</el-button>
+      </div>
+      </el-dialog>
+
 
 
     </div>
@@ -84,7 +159,7 @@
     </div>
     <div v-show="show_content" id="graph" style="position:relative;width: 60vw;height: 500%;">
 
-</div>
+    </div>
   </el-scrollbar>
   <el-dialog v-model="show_input" title="Input the message you need">
     <div style="position: relative; width: 80%">
@@ -106,60 +181,68 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, watch, h } from 'vue';
+import { onMounted, ref, reactive, watch, h } from 'vue';
 import request from '../utils/request';
 import { ElNotification } from 'element-plus';
 import * as echarts from 'echarts/core';
 import {
-    GridComponent,
-    GridComponentOption
+  GridComponent,
+  GridComponentOption
 } from 'echarts/components';
 import {
-    LineChart,
-    LineSeriesOption
+  LineChart,
+  LineSeriesOption
 } from 'echarts/charts';
 import {
-    UniversalTransition
+  UniversalTransition
 } from 'echarts/features';
 import {
-    CanvasRenderer
+  CanvasRenderer
 } from 'echarts/renderers';
-onMounted(()=>{
+onMounted(() => {
+
   echarts.use(
     [GridComponent, LineChart, CanvasRenderer, UniversalTransition]
-);
+  );
 
-type EChartsOption = echarts.ComposeOption<
+  type EChartsOption = echarts.ComposeOption<
     GridComponentOption | LineSeriesOption
->
+  >
 
-var chartDom = document.getElementById('graph')!;
-var myChart = echarts.init(chartDom);
-var option: EChartsOption;
+  var chartDom = document.getElementById('graph')!;
+  var myChart = echarts.init(chartDom);
+  var option: EChartsOption;
 
-option = {
-  xAxis: {
-    type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  },
-  yAxis: {
-    type: 'value'
-  },
-  series: [
-    {
-      data: [150, 230, 224, 218, 135, 147, 260],
-      type: 'line'
-    }
-  ]
-};
+  option = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: [150, 230, 224, 218, 135, 147, 260],
+        type: 'line'
+      }
+    ]
+  };
 
-option && myChart.setOption(option);
+  option && myChart.setOption(option);
 })
 
 type props = {
   HotelId: string;
 };
 var id_par = defineProps<props>();
+const show_floor = ref(false)
+const which_floor = ref('')
+const click_room = (room_id: string) => {
+  which_floor.value = room_id
+  console.log(room_id)
+}
+
 type Province = {
   id: Number;
   name: string;
@@ -218,7 +301,7 @@ request.get('/public/province/all').then((response) => {
   ps.provinces = response.data.data;
   // console.log(ps.provinces)
 });
-const edit =()=>{
+const edit = () => {
   console.log(hotel.detail)
   form.address = hotel.detail.address
   form.tel = hotel.detail.tel
@@ -262,12 +345,13 @@ watch(
     immediate: true
   }
 );
-var image1 = ref('https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg');
-var image2 = ref('https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg');
-var image3 = ref('https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg');
-var v1 = ref(true);
+// var image1 = ref('../images/floor2.png');
+// var image2 = ref('https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg');
+// var image3 = ref('https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg');
+var v1 = ref(false);
 var v2 = ref(false);
 var v3 = ref(false);
+
 const show_input = ref(false);
 const update = () => {
   let url = `merchant/hotel/update?hotelId=${id_par.HotelId}&address=${form.address}
@@ -280,7 +364,7 @@ const update = () => {
         title: 'Success',
         message: h('i', { style: 'color: green' }, 'update successfully')
       });
-      show_input.value=false
+      show_input.value = false
       window.location.reload()
     } else {
       ElNotification({
@@ -307,5 +391,8 @@ const f3 = () => {
 };
 </script>
 <style lang="scss">
-
+#floor {
+  position: relative;
+  top: 10px;
+}
 </style>
