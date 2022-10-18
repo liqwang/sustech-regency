@@ -14,7 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+
+import static cn.hutool.core.io.FileUtil.getSuffix;
+import static com.sustech.regency.web.util.AssertUtil.asserts;
 
 @Component
 public class FileUtil {
@@ -22,6 +26,8 @@ public class FileUtil {
 	private String fileRootPath; //保存文件的根路径
 	@Resource
 	private FileDao fileDao;
+	private static final Set<String> VALID_PICTURE_SUFFIXES=Set.of("jpg","jpeg","png");
+	private static final Set<String> VALID_VIDEO_SUFFIXES=Set.of("mp4");
 
 	private static final SimpleDateFormat DATE_FORMAT=new SimpleDateFormat("/yyyy/MM/dd/");
 
@@ -57,5 +63,12 @@ public class FileUtil {
 
 	public static String getUUID(){
 		return UUID.randomUUID().toString().replace("-", "");
+	}
+
+	public static void checkSuffix(MultipartFile file){
+		String originalFilename = file.getOriginalFilename();
+		String suffix = getSuffix(originalFilename);
+		asserts(VALID_PICTURE_SUFFIXES.contains(suffix) || VALID_VIDEO_SUFFIXES.contains(suffix),
+				"文件格式不支持");
 	}
 }
