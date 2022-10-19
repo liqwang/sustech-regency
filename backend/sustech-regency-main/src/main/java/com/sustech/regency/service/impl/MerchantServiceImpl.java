@@ -18,9 +18,8 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-import static cn.hutool.core.io.FileUtil.getSuffix;
-import static com.sustech.regency.util.FileUtil.VALID_PICTURE_SUFFIXES;
 import static com.sustech.regency.util.FileUtil.checkMediaSuffix;
+import static com.sustech.regency.util.FileUtil.checkPictureSuffix;
 import static com.sustech.regency.util.FileUtil.getUUID;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -134,9 +133,7 @@ public class MerchantServiceImpl implements MerchantService {
     private FileDao fileDao;
     @Override
     public String uploadHotelCover(MultipartFile picture, Integer hotelId) {
-        String originalFilename = picture.getOriginalFilename();
-        String suffix = getSuffix(originalFilename);
-        asserts(VALID_PICTURE_SUFFIXES.contains(suffix),"图片格式不支持，仅支持"+VALID_PICTURE_SUFFIXES);
+        checkPictureSuffix(picture);
         Hotel hotel = hotelDao.selectById(hotelId);
         checkHotelAndOwner(hotel);
 
