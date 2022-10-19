@@ -114,4 +114,14 @@ public class FileUtil {
 		displayDao.updateById(display);
 		return url;
 	}
+
+	/**
+	 * @param display 展示物
+	 * @return 封面URL
+	 */
+	public <T extends DisPlayable> String getCoverUrl(T display){
+		String coverId = display.getCoverId();
+		if(coverId==null){return null;}
+		return getUrl(fileDao.selectById(coverId));
+	}
 }
