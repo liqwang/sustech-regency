@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sustech.regency.util.FileUtil.checkMediaSuffix;
-import static com.sustech.regency.util.FileUtil.checkPictureSuffix;
 import static com.sustech.regency.util.FileUtil.getUUID;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -133,24 +132,7 @@ public class MerchantServiceImpl implements MerchantService {
     private FileDao fileDao;
     @Override
     public String uploadHotelCover(MultipartFile picture, Integer hotelId) {
-        checkPictureSuffix(picture);
-        Hotel hotel = hotelDao.selectById(hotelId);
-        checkHotelAndOwner(hotel);
-
-        //1.如果有原封面，需要删除
-        if(hotel.getCoverId()!=null){
-            fileDao.updateById(File.builder()
-                                   .id(hotel.getCoverId())
-                                   .deleteTime(new Date())
-                                   .build());
-        }
-        //2.上传封面
-        String uuid = getUUID();
-        String url = fileUtil.uploadFile(picture, uuid);
-        //3.更换封面
-        hotel.setCoverId(uuid);
-        hotelDao.updateById(hotel);
-        return url;
+        return fileUtil.uploadDisplayCover(picture,hotelDao,hotelId);
     }
 
     @Override

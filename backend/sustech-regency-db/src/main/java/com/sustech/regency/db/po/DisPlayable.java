@@ -2,7 +2,7 @@ package com.sustech.regency.db.po;
 
 
 /**
- * 展示物，如酒店、房型...
+ * 展示物(具有封面的对象)，如酒店、房型...
  */
 public interface DisPlayable {
 	/**

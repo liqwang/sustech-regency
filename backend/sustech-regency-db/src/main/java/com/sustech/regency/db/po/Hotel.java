@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Hotel {
+public class Hotel implements DisPlayable{
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Float latitude;
