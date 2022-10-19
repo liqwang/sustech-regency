@@ -10,6 +10,7 @@ import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.vo.UserInfo;
 import com.sustech.regency.service.UserService;
+import com.sustech.regency.util.FileUtil;
 import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.util.JwtUtil;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -128,5 +130,12 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(message);
         //2.存入Redis
         redis.setObject("verification:" + email, randomCode, 120);
+    }
+
+    @Resource
+    private FileUtil fileUtil;
+    @Override
+    public String uploadHeadShot(MultipartFile file, Integer userId) {
+        return fileUtil.uploadDisplayCover(file,userDao,userId);
     }
 }
