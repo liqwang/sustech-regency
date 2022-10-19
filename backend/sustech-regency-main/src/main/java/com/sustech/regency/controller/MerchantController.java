@@ -6,7 +6,6 @@ import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +15,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
+
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
@@ -33,11 +34,10 @@ public class MerchantController {
                                             @ApiParam(value = "酒店电话", required = true) @RequestParam @NotEmpty String tel,
                                             @ApiParam(value = "区域内详细地址", required = true) @RequestParam @NotEmpty String address
     ) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Hotel hotel = Hotel.builder().latitude(latitude)
                 .longitude(longitude)
                 .regionId(regionId)
-                .merchantId(merchantId)
+                .merchantId(getUserId())
                 .name(name)
                 .tel(tel)
                 .address(address)
@@ -48,8 +48,7 @@ public class MerchantController {
     @ApiOperation("商家删除一个酒店")
     @PostMapping("/hotel/delete")
     public ApiResponse<Boolean> deleteHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.deleteHotel(merchantId, hotelId));
+        return ApiResponse.success(merchantService.deleteHotel(getUserId(), hotelId));
     }
 
     @ApiOperation("商家更新一个酒店信息")
@@ -60,15 +59,13 @@ public class MerchantController {
                                             @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
                                             @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel,
                                             @ApiParam(value = "区域内详细地址") @RequestParam(required = false) String address) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude,merchantId, name, tel, address));
+        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude,getUserId(), name, tel, address));
     }
 
     @ApiOperation("商家获取自己下面所有酒店信息")
     @GetMapping("/hotel/all")
     public ApiResponse<List<HotelInfo>> getAllHotels() {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getAllHotelInfos(merchantId));
+        return ApiResponse.success(merchantService.getAllHotelInfos(getUserId()));
     }
 
     @ApiOperation("商家多参数查询一个酒店")
@@ -78,8 +75,7 @@ public class MerchantController {
                                               @ApiParam(value = "经度") @RequestParam(required = false) Float longitude,
                                               @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
                                               @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, merchantId, name, tel));
+        return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, getUserId(), name, tel));
     }
 
     @ApiOperation(value = "商家上传酒店展示图片或视频",notes = "为指定的酒店(hotelId)上传展示图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")

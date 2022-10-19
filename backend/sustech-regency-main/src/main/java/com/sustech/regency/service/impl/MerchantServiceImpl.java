@@ -10,7 +10,6 @@ import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.util.FileUtil;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +19,7 @@ import java.util.List;
 
 import static com.sustech.regency.util.FileUtil.checkMediaSuffix;
 import static com.sustech.regency.util.FileUtil.getUUID;
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
 @Service
@@ -154,8 +154,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     private void checkHotelAndOwner(Hotel hotel){
         asserts(hotel!=null,"酒店不存在");
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        asserts(merchantId==hotel.getMerchantId(),"该酒店属于别人");
+        asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
     }
 
     private void checkHotelAndOwner(Integer hotelId){
