@@ -95,7 +95,7 @@ public class MerchantController {
         return ApiResponse.success(Map.of("url",url));
     }
 
-    @ApiOperation(value = "商家上传酒店封面",notes = "为指定的酒店(hotelId)上传封面(jpg,jpeg,png),,返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @ApiOperation(value = "商家上传酒店封面",notes = "为指定的酒店(hotelId)上传封面(jpg,jpeg,png),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("hotel/upload-cover")
     public ApiResponse<Map> uploadHotelCover(@ApiParam(required = true)
                                              @NotNull(message = "Picture shouldn't be null")

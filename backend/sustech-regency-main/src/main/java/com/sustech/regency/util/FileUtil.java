@@ -1,6 +1,8 @@
 package com.sustech.regency.util;
 
+import com.github.yulichang.base.MPJBaseMapper;
 import com.sustech.regency.db.dao.FileDao;
+import com.sustech.regency.db.po.DisPlayable;
 import com.sustech.regency.web.handler.ApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -83,5 +85,33 @@ public class FileUtil {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String dateDir=DATE_FORMAT.format(file.getUploadTime());
 		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+ "/public/file" + dateDir +file.getId()+"."+file.getSuffix();
+	}
+
+	/**
+	 * 上传展示物的封面
+	 * @param picture 要上传的封面
+	 * @param displayDao 展示物DAO
+	 * @param displayId 展示物id，如：酒店id、房型id...
+	 * @return 上传成功后的获取URL
+	 */
+	public <T extends DisPlayable> String uploadDisplayCover(MultipartFile picture, MPJBaseMapper<T> displayDao, Integer displayId){
+		checkPictureSuffix(picture);
+		T display = displayDao.selectById(displayId);
+		asserts(display!=null,"该id不存在");
+
+		//1.如果有原封面，需要删除
+		if(display.getCoverId()!=null){
+			fileDao.updateById(com.sustech.regency.db.po.File.builder()
+							  .id(display.getCoverId())
+							  .deleteTime(new Date())
+							  .build());
+		}
+		//2.上传封面
+		String uuid = getUUID();
+		String url = uploadFile(picture, uuid);
+		//3.更换封面
+		display.setCoverId(uuid);
+		displayDao.updateById(display);
+		return url;
 	}
 }
