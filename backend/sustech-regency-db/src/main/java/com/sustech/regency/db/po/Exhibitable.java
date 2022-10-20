@@ -9,6 +9,8 @@ package com.sustech.regency.db.po;
 public interface Exhibitable<Display> {
 
 	void setMediaId(String mediaId);
+	String getMediaId();
 
 	void setDisplayId(Integer displayId);
+	Integer getDisplayId();
 }

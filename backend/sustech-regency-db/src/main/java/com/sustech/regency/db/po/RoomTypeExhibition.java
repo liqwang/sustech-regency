@@ -22,7 +22,17 @@ public class RoomTypeExhibition implements Exhibitable<RoomType> {
 	}
 
 	@Override
+	public String getMediaId() {
+		return fileId;
+	}
+
+	@Override
 	public void setDisplayId(Integer displayId) {
 		roomTypeId=displayId;
+	}
+
+	@Override
+	public Integer getDisplayId() {
+		return roomTypeId;
 	}
 }

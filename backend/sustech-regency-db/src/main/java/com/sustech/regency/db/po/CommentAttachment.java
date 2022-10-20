@@ -22,7 +22,17 @@ public class CommentAttachment implements Exhibitable<Order>{
     }
 
     @Override
+    public String getMediaId() {
+        return fileId;
+    }
+
+    @Override
     public void setDisplayId(Integer displayId) {
         orderId=displayId;
+    }
+
+    @Override
+    public Integer getDisplayId() {
+        return orderId;
     }
 }

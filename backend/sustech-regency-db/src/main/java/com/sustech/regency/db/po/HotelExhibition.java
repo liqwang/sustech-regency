@@ -22,7 +22,17 @@ public class HotelExhibition implements Exhibitable<Hotel>{
 	}
 
 	@Override
+	public String getMediaId() {
+		return fileId;
+	}
+
+	@Override
 	public void setDisplayId(Integer displayId) {
 		hotelId=displayId;
+	}
+
+	@Override
+	public Integer getDisplayId() {
+		return hotelId;
 	}
 }
