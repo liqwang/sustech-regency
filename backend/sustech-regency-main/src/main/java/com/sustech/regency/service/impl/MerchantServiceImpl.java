@@ -145,17 +145,13 @@ public class MerchantServiceImpl implements MerchantService {
         fileDao.updateById(file);
     }
 
-    private void checkHotelAndOwner(Hotel hotel){
-        asserts(hotel!=null,"酒店不存在");
-        asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
-    }
-
     /**
      * @return 该hotelId对应的酒店
      */
     private Hotel checkHotelAndOwner(Integer hotelId){
         Hotel hotel = hotelDao.selectById(hotelId);
-        checkHotelAndOwner(hotel);
+        asserts(hotel!=null,"酒店不存在");
+        asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
         return hotel;
     }
 }
