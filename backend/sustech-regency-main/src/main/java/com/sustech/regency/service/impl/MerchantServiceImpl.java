@@ -117,15 +117,15 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public String uploadHotelMedia(MultipartFile media, Integer hotelId) {
         checkHotelAndOwner(hotelId);
-        return fileUtil.uploadDisplayMedia(media,hotelExhibitionDao,new HotelExhibition(),
-                                           hotelId,hotelDao);
+        return fileUtil.uploadDisplayMedia(media,hotelExhibitionDao,new HotelExhibition(hotelId,null));
     }
 
     @Resource
     private FileDao fileDao;
     @Override
     public String uploadHotelCover(MultipartFile picture, Integer hotelId) {
-        return fileUtil.uploadDisplayCover(picture,hotelDao,hotelId);
+        Hotel hotel = checkHotelAndOwner(hotelId);
+        return fileUtil.uploadDisplayCover(picture,hotelDao,hotel);
     }
 
     @Override
@@ -150,7 +150,12 @@ public class MerchantServiceImpl implements MerchantService {
         asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
     }
 
-    private void checkHotelAndOwner(Integer hotelId){
-        checkHotelAndOwner(hotelDao.selectById(hotelId));
+    /**
+     * @return 该hotelId对应的酒店
+     */
+    private Hotel checkHotelAndOwner(Integer hotelId){
+        Hotel hotel = hotelDao.selectById(hotelId);
+        checkHotelAndOwner(hotel);
+        return hotel;
     }
 }

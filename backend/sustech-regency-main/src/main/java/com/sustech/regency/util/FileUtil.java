@@ -5,6 +5,7 @@ import com.sustech.regency.db.dao.FileDao;
 import com.sustech.regency.db.po.DisPlayable;
 import com.sustech.regency.db.po.Exhibitable;
 import com.sustech.regency.web.handler.ApiException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -96,10 +97,24 @@ public class FileUtil {
 	 * @param displayId 展示物id，如：酒店id、房型id...
 	 * @return 上传成功后的获取URL
 	 */
-	public <Display extends DisPlayable> String uploadDisplayCover(MultipartFile picture, MPJBaseMapper<Display> displayDao, Integer displayId){
-		checkPictureSuffix(picture);
+	public <Display extends DisPlayable> String uploadDisplayCover(MultipartFile picture,
+	                                                               MPJBaseMapper<Display> displayDao, Integer displayId){
 		Display display = displayDao.selectById(displayId);
 		asserts(display!=null,"该id不存在");
+		return uploadDisplayCover(picture,displayDao,display);
+	}
+
+	/**
+	 * 上传展示物的封面<p>
+	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...
+	 * @param picture 要上传的封面
+	 * @param displayDao 展示物DAO
+	 * @param display 展示物，<b>要求包含该展示物在数据库中的全部信息<b>
+	 * @return 上传成功后的获取URL
+	 */
+	public <Display extends DisPlayable> String uploadDisplayCover(MultipartFile picture,
+	                                                               @NotNull MPJBaseMapper<Display> displayDao, Display display){
+		checkPictureSuffix(picture);
 		//检查完毕，开始上传
 		//1.如果有原封面，需要删除
 		if(display.getCoverId()!=null){
@@ -142,13 +157,28 @@ public class FileUtil {
 	public <Exhibition extends Exhibitable<Display>, Display extends DisPlayable>
 	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition,
 	                          Integer displayId, MPJBaseMapper<Display> displayDao){
+		Display display = displayDao.selectById(displayId);
+		asserts(display !=null,"该id不存在");
+		exhibition.setDisplayId(displayId);
+		return uploadDisplayMedia(media,exhibitionDao,exhibition);
+	}
+
+	/**
+	 * 为指定的展示物上传展示图片或视频<p>
+	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...<p>
+	 * &emsp;&emsp;&emsp;&emsp;&ensp;&lt;Exhibition&gt; – 展示物的关系类，如HotelExhibition、RoomTypeExhibition...
+	 * @param media 展示图片或视频
+	 * @param exhibitionDao 展示物的关系类DAO
+	 * @param exhibition 展示物的关系示实例，<b>要求已经包含displayId，并且在数据库中存在<b>
+	 * @return 上传成功后的获取URL
+	 */
+	public <Exhibition extends Exhibitable<Display>, Display extends DisPlayable>
+	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition){
 		checkMediaSuffix(media);
-		asserts(displayDao.selectById(displayId)!=null,"该id不存在");
-		//检查完毕，开始上传
+
 		String uuid = getUUID();
 		String url = uploadFile(media,uuid);
 		exhibition.setMediaId(uuid);
-		exhibition.setDisplayId(displayId);
 		exhibitionDao.insert(exhibition);
 		return url;
 	}
