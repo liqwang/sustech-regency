@@ -12,7 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class RoomTypeExhibition {
+public class RoomTypeExhibition implements Exhibitable<RoomType> {
 	private String fileId;
 	private Integer roomTypeId;
+
+	@Override
+	public void setMediaId(String mediaId) {
+		fileId=mediaId;
+	}
+
+	@Override
+	public void setDisplayId(Integer displayId) {
+		roomTypeId=displayId;
+	}
 }

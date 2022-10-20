@@ -3,6 +3,7 @@ package com.sustech.regency.util;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.sustech.regency.db.dao.FileDao;
 import com.sustech.regency.db.po.DisPlayable;
+import com.sustech.regency.db.po.Exhibitable;
 import com.sustech.regency.web.handler.ApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -88,17 +89,18 @@ public class FileUtil {
 	}
 
 	/**
-	 * 上传展示物的封面
+	 * 上传展示物的封面<p>
+	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...
 	 * @param picture 要上传的封面
 	 * @param displayDao 展示物DAO
 	 * @param displayId 展示物id，如：酒店id、房型id...
 	 * @return 上传成功后的获取URL
 	 */
-	public <T extends DisPlayable> String uploadDisplayCover(MultipartFile picture, MPJBaseMapper<T> displayDao, Integer displayId){
+	public <Display extends DisPlayable> String uploadDisplayCover(MultipartFile picture, MPJBaseMapper<Display> displayDao, Integer displayId){
 		checkPictureSuffix(picture);
-		T display = displayDao.selectById(displayId);
+		Display display = displayDao.selectById(displayId);
 		asserts(display!=null,"该id不存在");
-
+		//检查完毕，开始上传
 		//1.如果有原封面，需要删除
 		if(display.getCoverId()!=null){
 			fileDao.updateById(com.sustech.regency.db.po.File.builder()
@@ -116,12 +118,38 @@ public class FileUtil {
 	}
 
 	/**
+	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...
 	 * @param display 展示物
 	 * @return 封面URL
 	 */
-	public <T extends DisPlayable> String getCoverUrl(T display){
+	public <Display extends DisPlayable> String getCoverUrl(Display display){
 		String coverId = display.getCoverId();
 		if(coverId==null){return null;}
 		return getUrl(fileDao.selectById(coverId));
+	}
+
+	/**
+	 * 为指定的展示物上传展示图片或视频<p>
+	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...<p>
+	 * &emsp;&emsp;&emsp;&emsp;&ensp;&lt;Exhibition&gt; – 展示物的关系类，如HotelExhibition、RoomTypeExhibition...
+	 * @param media 展示图片或视频
+	 * @param exhibitionDao 展示物的关系类DAO
+	 * @param exhibition 展示物的关系示实例
+	 * @param displayId 展示物id
+	 * @param displayDao 展示物DAO
+	 * @return 上传成功后的获取URL
+	 */
+	public <Exhibition extends Exhibitable<Display>, Display extends DisPlayable>
+	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition,
+	                          Integer displayId, MPJBaseMapper<Display> displayDao){
+		checkMediaSuffix(media);
+		asserts(displayDao.selectById(displayId)!=null,"该id不存在");
+		//检查完毕，开始上传
+		String uuid = getUUID();
+		String url = uploadFile(media,uuid);
+		exhibition.setMediaId(uuid);
+		exhibition.setDisplayId(displayId);
+		exhibitionDao.insert(exhibition);
+		return url;
 	}
 }

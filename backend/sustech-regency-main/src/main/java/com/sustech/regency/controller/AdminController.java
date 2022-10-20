@@ -32,4 +32,17 @@ public class AdminController {
 		String url = adminService.uploadRoomTypeCover(picture, roomTypeId);
 		return ApiResponse.success(Map.of("url",url));
 	}
+
+	@ApiOperation(value = "管理员上传房型展示图片或视频",notes = "为指定的房型(roomTypeId)上传封面(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+	@PostMapping("/room-type/upload-media")
+	public ApiResponse<Map> uploadRoomTypeMedia(@ApiParam(required = true)
+	                                            @NotNull(message = "Picture or video shouldn't be null")
+	                                            @RequestParam MultipartFile media,
+
+	                                            @ApiParam(value = "房型id",required = true)
+	                                            @NotNull(message = "roomTypeId shouldn't be null")
+	                                            @RequestParam Integer roomTypeId){
+		String url = adminService.uploadRoomTypeMedia(media, roomTypeId);
+		return ApiResponse.success(Map.of("url",url));
+	}
 }
