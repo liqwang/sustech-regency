@@ -154,7 +154,7 @@ public class FileUtil {
 	 * @param displayDao 展示物DAO
 	 * @return 上传成功后的获取URL
 	 */
-	public <Exhibition extends Exhibitable<Display>, Display extends DisPlayable>
+	public <Exhibition extends Exhibitable<Display>, Display>
 	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition,
 	                          Integer displayId, MPJBaseMapper<Display> displayDao){
 		Display display = displayDao.selectById(displayId);
@@ -172,7 +172,7 @@ public class FileUtil {
 	 * @param exhibition 展示物的关系示实例，<b>要求已经包含displayId，并且在数据库中存在<b>
 	 * @return 上传成功后的获取URL
 	 */
-	public <Exhibition extends Exhibitable<Display>, Display extends DisPlayable>
+	public <Exhibition extends Exhibitable<Display>, Display>
 	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition){
 		checkMediaSuffix(media);
 
