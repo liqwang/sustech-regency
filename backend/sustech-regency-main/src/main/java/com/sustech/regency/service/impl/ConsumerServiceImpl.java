@@ -19,10 +19,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 	@Resource
 	private FileUtil fileUtil;
 	@Override
-	public String uploadFile(MultipartFile file,Integer orderId){
-		checkMediaSuffix(file);
+	public String uploadFile(MultipartFile media,Integer orderId){
+		checkMediaSuffix(media);
 		String uuid = getUUID();
-		String url = fileUtil.uploadFile(file,uuid);
+		String url = fileUtil.uploadFile(media,uuid);
 		commentAttachmentDao.insert(new CommentAttachment(uuid,orderId));
 		return url;
 	}

@@ -117,12 +117,12 @@ public class MerchantServiceImpl implements MerchantService {
     @Resource
     private HotelExhibitionDao hotelExhibitionDao;
     @Override
-    public String uploadHotelMedia(MultipartFile file, Integer hotelId) {
-        checkMediaSuffix(file);
+    public String uploadHotelMedia(MultipartFile media, Integer hotelId) {
+        checkMediaSuffix(media);
         checkHotelAndOwner(hotelId);
 
         String uuid = getUUID();
-        String url = fileUtil.uploadFile(file,uuid);
+        String url = fileUtil.uploadFile(media,uuid);
         HotelExhibition hotelExhibition = new HotelExhibition(hotelId, uuid);
         hotelExhibitionDao.insert(hotelExhibition);
         return url;

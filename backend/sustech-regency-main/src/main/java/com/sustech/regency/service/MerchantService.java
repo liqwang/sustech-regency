@@ -24,7 +24,7 @@ public interface MerchantService {
     /**
      * @return 获取上传文件的URL
      */
-    String uploadHotelMedia(MultipartFile file, Integer hotelId);
+    String uploadHotelMedia(MultipartFile media, Integer hotelId);
 
     /**
      * @return 获取上传文件的URL

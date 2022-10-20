@@ -82,12 +82,12 @@ public class MerchantController {
     @PostMapping("hotel/upload-media")
     public ApiResponse<Map> uploadHotelMedia (@ApiParam(required = true)
                                               @NotNull(message = "Picture or video shouldn't be null")
-                                              @RequestParam MultipartFile file,
+                                              @RequestParam MultipartFile media,
 
                                               @ApiParam(value = "酒店id",required = true)
                                               @NotNull(message = "hotelId shouldn't be null")
                                               @RequestParam Integer hotelId){
-        String url = merchantService.uploadHotelMedia(file, hotelId);
+        String url = merchantService.uploadHotelMedia(media, hotelId);
         return ApiResponse.success(Map.of("url",url));
     }
 
