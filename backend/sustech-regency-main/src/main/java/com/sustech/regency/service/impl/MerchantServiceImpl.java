@@ -17,8 +17,6 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-import static com.sustech.regency.util.FileUtil.checkMediaSuffix;
-import static com.sustech.regency.util.FileUtil.getUUID;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -118,14 +116,9 @@ public class MerchantServiceImpl implements MerchantService {
     private HotelExhibitionDao hotelExhibitionDao;
     @Override
     public String uploadHotelMedia(MultipartFile media, Integer hotelId) {
-        checkMediaSuffix(media);
         checkHotelAndOwner(hotelId);
-
-        String uuid = getUUID();
-        String url = fileUtil.uploadFile(media,uuid);
-        HotelExhibition hotelExhibition = new HotelExhibition(hotelId, uuid);
-        hotelExhibitionDao.insert(hotelExhibition);
-        return url;
+        return fileUtil.uploadDisplayMedia(media,hotelExhibitionDao,new HotelExhibition(),
+                                           hotelId,hotelDao);
     }
 
     @Resource

@@ -12,7 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class HotelExhibition {
+public class HotelExhibition implements Exhibitable<Hotel>{
 	private Integer hotelId;
 	private String fileId;
+
+	@Override
+	public void setMediaId(String mediaId) {
+		fileId=mediaId;
+	}
+
+	@Override
+	public void setDisplayId(Integer displayId) {
+		hotelId=displayId;
+	}
 }
