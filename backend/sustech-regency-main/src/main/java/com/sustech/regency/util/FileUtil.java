@@ -1,5 +1,6 @@
 package com.sustech.regency.util;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.sustech.regency.db.dao.FileDao;
 import com.sustech.regency.db.po.DisPlayable;
@@ -143,6 +144,7 @@ public class FileUtil {
 		return getUrl(fileDao.selectById(coverId));
 	}
 
+
 	/**
 	 * 为指定的展示物上传展示图片或视频<p>
 	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...<p>
@@ -165,14 +167,13 @@ public class FileUtil {
 
 	/**
 	 * 为指定的展示物上传展示图片或视频<p>
-	 * 类型形参: &lt;Display&gt; – 展示物类，如Hotel、RoomType...<p>
-	 * &emsp;&emsp;&emsp;&emsp;&ensp;&lt;Exhibition&gt; – 展示物的关系类，如HotelExhibition、RoomTypeExhibition...
+	 * 类型形参: &lt;Exhibition&gt; – 展示物的关系类，如HotelExhibition、RoomTypeExhibition...
 	 * @param media 展示图片或视频
 	 * @param exhibitionDao 展示物的关系类DAO
 	 * @param exhibition 展示物的关系示实例，<b>要求已经包含displayId，并且在数据库中存在<b>
 	 * @return 上传成功后的获取URL
 	 */
-	public <Exhibition extends Exhibitable<Display>, Display>
+	public <Exhibition extends Exhibitable>
 	String uploadDisplayMedia(MultipartFile media, MPJBaseMapper<Exhibition> exhibitionDao, Exhibition exhibition){
 		checkMediaSuffix(media);
 
@@ -181,5 +182,37 @@ public class FileUtil {
 		exhibition.setMediaId(uuid);
 		exhibitionDao.insert(exhibition);
 		return url;
+	}
+
+	/**
+	 * 删除展示物的图片或视频<p>
+	 * @deprecated <b>这一行在运行时有Bug👇，因为泛型{@code Exhibition}无法cast到具体类</b>
+	 * 	            <pre>{@code new LambdaQueryWrapper<Exhibition>()}</pre>
+	 * @param exhibitionDao 展示物的关系类DAO
+	 * @param mediaId 图片或视频id
+	 * @param displayId 展示物id, 如hotelId, roomTypeId, <b>要求在数据库中存在这个id</b>
+	 */
+	@Deprecated
+	public <Exhibition extends Exhibitable>
+	void deleteDisplayMedia(MPJBaseMapper<Exhibition> exhibitionDao,String mediaId, Integer displayId) {
+		asserts(fileDao.selectById(mediaId)!=null,"该文件不存在");
+		Exhibition exhibition = exhibitionDao.selectOne(new LambdaQueryWrapper<Exhibition>()
+														   .eq(Exhibition::getMediaId,mediaId)
+														   .eq(Exhibition::getDisplayId,displayId));
+		asserts(exhibition!=null,"该文件不是该展示物的图片或视频");
+		com.sustech.regency.db.po.File media = fileDao.selectById(exhibition.getMediaId());
+		asserts(media.getDeleteTime()==null,"该文件已经被删除");
+
+		//只需更新file表的delete_time行
+		media.setDeleteTime(new Date());
+		fileDao.updateById(media);
+	}
+
+	public void deleteFile(String fileId){
+		com.sustech.regency.db.po.File file = fileDao.selectById(fileId);
+		asserts(file.getDeleteTime()==null,"该文件已经被删除");
+		//只需更新file表的delete_time行
+		file.setDeleteTime(new Date());
+		fileDao.updateById(file);
 	}
 }

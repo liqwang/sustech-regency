@@ -12,4 +12,6 @@ public interface AdminService{
 	 * @return 返回上传房型封面之后的获取url
 	 */
 	String uploadRoomTypeMedia(MultipartFile media, Integer roomTypeId);
+
+	void deleteRoomTypeMedia(String mediaId, Integer roomTypeId);
 }

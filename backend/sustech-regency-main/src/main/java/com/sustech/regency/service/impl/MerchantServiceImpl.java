@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
@@ -137,12 +136,7 @@ public class MerchantServiceImpl implements MerchantService {
                                                 .eq(HotelExhibition::getHotelId, hotelId)
                                                 .eq(HotelExhibition::getFileId, mediaId));
         asserts(hotelExhibition!=null,"该文件不是该酒店的展示图片或视频");
-        File file = fileDao.selectById(hotelExhibition.getFileId());
-        asserts(file.getDeleteTime()==null,"该文件已经被删除");
-
-        //只需更新file表的delete_time行
-        file.setDeleteTime(new Date());
-        fileDao.updateById(file);
+        fileUtil.deleteFile(mediaId);
     }
 
     /**
