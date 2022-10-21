@@ -6,5 +6,7 @@ public interface ConsumerService {
 	/**
 	 * @return 文件上传成功后的获取URL
 	 */
-	String uploadFile(MultipartFile media,Integer orderId);
+	String uploadCommentMedia(MultipartFile media, Integer orderId);
+
+	void deleteCommentMedia(String mediaId, Integer orderId);
 }

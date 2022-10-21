@@ -208,6 +208,9 @@ public class FileUtil {
 		fileDao.updateById(media);
 	}
 
+	/**
+	 * @throws NullPointerException 如果fileId在数据库中不存在
+	 */
 	public void deleteFile(String fileId){
 		com.sustech.regency.db.po.File file = fileDao.selectById(fileId);
 		asserts(file.getDeleteTime()==null,"该文件已经被删除");

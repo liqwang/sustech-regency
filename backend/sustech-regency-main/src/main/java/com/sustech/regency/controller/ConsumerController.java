@@ -31,20 +31,20 @@ public class ConsumerController {
 												@ApiParam(value = "订单id",required = true)
 												@NotNull(message = "orderId shouldn't be null")
 												@RequestParam Integer orderId){
-		String url = consumerService.uploadFile(media,orderId);
+		String url = consumerService.uploadCommentMedia(media,orderId);
 		return ApiResponse.success(Map.of("url",url));
 	}
 
-//	@ApiOperation(value = "删除评论图片或视频",notes = "为指定的订单(orderId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
-//	@PostMapping("/comment/delete-media")
-//	public ApiResponse<Map> delete (@ApiParam(required = true)
-//	                                @NotNull(message = "Picture or video shouldn't be null")
-//	                                @RequestParam MultipartFile media,
-//
-//	                                @ApiParam(value = "订单id",required = true)
-//	                                @NotNull(message = "orderId shouldn't be null")
-//	                                @RequestParam Integer orderId){
-//		String url = consumerService.uploadFile(media,orderId);
-//		return ApiResponse.success(Map.of("url",url));
-//	}
+	@ApiOperation(value = "删除评论图片或视频",notes = "删除指定的订单评论(orderId)的图片或视频")
+	@PostMapping("/comment/delete-media")
+	public ApiResponse deleteCommentMedia(@ApiParam(required = true)
+			                              @NotNull(message = "mediaId shouldn't be null")
+			                              @RequestParam String mediaId,
+
+			                              @ApiParam(value = "订单id",required = true)
+			                              @NotNull(message = "orderId shouldn't be null")
+			                              @RequestParam Integer orderId){
+		consumerService.deleteCommentMedia(mediaId,orderId);
+		return ApiResponse.success();
+	}
 }
