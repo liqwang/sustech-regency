@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class RoomInfo {
     private Integer id;
-    private Integer roomNumber;
+    private Integer roomNum;
     private Float price;
     private Integer floor;
     private Integer typeId;

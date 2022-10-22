@@ -6,6 +6,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
@@ -156,6 +157,32 @@ public class PublicServiceImpl implements PublicService {
             cnt+=orderList.size();
         }
         return cnt;
+    }
+
+    @Override
+    public RoomInfo getRoomInfoByRoomId(Integer roomId) {
+        Room room = roomDao.selectById(roomId);
+        System.out.println("---------------room---------------");
+        asserts(room!=null,"RoomId dose not exist!");
+        MPJLambdaWrapper<RoomInfo> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Room::getId,Room::getRoomNum,Room::getPrice,Room::getFloor,Room::getTypeId,Room::getHotelId,Room::getIsAvailable,Room::getDiscount)
+                .selectAs(RoomType::getName,RoomInfo::getRoomTypeName)
+                .selectAs(RoomType::getCapacity,RoomInfo::getCapacity)
+                .selectAs(RoomType::getToiletNum,RoomInfo::getToiletNum)
+                .selectAs(RoomType::getHasLivingRoom,RoomInfo::getHasLivingRoom)
+                .selectAs(File::getId,RoomInfo::getCoverUrl)
+                .innerJoin(RoomType.class,RoomType::getId,Room::getTypeId);
+        wrapper.eq(Room::getId,room.getId());
+        RoomInfo roomInfo = roomDao.selectJoinOne(RoomInfo.class, wrapper);
+        LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        fileLambdaQueryWrapper.eq(File::getId, roomInfo.getCoverUrl());
+        File file = fileDao.selectOne(fileLambdaQueryWrapper);
+        if(file!=null){
+            if(file.getDeleteTime()==null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
+        }
+        roomInfo.setPictureUrls(getPictureUrls(roomInfo.getId()));
+        roomInfo.setVideoUrls(getVideoUrls(roomInfo.getId()));
+        return roomInfo;
     }
 
 

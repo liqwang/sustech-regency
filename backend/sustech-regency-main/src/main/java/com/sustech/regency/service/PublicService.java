@@ -2,6 +2,7 @@ package com.sustech.regency.service;
 
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ public interface PublicService {
 
     Integer getCommentsNumberByHotel(Integer hotelId);
 
+    RoomInfo getRoomInfoByRoomId(Integer roomId);
 
 
 

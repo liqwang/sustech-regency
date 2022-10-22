@@ -11,6 +11,7 @@ import com.sustech.regency.db.po.Region;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
@@ -138,5 +139,10 @@ public class PublicController {
         return ApiResponse.success(publicService.getCommentsNumberByHotel(hotelId));
     }
 
+    @ApiOperation("根据房间Id获取房间信息")
+    @GetMapping("/get-roomInfo-by-roomId")
+    public ApiResponse<RoomInfo> getRoomInfoByRoomId(@ApiParam(value = "房间Id", required = true) @RequestParam @NotEmpty @NotNull Integer roomId){
+        return ApiResponse.success(publicService.getRoomInfoByRoomId(roomId));
+    }
 
 }
