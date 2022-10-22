@@ -21,6 +21,6 @@ public interface PublicService {
 
     Integer getCommentsNumberByHotel(Integer hotelId);
 
-    void RoomReservation(Integer roomId,Date startTime, Date endTime, Float price,Integer payerId,String payerName,String payerIdNumber,List<String> cohabitantIdNumbers,List<String> cohabitantNames);
+
 
 }
