@@ -58,14 +58,14 @@ public class ConsumerController {
 	//price后面需要写一个方法来计算，可能需要结合bonus和积分什么的
 	@ApiOperation("预定酒店")
 	@PostMapping("/reserve-hotel-room")
-	public ApiResponse reserveRoom(@ApiParam(value = "房间Id",required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Integer roomId,
-								   @ApiParam (value = "预定开始时间",required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Date startTime,
-								   @ApiParam (value = "预定结束时间",required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Date endTime,
-								   @ApiParam (value = "总价",required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Float price,
-								   @ApiParam (value = "付款人名字",required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull String payerName,
-								   @ApiParam (value = "付款人身份证号", required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull String payerIdNumber,
-								   @ApiParam (value = "同住人身份证号列表（和后面名字要一一对应）") @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull List<String> cohabitantIdNums,
-								   @ApiParam (value = "同住人的名字列表") @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull List<String> cohabitantNames){
+	public ApiResponse reserveRoom(@ApiParam(value = "房间Id",required = true) @RequestParam @NotEmpty @NotNull Integer roomId,
+								   @ApiParam (value = "预定开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
+								   @ApiParam (value = "预定结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime,
+								   @ApiParam (value = "总价",required = true) @RequestParam @NotEmpty @NotNull Float price,
+								   @ApiParam (value = "付款人名字",required = true) @RequestParam @NotEmpty @NotNull String payerName,
+								   @ApiParam (value = "付款人身份证号", required = true) @RequestParam @NotEmpty @NotNull String payerIdNumber,
+								   @ApiParam (value = "同住人身份证号列表（和后面名字要一一对应）") @RequestParam @NotEmpty @NotNull List<String> cohabitantIdNums,
+								   @ApiParam (value = "同住人的名字列表") @RequestParam @NotEmpty @NotNull List<String> cohabitantNames){
 		consumerService.RoomReservation(roomId,startTime,endTime,price,getUserId(),payerName,payerIdNumber,cohabitantIdNums,cohabitantNames);
 		return ApiResponse.success();
 	}
