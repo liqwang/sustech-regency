@@ -3,6 +3,7 @@ package com.sustech.regency.service;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.vo.HotelInfo;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PublicService {
@@ -19,5 +20,7 @@ public interface PublicService {
     Float getMinPriceOfHotel(Integer hotelId);
 
     Integer getCommentsNumberByHotel(Integer hotelId);
+
+    void RoomReservation(Integer roomId,Date startTime, Date endTime, Float price,Integer payerId,String payerName,String payerIdNumber,List<String> cohabitantIdNumbers,List<String> cohabitantNames);
 
 }

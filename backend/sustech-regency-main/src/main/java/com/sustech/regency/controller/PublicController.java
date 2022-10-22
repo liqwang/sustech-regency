@@ -11,6 +11,7 @@ import com.sustech.regency.db.po.Region;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
@@ -28,7 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @RestController
 @RequestMapping("/public")
@@ -38,6 +42,9 @@ public class PublicController {
 
     @Resource
     private ProvinceDao provinceDao;
+
+    @Resource
+    private HideService hideService;
 
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
@@ -131,4 +138,18 @@ public class PublicController {
         return ApiResponse.success(publicService.getCommentsNumberByHotel(hotelId));
     }
 
+    //price后面需要写一个方法来计算，可能需要结合bonus和积分什么的
+    @ApiOperation("预定酒店")
+    @GetMapping("/reserve-hotel-room")
+    public ApiResponse reserveRoom(@ApiParam(value = "房间Id",required = true) @RequestParam @NotEmpty @NotNull Integer roomId,
+                                         @ApiParam (value = "预定开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
+                                         @ApiParam (value = "预定结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime,
+                                         @ApiParam (value = "总价",required = true) @RequestParam @NotEmpty @NotNull Float price,
+                                         @ApiParam (value = "付款人名字",required = true) @RequestParam @NotEmpty @NotNull String payerName,
+                                         @ApiParam (value = "付款人身份证号", required = true) @RequestParam @NotEmpty @NotNull String payerIdNumber,
+                                         @ApiParam (value = "同住人身份证号列表（和后面名字要一一对应）") @RequestParam @NotEmpty @NotNull List<String> cohabitantIdNums,
+                                         @ApiParam (value = "同住人的名字列表") @RequestParam @NotEmpty @NotNull List<String> cohabitantNames){
+        publicService.RoomReservation(roomId,startTime,endTime,price,getUserId(),payerName,payerIdNumber,cohabitantIdNums,cohabitantNames);
+        return ApiResponse.success();
+    }
 }

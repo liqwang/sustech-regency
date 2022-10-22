@@ -14,4 +14,6 @@ public interface RoomService {
     //查询某个房间的信息
     Room getOneRoom(Integer roomId);
 
+
+
 }
