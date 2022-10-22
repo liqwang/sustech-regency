@@ -185,5 +185,10 @@ public class PublicServiceImpl implements PublicService {
         return roomInfo;
     }
 
+    @Override
+    public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
+        return null;
+    }
+
 
 }

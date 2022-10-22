@@ -1,6 +1,7 @@
 package com.sustech.regency.service;
 
 import com.sustech.regency.db.po.Room;
+import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 
@@ -23,6 +24,7 @@ public interface PublicService {
 
     RoomInfo getRoomInfoByRoomId(Integer roomId);
 
+    List<RoomType> getRoomTypesByHotelId(Integer hotelId);
 
 
 
