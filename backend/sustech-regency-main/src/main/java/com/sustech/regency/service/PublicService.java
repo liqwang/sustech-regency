@@ -27,5 +27,4 @@ public interface PublicService {
     List<RoomType> getRoomTypesByHotelId(Integer hotelId);
 
 
-
 }

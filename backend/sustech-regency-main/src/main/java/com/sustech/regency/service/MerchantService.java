@@ -5,6 +5,7 @@ import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 public interface MerchantService {
@@ -32,4 +33,6 @@ public interface MerchantService {
     String uploadHotelCover(MultipartFile picture, Integer hotelId);
 
     void deleteHotelMedia(String mediaId, Integer hotelId);
+
+    List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime);
 }
