@@ -147,5 +147,4 @@ public class PublicController {
     public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
-
 }
