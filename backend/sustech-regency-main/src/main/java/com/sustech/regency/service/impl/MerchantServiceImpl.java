@@ -6,16 +6,17 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.FileDao;
 import com.sustech.regency.db.dao.HotelDao;
 import com.sustech.regency.db.dao.HotelExhibitionDao;
+import com.sustech.regency.db.dao.OrderDao;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
+import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
@@ -24,6 +25,12 @@ import static com.sustech.regency.web.util.AssertUtil.asserts;
 public class MerchantServiceImpl implements MerchantService {
     @Resource
     private HotelDao hotelDao;
+
+    @Resource
+    private PublicService publicService;
+
+    @Resource
+    private OrderDao orderDao;
 
     @Override
     public List<HotelInfo> getAllHotelInfos(Integer merchantId) {
@@ -142,7 +149,22 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime) {
-        return null;
+        Float[] money=new Float[differentDays(startTime,EndTime)];
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId);
+        for (Room room:
+             rooms) {
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderLambdaQueryWrapper.eq(Order::getRoomId,room);
+            List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
+            for (Order o:
+                 orders) {
+                if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())){
+                    money[differentDays(startTime,o.getDateEnd())]=o.getFee();
+                }
+
+            }
+        }
+        return new ArrayList<>(Arrays.asList(money));
     }
 
     /**
@@ -154,4 +176,46 @@ public class MerchantServiceImpl implements MerchantService {
         asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
         return hotel;
     }
+    /**
+     * date2比date1多的天数
+     * @param date1
+     * @param date2
+     * @return
+     */
+    private static int differentDays(Date date1,Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        int day1= cal1.get(Calendar.DAY_OF_YEAR);
+        int day2 = cal2.get(Calendar.DAY_OF_YEAR);
+
+        int year1 = cal1.get(Calendar.YEAR);
+        int year2 = cal2.get(Calendar.YEAR);
+        if(year1 != year2) {//同一年
+            int timeDistance = 0 ;
+            for(int i = year1 ; i < year2 ; i ++)
+            {
+                if(i%4==0 && i%100!=0 || i%400==0)    //闰年
+                {
+                    timeDistance += 366;
+                }
+                else    //不是闰年
+                {
+                    timeDistance += 365;
+                }
+            }
+
+            return timeDistance + (day2-day1) ;
+        } else {// 不同年
+            System.out.println("判断day2 - day1 : " + (day2-day1));
+            return day2-day1;
+        }
+    }
+
+
 }
+
+
+
