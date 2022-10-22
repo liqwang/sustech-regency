@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -115,5 +116,13 @@ public class MerchantController {
                                         @RequestParam Integer hotelId){
         merchantService.deleteHotelMedia(mediaId,hotelId);
         return ApiResponse.success();
+    }
+
+    @ApiOperation("商家查询某个酒店的流水")
+    @GetMapping("/hotel/get-HistoricalBills")
+    public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Integer hotelId,
+                                          @ApiParam (value = "开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
+                                          @ApiParam (value = "结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime){
+        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId,startTime,endTime));
     }
 }
