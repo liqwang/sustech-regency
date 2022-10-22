@@ -140,7 +140,7 @@ public class PublicController {
 
     //price后面需要写一个方法来计算，可能需要结合bonus和积分什么的
     @ApiOperation("预定酒店")
-    @GetMapping("/reserve-hotel-room")
+    @PostMapping("/reserve-hotel-room")
     public ApiResponse reserveRoom(@ApiParam(value = "房间Id",required = true) @RequestParam @NotEmpty @NotNull Integer roomId,
                                          @ApiParam (value = "预定开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
                                          @ApiParam (value = "预定结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime,
