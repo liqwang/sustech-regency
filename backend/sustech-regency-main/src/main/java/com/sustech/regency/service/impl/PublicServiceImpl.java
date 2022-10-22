@@ -18,6 +18,7 @@ import javax.validation.constraints.Max;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -46,6 +47,9 @@ public class PublicServiceImpl implements PublicService {
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private RoomTypeDao roomTypeDao;
 
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
@@ -187,8 +191,19 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
-        return null;
+        List<Room> rooms = getRoomsByHotel(hotelId);
+        List<Integer> typeIds = new ArrayList<Integer>();
+        for (Room room:rooms
+             ) {
+            if (!typeIds.contains(room.getTypeId())) typeIds.add(room.getTypeId());
+        }
+        List<RoomType> roomTypes = new ArrayList<RoomType>();
+        for (Integer i:typeIds
+             ) {
+            RoomType roomType = roomTypeDao.selectById(i);
+            roomTypes.add(roomType);
+        }
+        return roomTypes;
     }
-
 
 }

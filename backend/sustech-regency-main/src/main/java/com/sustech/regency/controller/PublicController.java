@@ -5,10 +5,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
-import com.sustech.regency.db.po.City;
-import com.sustech.regency.db.po.Province;
-import com.sustech.regency.db.po.Region;
-import com.sustech.regency.db.po.Room;
+import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
@@ -143,6 +140,12 @@ public class PublicController {
     @GetMapping("/get-roomInfo-by-roomId")
     public ApiResponse<RoomInfo> getRoomInfoByRoomId(@ApiParam(value = "房间Id", required = true) @RequestParam @NotEmpty @NotNull Integer roomId){
         return ApiResponse.success(publicService.getRoomInfoByRoomId(roomId));
+    }
+
+    @ApiOperation("根据酒店Id获得所有房型信息")
+    @GetMapping("/get-roomTypes-by-HotelId")
+    public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
 
 }
