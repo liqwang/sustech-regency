@@ -79,14 +79,14 @@ public class ConsumerServiceImpl implements ConsumerService {
 	public void RoomReservation(Integer roomId, Date startTime, Date endTime, Float price, Integer payerId, String payerName, String payerIdNumber, List<String> cohabitantIdNumbers, List<String> cohabitantNames) {
 		//判断房间存不存在
 		Room room = roomDao.selectById(roomId);
-		asserts(room==null,"Room dose not exist");
+		asserts(room!=null,"Room dose not exist");
 		//先看根据房间Id查时间，看时间合不合法，如果合法再继续
-		LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<Order>();
+		LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
 		orderLambdaQueryWrapper.eq(Order::getRoomId,roomId);
 		List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
 		for (Order o:
 				orders) {
-			asserts (!(endTime.before(o.getDateStart())&&startTime.after(o.getDateEnd())),"Date Conflict!");
+			asserts (endTime.before(o.getDateStart())&&startTime.after(o.getDateEnd()),"Date Conflict!");
 		}
 		//能活到这里说明日期合法了,需要加到订单里
 		Order order=Order.builder().roomId(roomId)
