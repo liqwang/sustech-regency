@@ -115,8 +115,11 @@ public class PublicController {
 
     @ApiOperation("根据省市区酒店名字获得酒店信息")
     @GetMapping("/get-hotels-by-location")
-    public ApiResponse<List<HotelInfo>> getHotels(@Validated @RequestBody LocationParam locationParam) {
-        return ApiResponse.success(publicService.getHotelsByLocation(locationParam.getProvince(), locationParam.getCity(), locationParam.getRegion(), locationParam.getName()));
+    public ApiResponse<List<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
+                                                  @ApiParam(value = "城市名字") @RequestParam(required = false)  String CityName,
+                                                  @ApiParam (value = "区的名字")@RequestParam(required = false) String RegionName,
+                                                  @ApiParam (value = "酒店名字") @RequestParam(required = false) String HotelName) {
+        return ApiResponse.success(publicService.getHotelsByLocation(ProvinceName ,CityName, RegionName, HotelName));
     }
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
@@ -124,6 +127,7 @@ public class PublicController {
     public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
         return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
     }
+
     @ApiOperation("根据酒店ID获取房间最低价格")
     @GetMapping("/get-min_price-by-hotel")
     public ApiResponse<Float> getMinPriceByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){

@@ -120,7 +120,7 @@ public class MerchantController {
 
     @ApiOperation("商家查询某个酒店的流水")
     @GetMapping("/hotel/get-HistoricalBills")
-    public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @org.jetbrains.annotations.NotNull Integer hotelId,
+    public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId,
                                           @ApiParam (value = "开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
                                           @ApiParam (value = "结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime){
         return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId,startTime,endTime));
