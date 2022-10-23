@@ -10,6 +10,7 @@ import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.vo.UserInfo;
 import com.sustech.regency.service.UserService;
+import com.sustech.regency.util.FileUtil;
 import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.util.JwtUtil;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -69,13 +71,18 @@ public class UserServiceImpl implements UserService {
             asserts(userWithRole==null,"该邮箱已被注册为"+(roleId==1?"消费者":"商家"));
         }
         userWithRoleDao.insert(new UserWithRole(user.getId(), roleId, new Date()));
+        return authenticateAndGetUserInfo(user);
+    }
+
+    private Map<String,Object> authenticateAndGetUserInfo(User user){
         //直接认证通过，就不经过AuthenticationManager#authenticate了
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
         SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
         redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
         String jwt = JwtUtil.createJwt(String.valueOf(user.getId()));//使用id生成JWT返回
+        String headshotUrl = fileUtil.getCoverUrl(user);
         return Map.of("token",jwt,
-                      "userInfo",new UserInfo(user.getId(),username,email));
+                      "userInfo",new UserInfo(user.getId(),user.getName(),user.getEmail(),headshotUrl));
     }
 
     @Override
@@ -89,6 +96,8 @@ public class UserServiceImpl implements UserService {
         userDao.updateById(user);
     }
 
+    @Resource
+    private FileUtil fileUtil;
     @Override
     public Map<String,Object> login(String usernameOrEmail, String password) {
         LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
@@ -104,13 +113,7 @@ public class UserServiceImpl implements UserService {
         String ipAddress = request.getRemoteAddr();
         int port = request.getRemotePort();
         loginLogDao.insert(new LoginLog(user.getId(), new Date(), ipAddress, port));
-        //直接认证通过，就不经过AuthenticationManager#authenticate了
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
-        SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
-        redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
-        String jwt = JwtUtil.createJwt(String.valueOf(user.getId()));//使用id生成JWT返回
-        return Map.of("token",jwt,
-                      "userInfo",new UserInfo(user.getId(),user.getName(),user.getEmail()));
+        return authenticateAndGetUserInfo(user);
     }
 
     @Resource
@@ -128,5 +131,10 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(message);
         //2.存入Redis
         redis.setObject("verification:" + email, randomCode, 120);
+    }
+
+    @Override
+    public String uploadHeadShot(MultipartFile file, Integer userId) {
+        return fileUtil.uploadDisplayCover(file,userDao,userId);
     }
 }

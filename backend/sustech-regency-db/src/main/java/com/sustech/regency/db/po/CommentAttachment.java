@@ -12,7 +12,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentAttachment {
+public class CommentAttachment implements Exhibitable<Order>{
     private String fileId;
     private Integer orderId;
+
+    @Override
+    public void setMediaId(String mediaId) {
+        fileId=mediaId;
+    }
+
+    @Override
+    public String getMediaId() {
+        return fileId;
+    }
+
+    @Override
+    public void setDisplayId(Integer displayId) {
+        orderId=displayId;
+    }
+
+    @Override
+    public Integer getDisplayId() {
+        return orderId;
+    }
 }

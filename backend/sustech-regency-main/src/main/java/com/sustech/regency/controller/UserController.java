@@ -9,13 +9,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 import static com.sustech.regency.util.VerificationUtil.judge;
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
@@ -61,5 +64,14 @@ public class UserController {
 	public ApiResponse<Map<String,Object>> login(@Validated @RequestBody LoginParam loginParam){
 		Map<String, Object> map = userService.login(loginParam.getUsernameOrEmail(), loginParam.getPassword());
 		return ApiResponse.success(map);
+	}
+
+	@ApiOperation(value = "用户上传头像",notes = "**需要token验证**，返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+	@PostMapping("/upload-headshot")
+	public ApiResponse<Map> uploadHeadShot(@ApiParam(required = true)
+                                           @NotNull(message = "Picture shouldn't be null")
+                                           @RequestParam MultipartFile picture){
+		String url = userService.uploadHeadShot(picture, getUserId());
+		return ApiResponse.success(Map.of("url",url));
 	}
 }

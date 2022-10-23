@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class User implements DisPlayable{
 	@TableId(type=IdType.AUTO)
 	private Integer id;
 	private String name;
@@ -19,5 +19,15 @@ public class User {
 	private String phone;
 	private String email;
 	private String idNumber;
-	private String headshotId;
+	private String headshotId; //用户的头像就是封面
+
+	@Override
+	public String getCoverId() {
+		return headshotId;
+	}
+
+	@Override
+	public void setCoverId(String coverId) {
+		headshotId=coverId;
+	}
 }

@@ -5,6 +5,7 @@ import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 public interface MerchantService {
@@ -24,5 +25,14 @@ public interface MerchantService {
     /**
      * @return 获取上传文件的URL
      */
-    String uploadHotelMedia(MultipartFile file, Integer hotelId);
+    String uploadHotelMedia(MultipartFile media, Integer hotelId);
+
+    /**
+     * @return 获取上传文件的URL
+     */
+    String uploadHotelCover(MultipartFile picture, Integer hotelId);
+
+    void deleteHotelMedia(String mediaId, Integer hotelId);
+
+    List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime);
 }

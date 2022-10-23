@@ -5,12 +5,11 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
-import com.sustech.regency.db.po.City;
-import com.sustech.regency.db.po.Province;
-import com.sustech.regency.db.po.Region;
-import com.sustech.regency.db.po.Room;
+import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.RoomInfo;
+import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
@@ -28,7 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @RestController
 @RequestMapping("/public")
@@ -38,6 +40,9 @@ public class PublicController {
 
     @Resource
     private ProvinceDao provinceDao;
+
+    @Resource
+    private HideService hideService;
 
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
@@ -125,4 +130,21 @@ public class PublicController {
         return ApiResponse.success(publicService.getMinPriceOfHotel(hotelId));
     }
 
+    @ApiOperation("根据酒店ID获取评论数量")
+    @GetMapping("/get-comment_number-by-hotel")
+    public ApiResponse<Integer> getCommentOfHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getCommentsNumberByHotel(hotelId));
+    }
+
+    @ApiOperation("根据房间Id获取房间信息")
+    @GetMapping("/get-roomInfo-by-roomId")
+    public ApiResponse<RoomInfo> getRoomInfoByRoomId(@ApiParam(value = "房间Id", required = true) @RequestParam @NotEmpty @NotNull Integer roomId){
+        return ApiResponse.success(publicService.getRoomInfoByRoomId(roomId));
+    }
+
+    @ApiOperation("根据酒店Id获得所有房型信息")
+    @GetMapping("/get-roomTypes-by-HotelId")
+    public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
+        return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
+    }
 }

@@ -5,7 +5,6 @@ import com.sustech.regency.service.RoomService;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+
+import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
 @RestController
@@ -44,8 +45,7 @@ public class RoomController {
     @ApiOperation("商家删除一个酒店房间")
     @PostMapping("/room/delete")
     public ApiResponse<Boolean> deleteRoom(@ApiParam(value = "房间Id", required = true) @RequestParam Integer roomId) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(roomService.deleteRoom(merchantId, roomId));
+        return ApiResponse.success(roomService.deleteRoom(getUserId(), roomId));
     }
 
     @ApiOperation("商家更新一个酒店房间信息")
@@ -58,8 +58,7 @@ public class RoomController {
                                               @ApiParam(value = "属于哪个酒店") @RequestParam(required = false) Integer hotelId,
                                               @ApiParam(value = "是否空置中") @RequestParam(required = false) Boolean isAvailable,
                                               @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(roomService.updateOneRoom(merchantId, roomId, roomNum, price, floor, typeId, hotelId, isAvailable, discount));
+        return ApiResponse.success(roomService.updateOneRoom(getUserId(), roomId, roomNum, price, floor, typeId, hotelId, isAvailable, discount));
     }
 
     @ApiOperation("商家更新一些房间信息")
@@ -68,9 +67,6 @@ public class RoomController {
                                                @ApiParam(value = "房间类型") @RequestParam(required = false) Integer typeId,
                                                @ApiParam(value = "属于哪个酒店") @RequestParam(required = false) Integer hotelId,
                                                @ApiParam(value = "折扣率") @RequestParam(required = false) Float discount) {
-        int merchantId = (int) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ApiResponse.success(roomService.updateRooms(merchantId, hotelId, typeId, price, discount));
+        return ApiResponse.success(roomService.updateRooms(getUserId(), hotelId, typeId, price, discount));
     }
-
-
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Hotel {
+public class Hotel implements DisPlayable{
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Float latitude;
@@ -21,7 +21,7 @@ public class Hotel {
     private String name;
     private String tel;
     private String address;
-    private Float stars;
+    private Float stars; //表示几星级酒店
     private String coverId;
     
 }
