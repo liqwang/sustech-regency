@@ -62,8 +62,30 @@
         </el-descriptions-item>
       </el-descriptions>
       <el-button @click="show_floor=true" type="primary" id="floor">Floor Graph</el-button>
+      <br>
+      <br>
 
+      <!-- <el-row id="floor_image">
+      <el-col :span="2">
+        <div class="d">
 
+          <img @click="test1"   src='../images/door2.png'/>
+          <span class="txt" >101</span>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div class="d">
+
+          <img @click="test1"   src='../images/door2.png'/>
+
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div class="d">
+          <img @click="test1"   src='../images/door2.png'/>
+        </div>
+      </el-col>
+    </el-row> -->
 
 
 
@@ -234,6 +256,11 @@ onMounted(() => {
 type props = {
   HotelId: string;
 };
+
+
+const test1=()=>{
+  alert('213')
+}
 var id_par = defineProps<props>();
 const show_floor = ref(false)
 const which_floor = ref('')
@@ -393,5 +420,26 @@ const f3 = () => {
 #floor {
   position: relative;
   top: 10px;
+}
+.d {
+  width: 100%;
+  height:15vh;
+  // background-color: aqua;
+}
+
+.d:hover {
+  transition: all .2s;
+  transform: translateY(-10px);
+  box-shadow: 0 26px 40px -24px rgb(0 36 100 / 50%);
+  background-color: aqua;
+}
+.txt{
+  position: absolute;
+  font-size:1vw;
+  left:1.5vw;
+  top:2.5vh;
+}
+#floor_image{
+  background-color: antiquewhite;
 }
 </style>

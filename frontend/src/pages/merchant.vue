@@ -42,8 +42,8 @@
   </div>
 
   <el-row id="r3">
-    <el-col :span="4">
-      <merchant-menu @select-hotel="load_hotel"></merchant-menu>
+    <el-col :span="4" id="menu">
+      <merchant-menu  @select-hotel="load_hotel"></merchant-menu>
     </el-col>
     <el-col :span="16">
       <merchant-scroll :HotelId="hotelId" />
@@ -94,7 +94,9 @@ const username = ref(localStorage.getItem('username') == null ? '未登录' : lo
   #r1 {
     display: none;
   }
-
+  #menu{
+    visibility: hidden;
+  }
   #r2 {}
 
   #drop {
