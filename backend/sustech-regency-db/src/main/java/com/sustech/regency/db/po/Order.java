@@ -31,4 +31,6 @@ public class Order {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date commentTime;
     private Float stars;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date payTime;
 }
