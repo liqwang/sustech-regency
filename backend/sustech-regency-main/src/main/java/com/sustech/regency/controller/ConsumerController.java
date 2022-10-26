@@ -1,15 +1,13 @@
 package com.sustech.regency.controller;
 
 import com.sustech.regency.service.ConsumerService;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -21,9 +19,7 @@ import java.util.Map;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
-@Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
-@RestController
-@RequestMapping("/consumer")
+@PathController("/consumer")
 public class ConsumerController {
 	@Resource
 	private ConsumerService consumerService;
