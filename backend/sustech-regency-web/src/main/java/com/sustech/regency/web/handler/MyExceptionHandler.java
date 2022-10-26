@@ -1,6 +1,7 @@
 package com.sustech.regency.web.handler;
 
 import com.sustech.regency.web.vo.ApiResponse;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,12 +15,16 @@ public class MyExceptionHandler {
     @SuppressWarnings("ConstantConditions")
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return new ApiResponse(400, e.getBindingResult().getFieldError().getDefaultMessage());
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        String field = fieldError.getField();
+        return new ApiResponse(400, "["+field+"] "+ fieldError.getDefaultMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
-        return new ApiResponse(400, e.getMessage().split(" ")[1]);
+        String message = e.getMessage().split(" ")[1];
+        String field = e.getMessage().split(":")[0].split("\\.")[1];
+        return new ApiResponse(400, "["+field+"] "+ message);
     }
 
     @ExceptionHandler(ApiException.class)
