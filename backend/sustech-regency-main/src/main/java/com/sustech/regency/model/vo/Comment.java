@@ -1,6 +1,6 @@
 package com.sustech.regency.model.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sustech.regency.db.annotation.DateTimeField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Comment {
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeField
     private Date commentTime;
     private String comment;
     private String userName;
