@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.ReportAsSingleViolation;
 
 /**
  * 只能捕获到API阶段的Exception, 无法捕获filter链中的Exception<p>
- * <a href="https://www.nicechiblog.com/article/14/article_1598135490604.html">Spring中的ExceptionHandler</a>
+ * 参考：<a href="https://www.nicechiblog.com/article/14/article_1598135490604.html">Spring中的ExceptionHandler</a>
+ * <p><p>
+ * 如果不使用{@code @}{@link ReportAsSingleViolation}，那么{@link MethodArgumentNotValidException}和{@link ConstraintViolationException}中可能包含多个Violation，最好都加进报错信息里<p>
+ * 参考：<a href="https://reflectoring.io/bean-validation-with-spring-boot/">bean-validation-with-spring-boot</a>
  */
 @RestControllerAdvice
 public class CustomExceptionHandler {
-
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ApiResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
         return new ApiResponse(400,"Missing param ["+e.getParameterName()+"]");
