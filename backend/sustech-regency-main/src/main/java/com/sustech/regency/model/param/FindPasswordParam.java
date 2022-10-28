@@ -1,5 +1,6 @@
 package com.sustech.regency.model.param;
 
+import com.sustech.regency.validator.Password;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,6 @@ public class FindPasswordParam {
 	String email;
 
 	@ApiModelProperty(required = true)
-	@Size(min=8,max=30,message = "密码需要为8-30位")
+	@Password
 	String newPassword;
 }

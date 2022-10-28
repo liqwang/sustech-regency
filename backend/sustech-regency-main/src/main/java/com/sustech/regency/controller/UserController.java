@@ -18,7 +18,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
-import static com.sustech.regency.util.VerificationUtil.judge;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @PathController("/user")
@@ -39,7 +38,6 @@ public class UserController {
 	@ApiOperation(value = "注册",notes = "返回token以及用户的详细信息")
 	@PostMapping("/register")
 	public ApiResponse<Map<String,Object>> register (@Validated @RequestBody RegisterParam registerParam){
-		judge(registerParam.getPassword());
 		Map<String,Object> map=userService.register(registerParam.getVerificationCode(),
 													registerParam.getEmail(),
 													registerParam.getUsername(),
@@ -51,7 +49,6 @@ public class UserController {
 	@ApiOperation("找回密码")
 	@PostMapping("/find-password")
 	public ApiResponse findPassword(@Validated @RequestBody FindPasswordParam findPasswordParam){
-		judge(findPasswordParam.getNewPassword());
 		userService.findPassword(findPasswordParam.getVerificationCode(),
 								 findPasswordParam.getEmail(),
 								 findPasswordParam.getNewPassword());
