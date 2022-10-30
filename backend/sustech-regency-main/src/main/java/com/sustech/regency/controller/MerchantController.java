@@ -3,6 +3,7 @@ package com.sustech.regency.controller;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
+import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
@@ -119,8 +120,8 @@ public class MerchantController {
     @ApiOperation("商家查询某个酒店的流水")
     @GetMapping("/hotel/get-HistoricalBills")
     public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId,
-                                          @ApiParam (value = "开始时间",required = true) @RequestParam @NotEmpty @NotNull Date startTime,
-                                          @ApiParam (value = "结束时间",required = true) @RequestParam @NotEmpty @NotNull Date endTime){
+                                          @ApiParam (value = "开始时间",required = true) @RequestParam @DateParam @NotNull Date startTime,
+                                          @ApiParam (value = "结束时间",required = true) @RequestParam  @DateParam @NotNull Date endTime){
         return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId,startTime,endTime));
     }
 }
