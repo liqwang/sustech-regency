@@ -1,6 +1,9 @@
 spring:
   profiles:
     active: dev #默认为开发环境
+  jackson:
+    time-zone: GMT+8
+#    date-format: yyyy-MM-dd HH:mm:ss
   mvc:
     pathmatch:
       #解决整合Swagger报错的问题->https://blog.csdn.net/dchua123/article/details/121918921

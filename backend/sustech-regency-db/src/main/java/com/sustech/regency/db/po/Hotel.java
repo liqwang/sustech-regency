@@ -23,5 +23,4 @@ public class Hotel implements DisPlayable{
     private String address;
     private Float stars; //表示几星级酒店
     private String coverId;
-    
 }

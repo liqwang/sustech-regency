@@ -1,21 +1,19 @@
 package com.sustech.regency.controller;
 
 import com.sustech.regency.service.AdminService;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/admin")
+@PathController("/admin")
 public class AdminController {
 
 	@Resource

@@ -6,11 +6,11 @@ import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
 import com.sustech.regency.db.po.*;
-import com.sustech.regency.model.param.LocationParam;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiParam;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,13 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
-import static com.sustech.regency.util.VerificationUtil.getUserId;
-
-@RestController
-@RequestMapping("/public")
+@PathController("/public")
 public class PublicController {
     @Resource
     private PublicService publicService;
@@ -115,8 +110,11 @@ public class PublicController {
 
     @ApiOperation("根据省市区酒店名字获得酒店信息")
     @GetMapping("/get-hotels-by-location")
-    public ApiResponse<List<HotelInfo>> getHotels(@Validated @RequestBody LocationParam locationParam) {
-        return ApiResponse.success(publicService.getHotelsByLocation(locationParam.getProvince(), locationParam.getCity(), locationParam.getRegion(), locationParam.getName()));
+    public ApiResponse<List<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
+                                                  @ApiParam(value = "城市名字") @RequestParam(required = false)  String CityName,
+                                                  @ApiParam (value = "区的名字")@RequestParam(required = false) String RegionName,
+                                                  @ApiParam (value = "酒店名字") @RequestParam(required = false) String HotelName) {
+        return ApiResponse.success(publicService.getHotelsByLocation(ProvinceName ,CityName, RegionName, HotelName));
     }
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
@@ -124,6 +122,7 @@ public class PublicController {
     public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
         return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
     }
+
     @ApiOperation("根据酒店ID获取房间最低价格")
     @GetMapping("/get-min_price-by-hotel")
     public ApiResponse<Float> getMinPriceByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotEmpty @NotNull Integer hotelId){
