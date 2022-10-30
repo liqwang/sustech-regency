@@ -3,10 +3,10 @@ package com.sustech.regency.controller;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,9 +19,7 @@ import java.util.Map;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
-@Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
-@RestController
-@RequestMapping("/merchant")
+@PathController("/merchant")
 public class MerchantController {
     @Resource
     private MerchantService merchantService;

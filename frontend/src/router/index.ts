@@ -4,6 +4,7 @@ import ChangePassword from '../pages/ChangePassword.vue'
 import register from '../pages/register3.vue'
 import merchant from '../pages/merchant.vue'
 import Front from '../pages/front/Front.vue'
+import chat from '../pages/chat.vue'
 import HotelPage from '../pages/front/hotel/HotelPage.vue'
 import UserPage from '../pages/front/user/UserPage.vue'
 import HotelIntroduction from '../pages/front/hotel/HotelIntroduction.vue'
@@ -35,6 +36,12 @@ const routes: RouteRecordRaw[] = [
     path: '/changepassword',
     name: 'changepassword',
     component: ChangePassword,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/chat',
+    name: 'chat',
+    component: chat,
     meta: { requiresAuth: false }
   },
   {

@@ -1,15 +1,13 @@
 package com.sustech.regency.controller;
 
 import com.sustech.regency.service.ConsumerService;
+import com.sustech.regency.web.annotation.DateParam;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -21,9 +19,7 @@ import java.util.Map;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
-@Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
-@RestController
-@RequestMapping("/consumer")
+@PathController("/consumer")
 public class ConsumerController {
 	@Resource
 	private ConsumerService consumerService;
@@ -60,8 +56,8 @@ public class ConsumerController {
 	@ApiOperation("预定酒店")
 	@PostMapping("/reserve-hotel-room")
 	public ApiResponse reserveRoom(@ApiParam(value = "房间Id",required = true) @RequestParam @NotNull Integer roomId,
-								   @ApiParam (value = "预定开始时间",required = true) @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") @NotNull Date startTime,
-								   @ApiParam (value = "预定结束时间",required = true) @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") @NotNull Date endTime,
+								   @ApiParam (value = "预定开始时间",required = true) @RequestParam @DateParam @NotNull Date startTime,
+								   @ApiParam (value = "预定结束时间",required = true) @RequestParam @DateParam @NotNull Date endTime,
 								   @ApiParam (value = "总价",required = true) @RequestParam @NotNull Float price,
 								   @ApiParam (value = "付款人名字",required = true) @RequestParam @NotEmpty String payerName,
 								   @ApiParam (value = "付款人身份证号", required = true) @RequestParam @NotEmpty String payerIdNumber,

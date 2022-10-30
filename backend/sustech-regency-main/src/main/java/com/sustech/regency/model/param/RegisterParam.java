@@ -1,5 +1,6 @@
 package com.sustech.regency.model.param;
 
+import com.sustech.regency.validator.Password;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -27,7 +28,6 @@ public class RegisterParam {
 	private String username;
 
 	@ApiModelProperty(required = true, example = "***********")
-	@Size(min=8, max=30, message = "密码需要为8-30位")
-	@NotEmpty
+	@Password
 	private String password;
 }

@@ -1,10 +1,10 @@
 package com.sustech.regency.model.param;
 
+import com.sustech.regency.validator.Password;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 @Data
 public class LoginParam {
@@ -13,7 +13,6 @@ public class LoginParam {
 	private String usernameOrEmail;
 
 	@ApiModelProperty(required = true, example = "***********")
-	@Size(min=8, max=30, message = "密码需要为8-30位")
-	@NotEmpty
+	@Password
 	private String password;
 }

@@ -1,5 +1,6 @@
 package com.sustech.regency.model.vo;
 
+import com.sustech.regency.db.annotation.DateTimeField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Comment {
+    @DateTimeField
     private Date commentTime;
     private String comment;
     private String userName;

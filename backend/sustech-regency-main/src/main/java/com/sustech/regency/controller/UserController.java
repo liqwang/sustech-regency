@@ -4,6 +4,7 @@ import com.sustech.regency.model.param.FindPasswordParam;
 import com.sustech.regency.model.param.LoginParam;
 import com.sustech.regency.model.param.RegisterParam;
 import com.sustech.regency.service.UserService;
+import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,12 +18,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
-import static com.sustech.regency.util.VerificationUtil.judge;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
-@Validated //单参数校验时必须加上该注解才会生效:https://developer.aliyun.com/article/786719
-@RestController
-@RequestMapping("/user")
+@PathController("/user")
 public class UserController {
 	@Resource
 	private UserService userService;
@@ -40,7 +38,6 @@ public class UserController {
 	@ApiOperation(value = "注册",notes = "返回token以及用户的详细信息")
 	@PostMapping("/register")
 	public ApiResponse<Map<String,Object>> register (@Validated @RequestBody RegisterParam registerParam){
-		judge(registerParam.getPassword());
 		Map<String,Object> map=userService.register(registerParam.getVerificationCode(),
 													registerParam.getEmail(),
 													registerParam.getUsername(),
@@ -52,7 +49,6 @@ public class UserController {
 	@ApiOperation("找回密码")
 	@PostMapping("/find-password")
 	public ApiResponse findPassword(@Validated @RequestBody FindPasswordParam findPasswordParam){
-		judge(findPasswordParam.getNewPassword());
 		userService.findPassword(findPasswordParam.getVerificationCode(),
 								 findPasswordParam.getEmail(),
 								 findPasswordParam.getNewPassword());
