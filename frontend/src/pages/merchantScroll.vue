@@ -95,80 +95,80 @@
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
         <div v-show="which_floor==''">
-        <el-button-group class="ml-4">
-          <el-button type="primary" @click="f1">F1</el-button>
-          <el-button type="primary" @click="f2">F2</el-button>
-          <el-button type="primary" @click="f3">F3</el-button>
-          <br />
-        </el-button-group>
-        <el-button type="success" @click="show_floor=false;which_floor=''"> cancel</el-button>
+          <el-button-group class="ml-4">
+            <el-button type="primary" @click="f1">F1</el-button>
+            <el-button type="primary" @click="f2">F2</el-button>
+            <el-button type="primary" @click="f3">F3</el-button>
+            <br />
+          </el-button-group>
+          <el-button type="success" @click="show_floor=false;which_floor=''"> cancel</el-button>
 
-        <div v-show="v1" style="width: 100%; height: 100%">
-          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-          <img src="../images/floor1.png" usemap="#floor_1" />
-          <map name="floor_1">
-            <area shape="rect" coords="185,120,240,260" @click="click_room('101')">
-            <area shape="rect" coords="256,120,311,260" @click="click_room('102')">
-            <area shape="rect" coords="327,120,382,260" @click="click_room('103')">
-            <area shape="rect" coords="398,120,453,260" @click="click_room('104')">
-            <area shape="rect" coords="469,120,524,260" @click="click_room('105')">
-            <area shape="rect" coords="540,120,595,260" @click="click_room('106')">
-            <area shape="rect" coords="611,120,666,260" @click="click_room('107')">
-            <area shape="rect" coords="682,120,737,260" @click="click_room('108')">
+          <div v-show="v1" style="width: 100%; height: 100%">
+            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+            <img src="../images/floor1.png" usemap="#floor_1" />
+            <map name="floor_1">
+              <area shape="rect" coords="185,120,240,260" @click="click_room('101')">
+              <area shape="rect" coords="256,120,311,260" @click="click_room('102')">
+              <area shape="rect" coords="327,120,382,260" @click="click_room('103')">
+              <area shape="rect" coords="398,120,453,260" @click="click_room('104')">
+              <area shape="rect" coords="469,120,524,260" @click="click_room('105')">
+              <area shape="rect" coords="540,120,595,260" @click="click_room('106')">
+              <area shape="rect" coords="611,120,666,260" @click="click_room('107')">
+              <area shape="rect" coords="682,120,737,260" @click="click_room('108')">
 
-            <area shape="rect" coords="185,315,240,430" @click="click_room('109')">
-            <area shape="rect" coords="256,315,311,430" @click="click_room('110')">
-            <area shape="rect" coords="327,315,382,430" @click="click_room('111')">
-            <area shape="rect" coords="398,315,453,430" @click="click_room('112')">
-          </map>
+              <area shape="rect" coords="185,315,240,430" @click="click_room('109')">
+              <area shape="rect" coords="256,315,311,430" @click="click_room('110')">
+              <area shape="rect" coords="327,315,382,430" @click="click_room('111')">
+              <area shape="rect" coords="398,315,453,430" @click="click_room('112')">
+            </map>
+          </div>
+
+
+          <div v-show="v2" style="width: 100%; height: 100%">
+            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+            <img src="../images/floor2.png" usemap="#floor_2" />
+            <map name="floor_2">
+              <area shape="rect" coords="185,120,240,260" @click="click_room('201')">
+              <area shape="rect" coords="256,120,311,260" @click="click_room('202')">
+              <area shape="rect" coords="327,120,382,260" @click="click_room('203')">
+              <area shape="rect" coords="398,120,453,260" @click="click_room('204')">
+              <area shape="rect" coords="469,120,524,260" @click="click_room('205')">
+              <area shape="rect" coords="540,120,595,260" @click="click_room('206')">
+              <area shape="rect" coords="611,120,666,260" @click="click_room('207')">
+              <area shape="rect" coords="682,120,737,260" @click="click_room('208')">
+              <area shape="rect" coords="185,315,240,430" @click="click_room('209')">
+              <area shape="rect" coords="256,315,311,430" @click="click_room('210')">
+              <area shape="rect" coords="327,315,382,430" @click="click_room('211')">
+              <area shape="rect" coords="398,315,453,430" @click="click_room('212')">
+            </map>
+          </div>
+
+
+          <div v-show="v3" style="width: 100%; height: 100%">
+            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
+            <img src="../images/floor3.png" usemap="#floor_3" />
+            <map name="floor_3">
+              <area shape="rect" coords="185,120,240,260" @click="click_room('301')">
+              <area shape="rect" coords="256,120,311,260" @click="click_room('302')">
+              <area shape="rect" coords="327,120,382,260" @click="click_room('303')">
+              <area shape="rect" coords="398,120,453,260" @click="click_room('304')">
+              <area shape="rect" coords="469,120,524,260" @click="click_room('305')">
+              <area shape="rect" coords="540,120,595,260" @click="click_room('306')">
+              <area shape="rect" coords="611,120,666,260" @click="click_room('307')">
+              <area shape="rect" coords="682,120,737,260" @click="click_room('308')">
+
+              <area shape="rect" coords="185,315,240,430" @click="click_room('309')">
+              <area shape="rect" coords="256,315,311,430" @click="click_room('310')">
+              <area shape="rect" coords="327,315,382,430" @click="click_room('311')">
+              <area shape="rect" coords="398,315,453,430" @click="click_room('312')">
+            </map>
+          </div>
+          <!-- <div id="chart" style="width:80%;height:60%"></div> -->
         </div>
-
-
-        <div v-show="v2" style="width: 100%; height: 100%">
-          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-          <img src="../images/floor2.png" usemap="#floor_2" />
-          <map name="floor_2">
-            <area shape="rect" coords="185,120,240,260" @click="click_room('201')">
-            <area shape="rect" coords="256,120,311,260" @click="click_room('202')">
-            <area shape="rect" coords="327,120,382,260" @click="click_room('203')">
-            <area shape="rect" coords="398,120,453,260" @click="click_room('204')">
-            <area shape="rect" coords="469,120,524,260" @click="click_room('205')">
-            <area shape="rect" coords="540,120,595,260" @click="click_room('206')">
-            <area shape="rect" coords="611,120,666,260" @click="click_room('207')">
-            <area shape="rect" coords="682,120,737,260" @click="click_room('208')">
-            <area shape="rect" coords="185,315,240,430" @click="click_room('209')">
-            <area shape="rect" coords="256,315,311,430" @click="click_room('210')">
-            <area shape="rect" coords="327,315,382,430" @click="click_room('211')">
-            <area shape="rect" coords="398,315,453,430" @click="click_room('212')">
-          </map>
+        <div v-show="which_floor!=''">
+          您点击了{{which_floor}}
+          <el-button type="success" @click="which_floor=''"> back</el-button>
         </div>
-
-
-        <div v-show="v3" style="width: 100%; height: 100%">
-          <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-          <img src="../images/floor3.png" usemap="#floor_3" />
-          <map name="floor_3">
-            <area shape="rect" coords="185,120,240,260" @click="click_room('301')">
-            <area shape="rect" coords="256,120,311,260" @click="click_room('302')">
-            <area shape="rect" coords="327,120,382,260" @click="click_room('303')">
-            <area shape="rect" coords="398,120,453,260" @click="click_room('304')">
-            <area shape="rect" coords="469,120,524,260" @click="click_room('305')">
-            <area shape="rect" coords="540,120,595,260" @click="click_room('306')">
-            <area shape="rect" coords="611,120,666,260" @click="click_room('307')">
-            <area shape="rect" coords="682,120,737,260" @click="click_room('308')">
-
-            <area shape="rect" coords="185,315,240,430" @click="click_room('309')">
-            <area shape="rect" coords="256,315,311,430" @click="click_room('310')">
-            <area shape="rect" coords="327,315,382,430" @click="click_room('311')">
-            <area shape="rect" coords="398,315,453,430" @click="click_room('312')">
-          </map>
-        </div>
-        <!-- <div id="chart" style="width:80%;height:60%"></div> -->
-      </div>
-      <div v-show="which_floor!=''">
-      您点击了{{which_floor}}
-      <el-button type="success" @click="which_floor=''"> back</el-button>
-      </div>
       </el-dialog>
 
 
@@ -220,7 +220,22 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers';
+
+const Time = new Date();
+const date = Time.toISOString().split('T')[0]
+console.log(date);
+let day = date.split('-')
+const day2string1 = parseInt(day[2]) - 7
+const day2string2 = parseInt(day[2]) - 6
+const day2string3 = parseInt(day[2]) - 5
+const day2string4 = parseInt(day[2]) - 4
+const day2string5 = parseInt(day[2]) - 3
+const day2string6 = parseInt(day[2]) - 2
+const day2string7 = parseInt(day[2]) - 1
+const format = day[0] + '-' + day[1] + '-'
+
 onMounted(() => {
+
 
   echarts.use(
     [GridComponent, LineChart, CanvasRenderer, UniversalTransition]
@@ -237,7 +252,7 @@ onMounted(() => {
   option = {
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: [format + day2string1, format + day2string2, format + day2string3, format + day2string4, format + day2string5, format + day2string6, format + day2string7]
     },
     yAxis: {
       type: 'value'
@@ -258,10 +273,12 @@ type props = {
 };
 
 
-const test1=()=>{
+const test1 = () => {
   alert('213')
 }
 var id_par = defineProps<props>();
+
+
 const show_floor = ref(false)
 const which_floor = ref('')
 const click_room = (room_id: string) => {
@@ -359,6 +376,10 @@ watch(
         if (response.data.code == 200) {
           hotel.detail = response.data.data;
           console.log(hotel.detail);
+          let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format + day2string1 + '&endTime='
+            + format + day2string7 + '&hotelId=' + id_par.HotelId
+          request.get(url)
+          console.log(url)
         } else alert('Error');
       });
       show_content.value = true;
@@ -421,9 +442,10 @@ const f3 = () => {
   position: relative;
   top: 10px;
 }
+
 .d {
   width: 100%;
-  height:15vh;
+  height: 15vh;
   // background-color: aqua;
 }
 
@@ -433,13 +455,15 @@ const f3 = () => {
   box-shadow: 0 26px 40px -24px rgb(0 36 100 / 50%);
   background-color: aqua;
 }
-.txt{
+
+.txt {
   position: absolute;
-  font-size:1vw;
-  left:1.5vw;
-  top:2.5vh;
+  font-size: 1vw;
+  left: 1.5vw;
+  top: 2.5vh;
 }
-#floor_image{
+
+#floor_image {
   background-color: antiquewhite;
 }
 </style>
