@@ -1,51 +1,47 @@
 <template>
-  <el-button type="primary" style="margin-left: 16px" @click="show = true"> 在线客服 </el-button>
-
-  <el-drawer v-model="show" size="30%" :with-header="false">
-    <div id="bigg">
-      <el-row>
-        <el-col :span="0"> </el-col>
-        <el-col :span="24">
-          <div id="meaningless"></div>
-          <!-- main就是整个聊天窗口 -->
-          <div id="main">
-            <!-- 三段式 -->
-            <!-- head：显示当前聊天双方 -->
-            <div id="head">
-              <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
-              <p style="color: gray">连接状态: {{ status }}</p>
-            </div>
-            <!-- body：显示历史来往消息 -->
-            <div id="body">
-              <el-scrollbar height="62vh">
-                <div v-for="item in history" class="scrollbar-demo-item">
-                  <!-- 发送者 -->
-                  <span class="src">{{ item.src }}: </span>
-                  <!-- 时间 -->
-                  <span class="time">{{ item.time }}</span>
-                  <!-- 发送的信息 -->
-                  <p class="text">{{ item.text }}</p>
-                </div>
-              </el-scrollbar>
-            </div>
-            <!-- foot：显示当前文本域以及发送按钮 -->
-            <div id="foot">
-              <!-- 用一行来展示文本域 -->
-              <el-row>
-                <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入信息" />
-              </el-row>
-              <!-- 用一行来展示发送按钮，放在最右边 -->
-              <el-row justify="end">
-                <el-button type="primary" @click="send()"> send </el-button>
-              </el-row>
-            </div>
+  <div id="bigg">
+    <el-row>
+      <el-col :span="0"> </el-col>
+      <el-col :span="24">
+        <div id="meaningless"></div>
+        <!-- main就是整个聊天窗口 -->
+        <div id="main">
+          <!-- 三段式 -->
+          <!-- head：显示当前聊天双方 -->
+          <div id="head">
+            <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
+            <p style="color: gray">连接状态: {{ status }}</p>
           </div>
-          <div id="meaningless"></div>
-        </el-col>
-        <el-col :span="0"> </el-col>
-      </el-row>
-    </div>
-  </el-drawer>
+          <!-- body：显示历史来往消息 -->
+          <div id="body">
+            <el-scrollbar height="62vh">
+              <div v-for="item in history" class="scrollbar-demo-item">
+                <!-- 发送者 -->
+                <span class="src">{{ item.src }}: </span>
+                <!-- 时间 -->
+                <span class="time">{{ item.time }}</span>
+                <!-- 发送的信息 -->
+                <p class="text">{{ item.text }}</p>
+              </div>
+            </el-scrollbar>
+          </div>
+          <!-- foot：显示当前文本域以及发送按钮 -->
+          <div id="foot">
+            <!-- 用一行来展示文本域 -->
+            <el-row>
+              <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入信息" />
+            </el-row>
+            <!-- 用一行来展示发送按钮，放在最右边 -->
+            <el-row justify="end">
+              <el-button type="primary" @click="send()"> send </el-button>
+            </el-row>
+          </div>
+        </div>
+        <div id="meaningless"></div>
+      </el-col>
+      <el-col :span="0"> </el-col>
+    </el-row>
+  </div>
 </template>
 
 <style scoped>
@@ -53,18 +49,17 @@
 #bigg {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
   width: auto;
-  height: 96vh;
 }
 #main {
   border: black solid 1px;
 }
 #head {
   text-align: center;
-  line-height: 5vh;
+  line-height: 4vh;
   border: black solid 1px;
 }
 #body {
-  height: 62vh;
+  height: 62.5vh;
   border: black solid 1px;
 }
 #foot {
@@ -125,11 +120,10 @@
 import { ElNotification } from 'element-plus'
 import { ref, h, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-import request from '../utils/request'
-import router from '../router'
+import request from '../../../utils/request'
+import router from '../../../router'
 import { time } from 'echarts/core'
 import { da, el, fr } from 'element-plus/es/locale'
-let show = ref(false)
 let status = ref('')
 let from = ref('').value
 from = JSON.parse(localStorage.user).name
@@ -150,7 +144,7 @@ interface msg {
 }
 // history 存储所有历史信息
 let history = reactive<msg[]>([])
-let socket = new WebSocket('ws://8.210.42.175:1234')
+let socket = new WebSocket('ws://quanquancho.com:12345')
 socket.addEventListener('open', function () {
   //建立连接的时候发过去自己的名字表明身份
   socket.send(`FROM:${from}||TO:${from}||TEXT:MYNAME`)
