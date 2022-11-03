@@ -11,6 +11,7 @@ import HotelIntroduction from '../pages/front/hotel/HotelIntroduction.vue'
 import HotelBookRoom from '../pages/front/hotel/HotelBookRoom.vue'
 import HotelFloorPlan from '../pages/front/hotel/HotelFloorPlan.vue'
 import HotelComment from '../pages/front/hotel/HotelComment.vue'
+import HotelChat from '../pages/front/hotel/HotelChat.vue'
 import UserSetting from '../pages/front/user/UserSetting.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -39,12 +40,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
-    path: '/chat',
-    name: 'chat',
-    component: chat,
-    meta: { requiresAuth: false }
-  },
-  {
     path: '/',
     name: 'front',
     component: Front,
@@ -59,7 +54,8 @@ const routes: RouteRecordRaw[] = [
       { path: '', name: 'introduction', component: HotelIntroduction, meta: { requiresAuth: false } },
       { path: 'bookroom', name: 'bookroom', component: HotelBookRoom, meta: { requiresAuth: false } },
       { path: 'floorplan', name: 'floorplan', component: HotelFloorPlan, meta: { requiresAuth: false } },
-      { path: 'comment', name: 'comment', component: HotelComment, meta: { requiresAuth: false } }
+      { path: 'comment', name: 'comment', component: HotelComment, meta: { requiresAuth: false } },
+      { path: 'chat', name: 'chat', component: HotelChat, meta: { requiresAuth: false } }
     ]
   },
   {
@@ -67,9 +63,7 @@ const routes: RouteRecordRaw[] = [
     name: 'user',
     component: UserPage,
     meta: { requiresAuth: true },
-    children: [
-      { path: 'setting', name: 'setting', component: UserSetting }
-    ]
+    children: [{ path: 'setting', name: 'setting', component: UserSetting }]
   }
 ]
 

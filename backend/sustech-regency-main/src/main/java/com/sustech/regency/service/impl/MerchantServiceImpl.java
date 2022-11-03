@@ -154,7 +154,7 @@ public class MerchantServiceImpl implements MerchantService {
         for (Room room:
              rooms) {
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            orderLambdaQueryWrapper.eq(Order::getRoomId,room);
+            orderLambdaQueryWrapper.eq(Order::getRoomId,room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o:
                  orders) {

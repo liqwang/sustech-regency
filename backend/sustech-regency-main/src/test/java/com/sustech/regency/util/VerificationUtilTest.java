@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 public class VerificationUtilTest {
 	@Test
 	void testJudge(){
-		System.out.println(VerificationUtil.specialChars.size());
-		System.out.println('A'-'a');
-		System.out.println(VerificationUtil.upperChars.size());
+//		System.out.println(VerificationUtil.specialChars.size());
+//		System.out.println('A'-'a');
+//		System.out.println(VerificationUtil.upperChars.size());
 	}
 
 	@Test

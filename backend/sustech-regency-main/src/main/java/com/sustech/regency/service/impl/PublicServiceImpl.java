@@ -137,6 +137,7 @@ public class PublicServiceImpl implements PublicService {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Room::getHotelId,hotelId);
         List<Room> roomList = roomDao.selectList(wrapper);
+        asserts(!roomList.isEmpty(),"Hotel has no rooms available");
         float min_price= Float.MAX_VALUE;
         for (Room r:
              roomList) {
