@@ -36,7 +36,7 @@
               Place
             </div>
           </template>
-          {{hotel.detail.cityName}}{{hotel.detail.regionName}}
+          {{ hotel.detail.cityName }}{{ hotel.detail.regionName }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -61,47 +61,43 @@
           {{ hotel.detail.address }}
         </el-descriptions-item>
       </el-descriptions>
-      <el-button @click="show_floor=true" type="primary" id="floor">Floor Graph</el-button>
+      <el-button @click="show_floor = true" type="primary" id="floor">Floor Graph</el-button>
       <br>
       <br>
 
-      <!-- <el-row id="floor_image">
-      <el-col :span="2">
-        <div class="d">
+    <el-upload
+    ref="uploadRef"
+    class="upload-demo"
+    :before-upload="beforeUpload"
+    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+    :auto-upload="true">
+    <template #trigger>
+      <el-button type="primary">select file</el-button>
+    </template>
 
-          <img @click="test1"   src='../images/door2.png'/>
-          <span class="txt" >101</span>
-        </div>
-      </el-col>
-      <el-col :span="2">
-        <div class="d">
+    <el-button class="ml-3" type="success" @click="submitUpload">
+      upload to server
+    </el-button>
 
-          <img @click="test1"   src='../images/door2.png'/>
-
-        </div>
-      </el-col>
-      <el-col :span="2">
-        <div class="d">
-          <img @click="test1"   src='../images/door2.png'/>
-        </div>
-      </el-col>
-    </el-row> -->
-
-
-
+    <template #tip>
+      <div class="el-upload__tip">
+        {{upload_tip}}
+      </div>
+    </template>
+  </el-upload>
 
 
 
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
-        <div v-show="which_floor==''">
+        <div v-show="which_floor == ''">
           <el-button-group class="ml-4">
             <el-button type="primary" @click="f1">F1</el-button>
             <el-button type="primary" @click="f2">F2</el-button>
             <el-button type="primary" @click="f3">F3</el-button>
             <br />
           </el-button-group>
-          <el-button type="success" @click="show_floor=false;which_floor=''"> cancel</el-button>
+          <el-button type="success" @click="show_floor = false; which_floor = ''"> cancel</el-button>
 
           <div v-show="v1" style="width: 100%; height: 100%">
             <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
@@ -146,28 +142,86 @@
 
           <div v-show="v3" style="width: 100%; height: 100%">
             <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-            <img src="../images/floor3.png" usemap="#floor_3" />
+            <img src="../images/floor_2_3.png" usemap="#floor_3" />
             <map name="floor_3">
-              <area shape="rect" coords="185,120,240,260" @click="click_room('301')">
-              <area shape="rect" coords="256,120,311,260" @click="click_room('302')">
-              <area shape="rect" coords="327,120,382,260" @click="click_room('303')">
-              <area shape="rect" coords="398,120,453,260" @click="click_room('304')">
-              <area shape="rect" coords="469,120,524,260" @click="click_room('305')">
-              <area shape="rect" coords="540,120,595,260" @click="click_room('306')">
-              <area shape="rect" coords="611,120,666,260" @click="click_room('307')">
-              <area shape="rect" coords="682,120,737,260" @click="click_room('308')">
+              <area shape="rect" coords="415,100,485,225" @click="click_room('301')">
+              <area shape="rect" coords="485,100,555,225" @click="click_room('302')">
+              <area shape="rect" coords="555,100,625,225" @click="click_room('303')">
+              <area shape="rect" coords="625,100,695,225" @click="click_room('304')">
 
-              <area shape="rect" coords="185,315,240,430" @click="click_room('309')">
-              <area shape="rect" coords="256,315,311,430" @click="click_room('310')">
-              <area shape="rect" coords="327,315,382,430" @click="click_room('311')">
-              <area shape="rect" coords="398,315,453,430" @click="click_room('312')">
+
+              <area shape="rect" coords="60,300,130,435" @click="click_room('305')">
+              <area shape="rect" coords="130,300,200,435" @click="click_room('306')">
+              <area shape="rect" coords="200,300,270,435" @click="click_room('307')">
+              <area shape="rect" coords="270,300,340,435" @click="click_room('308')">
+
+              <!-- <area shape="rect" coords="185,315,240,430" @click="click_room('309')"> -->
+              <!-- <area shape="rect" coords="256,315,311,430" @click="click_room('310')"> -->
+              <!-- <area shape="rect" coords="327,315,382,430" @click="click_room('311')"> -->
+              <!-- <area shape="rect" coords="398,315,453,430" @click="click_room('312')"> -->
             </map>
           </div>
           <!-- <div id="chart" style="width:80%;height:60%"></div> -->
         </div>
-        <div v-show="which_floor!=''">
-          您点击了{{which_floor}}
-          <el-button type="success" @click="which_floor=''"> back</el-button>
+        <div v-show="which_floor != ''">
+          <el-button type="success" @click="which_floor = ''"> back</el-button>
+          <el-descriptions
+    :title=which_floor
+    :column="3"
+    border
+  >
+    <template #extra>
+      <el-button type="primary">Operation</el-button>
+    </template>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          Room
+        </div>
+      </template>
+      {{which_floor}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          price
+        </div>
+      </template>
+      {{room?.price}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          Type
+        </div>
+      </template>
+        {{room?.roomTypeName}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          Available
+        </div>
+      </template>
+      <el-tag size="small">{{room?.isAvailable?'Yes':'No'}}</el-tag>
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          Discount
+        </div>
+      </template>
+      {{room?.discount}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          Capacity
+        </div>
+      </template>
+      {{room?.capacity}}
+    </el-descriptions-item>
+  </el-descriptions>
         </div>
       </el-dialog>
 
@@ -202,7 +256,7 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, reactive, watch, h } from 'vue';
+import { onMounted, onUpdated, onBeforeUpdate, onBeforeMount, ref, reactive, watch, h, Ref } from 'vue';
 import request from '../utils/request';
 import { ElNotification } from 'element-plus';
 import * as echarts from 'echarts/core';
@@ -221,51 +275,76 @@ import {
   CanvasRenderer
 } from 'echarts/renderers';
 
+
+import type {UploadProps, UploadInstance } from 'element-plus'
+const upload_tip = ref('jpg/png files with a size less than 500kb')
+var hotel_img:File
+const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+  hotel_img = file
+  console.log(hotel_img)
+  upload_tip.value = hotel_img.name+' has been chosen'
+ return false
+}
+const submitUpload = () => {
+  request.post('/merchant/hotel/upload-cover?hotelId='+id_par.HotelId,{
+    picture:hotel_img
+
+  }).then((response)=>{
+    if(response.data.code==200){
+      console.log(response.data.data)
+    }
+  })
+}
+
 const Time = new Date();
 const date = Time.toISOString().split('T')[0]
 console.log(date);
 let day = date.split('-')
-const day2string1 = parseInt(day[2]) - 7
-const day2string2 = parseInt(day[2]) - 6
-const day2string3 = parseInt(day[2]) - 5
-const day2string4 = parseInt(day[2]) - 4
-const day2string5 = parseInt(day[2]) - 3
-const day2string6 = parseInt(day[2]) - 2
-const day2string7 = parseInt(day[2]) - 1
-const format = day[0] + '-' + day[1] + '-'
+const day2string1 = parseInt(day[2]) - 7 <= 0 ? parseInt(day[2]) - 7 + 31 : parseInt(day[2]) - 7
+const day2string2 = parseInt(day[2]) - 6 <= 0 ? parseInt(day[2]) - 6 + 31 : parseInt(day[2]) - 6
+const day2string3 = parseInt(day[2]) - 5 <= 0 ? parseInt(day[2]) - 5 + 31 : parseInt(day[2]) - 5
+const day2string4 = parseInt(day[2]) - 4 <= 0 ? parseInt(day[2]) - 4 + 31 : parseInt(day[2]) - 4
+const day2string5 = parseInt(day[2]) - 3 <= 0 ? parseInt(day[2]) - 3 + 31 : parseInt(day[2]) - 3
+const day2string6 = parseInt(day[2]) - 2 <= 0 ? parseInt(day[2]) - 2 + 31 : parseInt(day[2]) - 2
+const day2string7 = parseInt(day[2]) - 1 <= 0 ? parseInt(day[2]) - 1 + 31 : parseInt(day[2]) - 1
+const format1 = day2string1 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format2 = day2string2 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format3 = day2string3 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format4 = day2string4 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format5 = day2string5 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format6 = day2string6 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
+const format7 = day2string7 > day2string7 ? day[0] + '-' + (parseInt(day[1]) - 1) + '-' : day[0] + '-' + day[1] + '-'
 
-onMounted(() => {
+type EChartsOption = echarts.ComposeOption<
+  GridComponentOption | LineSeriesOption
+>
+var chartDom: HTMLElement;
+var option: EChartsOption;
 
-
+onUpdated(() => {
   echarts.use(
     [GridComponent, LineChart, CanvasRenderer, UniversalTransition]
   );
-
-  type EChartsOption = echarts.ComposeOption<
-    GridComponentOption | LineSeriesOption
-  >
-
-  var chartDom = document.getElementById('graph')!;
+  chartDom = document.getElementById('graph')!;
   var myChart = echarts.init(chartDom);
-  var option: EChartsOption;
 
   option = {
     xAxis: {
       type: 'category',
-      data: [format + day2string1, format + day2string2, format + day2string3, format + day2string4, format + day2string5, format + day2string6, format + day2string7]
+      data: [format1 + day2string1, format2 + day2string2, format3 + day2string3, format4 + day2string4, format5 + day2string5, format6 + day2string6, format7 + day2string7]
     },
     yAxis: {
       type: 'value'
     },
     series: [
       {
-        data: [150, 230, 224, 218, 135, 147, 260],
+        data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
         type: 'line'
       }
     ]
   };
 
-  option && myChart.setOption(option);
+  option && myChart.setOption(option)
 })
 
 type props = {
@@ -281,9 +360,38 @@ var id_par = defineProps<props>();
 
 const show_floor = ref(false)
 const which_floor = ref('')
+
+type Room = {
+  capacity: number,
+  coverUrl: string,
+  discount: number,
+  floor: number,
+  hasLivingRoom: boolean,
+  hotelId: number,
+  id: number,
+  isAvailable: boolean,
+  pictureUrls: Array<string>,
+  price: number,
+  roomNum: number,
+  roomTypeName: string,
+  toiletNum: number,
+  typeId: number,
+  videoUrls: Array<string>,
+  message: string
+}
+const room = ref<Room>()
+
+
 const click_room = (room_id: string) => {
   which_floor.value = room_id
+
   console.log(room_id)
+  let url = '/public/get-roomInfo-by-roomId?roomId=1'
+  request.get(url).then((response) => {
+    room.value= response.data.data
+    console.log(room.value)
+
+  })
 }
 
 type Province = {
@@ -368,6 +476,8 @@ const selectCity = () => {
     rs.regions = response.data.data;
   });
 };
+// var chart_data:Array<number> =[0,0,0,0,0,0,0]
+const chart_data: Ref<number[]> = ref([])
 watch(
   id_par,
   (new_val, old_val) => {
@@ -376,10 +486,41 @@ watch(
         if (response.data.code == 200) {
           hotel.detail = response.data.data;
           console.log(hotel.detail);
-          let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format + day2string1 + '&endTime='
-            + format + day2string7 + '&hotelId=' + id_par.HotelId
-          request.get(url)
-          console.log(url)
+          let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
+            + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId
+          request.get(url).then(function (response) {
+            if (response.data.code == 200) {
+              console.log(response.data.data)
+              console.log(url)
+              chart_data.value = []
+              for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i] == null) {
+                  chart_data.value.push(0)
+                } else {
+                  chart_data.value.push(response.data.data[i])
+                }
+              }
+
+              console.log(chart_data.value)
+              var myChart = echarts.init(chartDom);
+              option = {
+                xAxis: {
+                  type: 'category',
+                  data: [format1 + day2string1, format2 + day2string2, format3 + day2string3, format4 + day2string4, format5 + day2string5, format6 + day2string6, format7 + day2string7]
+                },
+                yAxis: {
+                  type: 'value'
+                },
+                series: [
+                  {
+                    data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
+                    type: 'line'
+                  }
+                ]
+              };
+              option && myChart.setOption(option)
+            }
+          })
         } else alert('Error');
       });
       show_content.value = true;
