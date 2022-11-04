@@ -27,6 +27,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Resource
     private FileUtil fileUtil;
 
+    @Resource
+    private CollectionDao collectionDao;
+
     @Override
     public String uploadCommentMedia(MultipartFile media, Integer orderId) {
         checkOrderAndOwner(orderId);
