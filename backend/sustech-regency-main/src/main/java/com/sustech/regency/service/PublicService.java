@@ -34,4 +34,6 @@ public interface PublicService {
     List<Comment> getCommentsByHotelId(Integer hotelId);
 
     HotelInfo getOneHotelByHotelId(Integer hotelId);
+
+    Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum);
 }

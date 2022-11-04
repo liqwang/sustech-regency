@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.Max;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -211,16 +208,16 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<Comment> getCommentsByHotelId(Integer hotelId) {
         MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Order::getCommentTime,Order::getComment,Order::getStars)
-                .selectAs(User::getName,Comment::getUserName)
-                .selectAs(Hotel::getName,Comment::getHotelName)
-                .selectAs(RoomType::getName,Comment::getRoomType);
-        wrapper.eq(Hotel::getId,hotelId);
-        wrapper.innerJoin(User.class,User::getId,Order::getId)
-                .innerJoin(Room.class,Room::getId,Order::getRoomId)
-                .innerJoin(Hotel.class,Hotel::getId,Room::getHotelId)
-                .innerJoin(RoomType.class,RoomType::getId,Room::getTypeId );
-        List<Comment> comments = orderDao.selectJoinList(Comment.class,wrapper);
+        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars)
+                .selectAs(User::getName, Comment::getUserName)
+                .selectAs(Hotel::getName, Comment::getHotelName)
+                .selectAs(RoomType::getName, Comment::getRoomType);
+        wrapper.eq(Hotel::getId, hotelId);
+        wrapper.innerJoin(User.class, User::getId, Order::getId)
+                .innerJoin(Room.class, Room::getId, Order::getRoomId)
+                .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
+                .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
+        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
         return comments;
     }
 
@@ -232,21 +229,36 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(City::getName, HotelInfo::getCityName)
                 .selectAs(Region::getName, HotelInfo::getRegionName)
                 .selectAs(File::getId, HotelInfo::getCoverUrl);
-        wrapper.eq(Hotel::getId,hotelId);
+        wrapper.eq(Hotel::getId, hotelId);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class,wrapper);
+        HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class, wrapper);
 
-            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            fileLambdaQueryWrapper.eq(File::getId, hotelInfo.getCoverUrl());
-            File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if (file != null) {
-                if (file.getDeleteTime() == null) hotelInfo.setCoverUrl(FileUtil.getUrl(file));
-            }
-            hotelInfo.setPictureUrls(getPictureUrls(hotelInfo.getId()));
-            hotelInfo.setVideoUrls(getVideoUrls(hotelInfo.getId()));
+        LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        fileLambdaQueryWrapper.eq(File::getId, hotelInfo.getCoverUrl());
+        File file = fileDao.selectOne(fileLambdaQueryWrapper);
+        if (file != null) {
+            if (file.getDeleteTime() == null) hotelInfo.setCoverUrl(FileUtil.getUrl(file));
+        }
+        hotelInfo.setPictureUrls(getPictureUrls(hotelInfo.getId()));
+        hotelInfo.setVideoUrls(getVideoUrls(hotelInfo.getId()));
         return hotelInfo;
+    }
+
+    @Override
+    public Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum) {
+        LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomLambdaQueryWrapper.eq(Room::getRoomNum, roomNum);
+        List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
+        for (Room r :
+                rooms) {
+            if (Objects.equals(r.getHotelId(), hotelId)) {
+                return r.getId();
+            }
+        }
+        asserts(true,"Room does not exist!");
+        return null;
     }
 
 }
