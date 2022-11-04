@@ -14,7 +14,7 @@
       </el-form-item>
       <br>
       <el-form-item label="用户名" prop="username" required>
-        <el-input v-model="ruleForm.username" />
+        <el-input v-model="ruleForm.username" disabled />
       </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="ruleForm.phone" />
@@ -38,14 +38,14 @@ import type { FormInstance, FormRules } from 'element-plus'
 
 import type { UploadProps } from 'element-plus'
 
-interface User {
+interface UserInfo {
   avatarUrl: string
   username: string
   phone: string
   idNumber: string
 }
 
-const token = localStorage.getItem('token')
+const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
 const imageUrl = ref('')
 
@@ -73,7 +73,7 @@ const user = JSON.parse(localStorage.getItem('user') as string)
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive<User>({
+const ruleForm = reactive<UserInfo>({
   avatarUrl: user.headshotUrl,
   username: user.name,
   phone: '',

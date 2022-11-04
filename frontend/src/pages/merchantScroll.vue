@@ -265,7 +265,7 @@ import {
 
 import type { UploadProps, UploadInstance } from 'element-plus'
 const token = ref('')
-token.value = localStorage.getItem('token')!
+token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
 const upload_url = ref('')
 const upload_tip = ref('jpg/png files with a size less than 500kb')
 

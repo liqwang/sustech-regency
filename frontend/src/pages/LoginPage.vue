@@ -326,6 +326,16 @@ import { User, Lock } from '@element-plus/icons-vue'
 import request from '../utils/request'
 import router from '../router'
 
+interface User {
+  id: number
+  name: string
+  email: string
+  headshotUrl: string
+  isConsumer: boolean
+  isMerchant: boolean
+  merchantHotelId: number
+}
+
 const username = ref('')
 const pwd = ref('')
 const dialog_visible = ref(false)
@@ -343,9 +353,17 @@ const Login = () => {
           message: h('i', { style: 'color: red' }, res.data.message)
         })
       } else {
-        const token = res.data.data.token
-        const user = res.data.data.userInfo
-        localStorage.setItem('token', token)
+        const user: User = {
+          id: res.data.data.id,
+          name: res.data.data.name,
+          email: res.data.data.email,
+          headshotUrl: res.data.data.headshotUrl,
+          isConsumer: res.data.data.isConsumer,
+          isMerchant: res.data.data.isMerchant,
+          merchantHotelId: res.data.data.merchantHotelId
+        }
+        console.log('user', user)
+        localStorage.setItem('token', JSON.stringify(res.data.data.token))
         localStorage.setItem('user', JSON.stringify(user))
         ElNotification({
           title: 'Success',
