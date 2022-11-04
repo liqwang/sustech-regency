@@ -222,6 +222,31 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(RoomType.class,RoomType::getId,Room::getTypeId );
         List<Comment> comments = orderDao.selectJoinList(Comment.class,wrapper);
         return comments;
-
     }
+
+    @Override
+    public HotelInfo getOneHotelByHotelId(Integer hotelId) {
+        MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getStars)
+                .selectAs(Province::getName, HotelInfo::getProvinceName)
+                .selectAs(City::getName, HotelInfo::getCityName)
+                .selectAs(Region::getName, HotelInfo::getRegionName)
+                .selectAs(File::getId, HotelInfo::getCoverUrl);
+        wrapper.eq(Hotel::getId,hotelId);
+        wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
+                .innerJoin(City.class, City::getId, Region::getCityId)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId);
+        HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class,wrapper);
+
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, hotelInfo.getCoverUrl());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null) {
+                if (file.getDeleteTime() == null) hotelInfo.setCoverUrl(FileUtil.getUrl(file));
+            }
+            hotelInfo.setPictureUrls(getPictureUrls(hotelInfo.getId()));
+            hotelInfo.setVideoUrls(getVideoUrls(hotelInfo.getId()));
+        return hotelInfo;
+    }
+
 }

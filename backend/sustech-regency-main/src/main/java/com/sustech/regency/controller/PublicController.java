@@ -160,6 +160,12 @@ public class PublicController {
         return ApiResponse.success(publicService.getCommentsByHotelId(hotelId));
     }
 
+    @ApiOperation("根据酒店Id获取酒店信息")
+    @GetMapping("/get-hotelInfo-byId")
+    public ApiResponse<HotelInfo> getHotelInfoByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getOneHotelByHotelId(hotelId));
+    }
+
 
 
 

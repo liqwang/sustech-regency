@@ -1,5 +1,6 @@
 package com.sustech.regency.service;
 
+import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.Comment;
@@ -31,4 +32,6 @@ public interface PublicService {
     String getMerchantUsernameByHotelId(Integer hotelId);
 
     List<Comment> getCommentsByHotelId(Integer hotelId);
+
+    HotelInfo getOneHotelByHotelId(Integer hotelId);
 }
