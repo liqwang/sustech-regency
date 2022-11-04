@@ -27,9 +27,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     private FileUtil fileUtil;
 
     @Override
-    public String uploadCommentMedia(MultipartFile file, Integer orderId) {
+    public String uploadCommentMedia(MultipartFile media, Integer orderId) {
         checkOrderAndOwner(orderId);
-        return fileUtil.uploadDisplayMedia(file, commentAttachmentDao, new CommentAttachment(null, orderId));
+        return fileUtil.uploadDisplayMedia(media, commentAttachmentDao, new CommentAttachment(null, orderId));
     }
 
     @Resource
@@ -52,7 +52,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Resource
     private UserDao userDao;
-
 
     @Override
     public void deleteCommentMedia(String mediaId, Integer orderId) {
@@ -84,8 +83,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
         orderLambdaQueryWrapper.eq(Order::getRoomId, roomId);
         List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
-        for (Order o :
-                orders) {
+        for (Order o : orders) {
             asserts(endTime.before(o.getDateStart()) && startTime.after(o.getDateEnd()), "Date Conflict!");
         }
         //能活到这里说明日期合法了,需要加到订单里
@@ -116,8 +114,7 @@ public class ConsumerServiceImpl implements ConsumerService {
                         .orderId(order.getId()).build();
                 checkInDao.insert(checkIn);
             } else {
-                checkIn = CheckIn.builder().userId(user.getId())
-                        .orderId(order.getId()).build();
+                checkIn = CheckIn.builder().userId(user.getId()).orderId(order.getId()).build();
                 checkInDao.insert(checkIn);
             }
         }
