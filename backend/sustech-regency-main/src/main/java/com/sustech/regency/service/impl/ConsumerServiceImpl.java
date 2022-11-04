@@ -3,6 +3,7 @@ package com.sustech.regency.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.HideService;
 import com.sustech.regency.util.FileUtil;
@@ -118,5 +119,20 @@ public class ConsumerServiceImpl implements ConsumerService {
                 checkInDao.insert(checkIn);
             }
         }
+    }
+
+    @Override
+    public void like(Integer hotelId) {
+
+    }
+
+    @Override
+    public void dislike(Integer hotelId) {
+
+    }
+
+    @Override
+    public List<HotelInfo> getHotelInfoFromLikes() {
+        return null;
     }
 }
