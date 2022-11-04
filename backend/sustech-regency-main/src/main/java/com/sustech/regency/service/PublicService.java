@@ -36,4 +36,6 @@ public interface PublicService {
     HotelInfo getOneHotelByHotelId(Integer hotelId);
 
     Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum);
+
+    List<RoomType> getRoomTypesByHotel(Integer hotelId);
 }

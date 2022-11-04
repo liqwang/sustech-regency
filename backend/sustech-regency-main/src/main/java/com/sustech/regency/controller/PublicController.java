@@ -173,4 +173,10 @@ public class PublicController {
         return ApiResponse.success(publicService.getRoomIdByHotelWithRoomNum(hotelId,roomId));
     }
 
+    @ApiOperation("根据酒店ID获得房间types")
+    @GetMapping("/get-roomTypes-byHotelId")
+    public ApiResponse<List<RoomType>> getRoomIdByHotelIdWithRoomNum(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
+    }
+
 }

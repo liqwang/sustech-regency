@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.validation.constraints.Max;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -259,6 +260,23 @@ public class PublicServiceImpl implements PublicService {
         }
         asserts(true,"Room does not exist!");
         return null;
+    }
+
+    @Override
+    public List<RoomType> getRoomTypesByHotel(Integer hotelId) {
+        LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomLambdaQueryWrapper.eq(Room::getHotelId,hotelId);
+        List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
+        return rooms.stream().map(Room::getTypeId)
+                .map(typeId->roomTypeDao.selectById(typeId))
+                .distinct()
+                .collect(Collectors.toList());
+
+//        HashSet<RoomType> roomTypes = new HashSet<>();
+//        for (Room r :
+//                rooms) {
+//            if (!roomTypes.contains(r.getTypeId())) roomTypes.add(r.getTypeId());
+//        }
     }
 
 }
