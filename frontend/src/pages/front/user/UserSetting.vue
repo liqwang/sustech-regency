@@ -3,7 +3,7 @@
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
       :size="formSize" status-icon>
       <el-form-item label="用户头像" prop="avatar">
-        <el-upload class="avatar-uploader" action="http://quanquancho.com:8080/user/upload-headshot"
+        <el-upload class="avatar-uploader" action="http://quanquancho.com:8080/user/upload-headshot" name="picture"
           :headers="{ 'token': token }" :show-file-list="false" :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar" :alt="ruleForm.avatarUrl" />
