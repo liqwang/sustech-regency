@@ -146,8 +146,8 @@ request.get('/public/province/all').then(res => {
   provinces = provinceList.map(p => p.name)
 })
 
-const getHotels = () => {
-  request.get('/public/get-hotels-by-location').then(res => {
+const getHotels = (provinceName: string, cityName: string, regionName: string) => {
+  request.get(`/public/get-hotels-by-location?CityName=${cityName}&&ProvinceName=${provinceName}&&RegionName=${regionName}`).then(res => {
     hotels = res.data.data
     hotels.forEach(async (hotel) => {
       let response = await request.get(`/public/get-comment_number-by-hotel?hotelId=${hotel.id}`)
@@ -164,12 +164,15 @@ const getHotels = () => {
       hotelInfos.push(hotelInfo)
     })
     console.log(hotels)
+    console.log(hotelInfos)
   })
 }
 
-getHotels()
+getHotels('', '', '')
 
 const changeCity = (province: string) => {
+  console.log("myprovince: " + province)
+  getHotels(province, '', '')
   request.get(`/public/city/all?province=${province}`).then(res => {
     const cityList = res.data.data as Province[]
     cities = cityList.map(c => c.name)
@@ -180,6 +183,7 @@ const changeCity = (province: string) => {
 }
 
 const changeRegion = (province: string, city: string) => {
+  getHotels(province, city, '')
   request.get(`/public/region/all?province=${province}&&city=${city}`).then(res => {
     const regionList = res.data.data as Region[]
     regions = regionList.map(c => c.name)

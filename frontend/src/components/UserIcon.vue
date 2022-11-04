@@ -15,7 +15,7 @@
         </span>
         <span v-if="token">
           <el-dropdown-item divided @click="toUserPage">个人中心</el-dropdown-item>
-          <el-dropdown-item divided @click="toChangePasswordPage">修改密码</el-dropdown-item>
+          <el-dropdown-item @click="toChangePasswordPage">修改密码</el-dropdown-item>
           <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
         </span>
       </el-dropdown-menu>
