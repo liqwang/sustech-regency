@@ -74,8 +74,8 @@ public class PublicServiceImpl implements PublicService {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, a.getCoverUrl());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if(file!=null){
-                if(file.getDeleteTime()==null) a.setCoverUrl(FileUtil.getUrl(file));
+            if (file != null) {
+                if (file.getDeleteTime() == null) a.setCoverUrl(FileUtil.getUrl(file));
             }
             a.setPictureUrls(getPictureUrls(a.getId()));
             a.setVideoUrls(getVideoUrls(a.getId()));
@@ -98,14 +98,12 @@ public class PublicServiceImpl implements PublicService {
         List<HotelExhibition> list = hotelExhibitionDao.selectList(wrapper);
         List<String> pictureList = new ArrayList<>();
 
-        for (HotelExhibition he :
-                list) {
+        for (HotelExhibition he : list) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if (file!=null && !file.getSuffix().equals("mp4")) {
-                if(file.getDeleteTime()==null) pictureList.add(FileUtil.getUrl(file));
-
+            if (file != null && !file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) pictureList.add(FileUtil.getUrl(file));
             }
         }
         return pictureList;
@@ -118,16 +116,13 @@ public class PublicServiceImpl implements PublicService {
         wrapper.eq(HotelExhibition::getHotelId, hotelId);
         List<HotelExhibition> list = hotelExhibitionDao.selectList(wrapper);
         List<String> videoList = new ArrayList<>();
-
-        for (HotelExhibition he :
-                list) {
+        for (HotelExhibition he : list) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
-            if (file!=null &&file.getSuffix().equals("mp4")) {
-                if(file.getDeleteTime()==null) videoList.add(FileUtil.getUrl(file));
+            if (file != null && file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) videoList.add(FileUtil.getUrl(file));
             }
-
         }
         return videoList;
     }
@@ -135,14 +130,13 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public Float getMinPriceOfHotel(Integer hotelId) {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Room::getHotelId,hotelId);
+        wrapper.eq(Room::getHotelId, hotelId);
         List<Room> roomList = roomDao.selectList(wrapper);
-        asserts(!roomList.isEmpty(),"Hotel has no rooms available");
-        float min_price= Float.MAX_VALUE;
-        for (Room r:
-             roomList) {
-            float curr_price=r.getPrice()*r.getDiscount();
-            if( curr_price < min_price) min_price=curr_price;
+        asserts(!roomList.isEmpty(), "Hotel has no rooms available");
+        float min_price = Float.MAX_VALUE;
+        for (Room r : roomList) {
+            float curr_price = r.getPrice() * r.getDiscount();
+            if (curr_price < min_price) min_price = curr_price;
         }
         return min_price;
     }
@@ -150,16 +144,16 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public Integer getCommentsNumberByHotel(Integer hotelId) {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Room::getHotelId,hotelId);
+        wrapper.eq(Room::getHotelId, hotelId);
         List<Room> roomList = roomDao.selectList(wrapper);
         int cnt = 0;
-        for (Room r:
-             roomList) {
-            int room_id=r.getId();
+        for (Room r :
+                roomList) {
+            int room_id = r.getId();
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            orderLambdaQueryWrapper.eq(Order::getRoomId,room_id);
+            orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
             List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
-            cnt+=orderList.size();
+            cnt += orderList.size();
         }
         return cnt;
     }
@@ -167,23 +161,22 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public RoomInfo getRoomInfoByRoomId(Integer roomId) {
         Room room = roomDao.selectById(roomId);
-        System.out.println("---------------room---------------");
-        asserts(room!=null,"RoomId dose not exist!");
+        asserts(room != null, "RoomId dose not exist!");
         MPJLambdaWrapper<RoomInfo> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Room::getId,Room::getRoomNum,Room::getPrice,Room::getFloor,Room::getTypeId,Room::getHotelId,Room::getIsAvailable,Room::getDiscount)
-                .selectAs(RoomType::getName,RoomInfo::getRoomTypeName)
-                .selectAs(RoomType::getCapacity,RoomInfo::getCapacity)
-                .selectAs(RoomType::getToiletNum,RoomInfo::getToiletNum)
-                .selectAs(RoomType::getHasLivingRoom,RoomInfo::getHasLivingRoom)
-                .selectAs(File::getId,RoomInfo::getCoverUrl)
-                .innerJoin(RoomType.class,RoomType::getId,Room::getTypeId);
-        wrapper.eq(Room::getId,room.getId());
+        wrapper.select(Room::getId, Room::getRoomNum, Room::getPrice, Room::getFloor, Room::getTypeId, Room::getHotelId, Room::getIsAvailable, Room::getDiscount)
+                .selectAs(RoomType::getName, RoomInfo::getRoomTypeName)
+                .selectAs(RoomType::getCapacity, RoomInfo::getCapacity)
+                .selectAs(RoomType::getToiletNum, RoomInfo::getToiletNum)
+                .selectAs(RoomType::getHasLivingRoom, RoomInfo::getHasLivingRoom)
+                .selectAs(File::getId, RoomInfo::getCoverUrl)
+                .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
+        wrapper.eq(Room::getId, room.getId());
         RoomInfo roomInfo = roomDao.selectJoinOne(RoomInfo.class, wrapper);
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
         fileLambdaQueryWrapper.eq(File::getId, roomInfo.getCoverUrl());
         File file = fileDao.selectOne(fileLambdaQueryWrapper);
-        if(file!=null){
-            if(file.getDeleteTime()==null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
+        if (file != null) {
+            if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
         }
         roomInfo.setPictureUrls(getPictureUrls(roomInfo.getId()));
         roomInfo.setVideoUrls(getVideoUrls(roomInfo.getId()));
@@ -193,18 +186,24 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
         List<Room> rooms = getRoomsByHotel(hotelId);
-        List<Integer> typeIds = new ArrayList<Integer>();
-        for (Room room:rooms
-             ) {
+        List<Integer> typeIds = new ArrayList<>();
+        for (Room room : rooms) {
             if (!typeIds.contains(room.getTypeId())) typeIds.add(room.getTypeId());
         }
-        List<RoomType> roomTypes = new ArrayList<RoomType>();
-        for (Integer i:typeIds
-             ) {
+        List<RoomType> roomTypes = new ArrayList<>();
+        for (Integer i : typeIds) {
             RoomType roomType = roomTypeDao.selectById(i);
             roomTypes.add(roomType);
         }
         return roomTypes;
     }
 
+    @Override
+    public String getMerchantUsernameByHotelId(Integer hotelId) {
+        MPJLambdaWrapper<User> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(User::getName)
+                .eq(Hotel::getId, hotelId)
+                .leftJoin(Hotel.class, Hotel::getMerchantId, User::getId);
+        return userDao.selectJoinOne(User.class, wrapper).getName();
+    }
 }

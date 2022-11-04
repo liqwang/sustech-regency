@@ -22,52 +22,52 @@ import static com.sustech.regency.util.VerificationUtil.getUserId;
 
 @PathController("/user")
 public class UserController {
-	@Resource
-	private UserService userService;
+    @Resource
+    private UserService userService;
 
-	@ApiOperation("发送验证码到邮箱")
-	@PostMapping("/send-verification-code")
-	public ApiResponse sendVerificationCode(@ApiParam(required=true)
-	                                        @Email(message = "邮箱格式错误")
-											@NotEmpty(message = "邮箱不能为空")
-	                                        @RequestParam String email){
-		userService.sendVerificationCode(email);
-		return ApiResponse.success();
-	}
+    @ApiOperation("发送验证码到邮箱")
+    @PostMapping("/send-verification-code")
+    public ApiResponse sendVerificationCode(@ApiParam(required = true)
+                                            @Email(message = "邮箱格式错误")
+                                            @NotEmpty(message = "邮箱不能为空")
+                                            @RequestParam String email) {
+        userService.sendVerificationCode(email);
+        return ApiResponse.success();
+    }
 
-	@ApiOperation(value = "注册",notes = "返回token以及用户的详细信息")
-	@PostMapping("/register")
-	public ApiResponse<Map<String,Object>> register (@Validated @RequestBody RegisterParam registerParam){
-		Map<String,Object> map=userService.register(registerParam.getVerificationCode(),
-													registerParam.getEmail(),
-													registerParam.getUsername(),
-													registerParam.getPassword(),
-													registerParam.getRoleId());
-		return ApiResponse.success(map);
-	}
+    @ApiOperation(value = "注册", notes = "返回token以及用户的详细信息")
+    @PostMapping("/register")
+    public ApiResponse<Map<String, Object>> register(@Validated @RequestBody RegisterParam registerParam) {
+        Map<String, Object> map = userService.register(registerParam.getVerificationCode(),
+                registerParam.getEmail(),
+                registerParam.getUsername(),
+                registerParam.getPassword(),
+                registerParam.getRoleId());
+        return ApiResponse.success(map);
+    }
 
-	@ApiOperation("找回密码")
-	@PostMapping("/find-password")
-	public ApiResponse findPassword(@Validated @RequestBody FindPasswordParam findPasswordParam){
-		userService.findPassword(findPasswordParam.getVerificationCode(),
-								 findPasswordParam.getEmail(),
-								 findPasswordParam.getNewPassword());
-		return ApiResponse.success();
-	}
+    @ApiOperation("找回密码")
+    @PostMapping("/find-password")
+    public ApiResponse findPassword(@Validated @RequestBody FindPasswordParam findPasswordParam) {
+        userService.findPassword(findPasswordParam.getVerificationCode(),
+                findPasswordParam.getEmail(),
+                findPasswordParam.getNewPassword());
+        return ApiResponse.success();
+    }
 
-	@ApiOperation(value = "登录",notes = "返回token以及用户的详细信息")
-	@PostMapping("/login")
-	public ApiResponse<Map<String,Object>> login(@Validated @RequestBody LoginParam loginParam){
-		Map<String, Object> map = userService.login(loginParam.getUsernameOrEmail(), loginParam.getPassword());
-		return ApiResponse.success(map);
-	}
+    @ApiOperation(value = "登录", notes = "返回token以及用户的详细信息")
+    @PostMapping("/login")
+    public ApiResponse<Map<String, Object>> login(@Validated @RequestBody LoginParam loginParam) {
+        Map<String, Object> map = userService.login(loginParam.getUsernameOrEmail(), loginParam.getPassword());
+        return ApiResponse.success(map);
+    }
 
-	@ApiOperation(value = "用户上传头像",notes = "**需要token验证**，返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
-	@PostMapping("/upload-headshot")
-	public ApiResponse<Map> uploadHeadShot(@ApiParam(required = true)
+    @ApiOperation(value = "用户上传头像", notes = "**需要token验证**，返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @PostMapping("/upload-headshot")
+    public ApiResponse<Map> uploadHeadShot(@ApiParam(required = true)
                                            @NotNull(message = "Picture shouldn't be null")
-                                           @RequestParam MultipartFile picture){
-		String url = userService.uploadHeadShot(picture, getUserId());
-		return ApiResponse.success(Map.of("url",url));
-	}
+                                           @RequestParam MultipartFile file) {
+        String url = userService.uploadHeadShot(file, getUserId());
+        return ApiResponse.success(Map.of("url", url));
+    }
 }

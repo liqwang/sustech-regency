@@ -146,4 +146,10 @@ public class PublicController {
     public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId){
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
+
+    @ApiOperation("根据酒店Id获取商家用户名")
+    @GetMapping("/merchant-username")
+    public ApiResponse<String> getMerchantUsernameByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getMerchantUsernameByHotelId(hotelId));
+    }
 }
