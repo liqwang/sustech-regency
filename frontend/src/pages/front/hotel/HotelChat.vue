@@ -159,7 +159,8 @@ request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
 // histories 存储所有历史信息
 let histories = reactive<Message[]>([])
 const username = JSON.parse(localStorage.getItem('user') as string).name
-const socketUrl = `ws://localhost:8080/websocket/${username}`
+// const socketUrl = `ws://localhost:8080/websocket/${username}`
+const socketUrl = `ws://quanquancho.com:8080/websocket/${username}`
 const socket = new WebSocket(socketUrl)
 
 from = username
