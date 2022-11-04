@@ -65,27 +65,18 @@
       <br>
       <br>
 
-    <el-upload
-    ref="uploadRef"
-    class="upload-demo"
-    :before-upload="beforeUpload"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-    :auto-upload="true">
-    <template #trigger>
-      <el-button type="primary">select file</el-button>
-    </template>
-
-    <el-button class="ml-3" type="success" @click="submitUpload">
-      upload to server
-    </el-button>
-
-    <template #tip>
-      <div class="el-upload__tip">
-        {{upload_tip}}
-      </div>
-    </template>
-  </el-upload>
-
+      <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }" :on-success="handleUploadSuccess"
+        :before-upload="beforeUpload" name="picture" :action=upload_url :auto-upload="true">
+        <template #trigger>
+          <el-button type="primary">select file</el-button>
+        </template>
+        <template #tip>
+          <div class="el-upload__tip">
+            {{ upload_tip }}
+          </div>
+        </template>
+      </el-upload>
+      <!-- <el-image  :src=imageUrl fit="fill" /> -->
 
 
 
@@ -165,63 +156,59 @@
         </div>
         <div v-show="which_floor != ''">
           <el-button type="success" @click="which_floor = ''"> back</el-button>
-          <el-descriptions
-    :title=which_floor
-    :column="3"
-    border
-  >
-    <template #extra>
-      <el-button type="primary">Operation</el-button>
-    </template>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          Room
-        </div>
-      </template>
-      {{which_floor}}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          price
-        </div>
-      </template>
-      {{room?.price}}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          Type
-        </div>
-      </template>
-        {{room?.roomTypeName}}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          Available
-        </div>
-      </template>
-      <el-tag size="small">{{room?.isAvailable?'Yes':'No'}}</el-tag>
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          Discount
-        </div>
-      </template>
-      {{room?.discount}}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          Capacity
-        </div>
-      </template>
-      {{room?.capacity}}
-    </el-descriptions-item>
-  </el-descriptions>
+          <el-descriptions :title=which_floor :column="3" border>
+            <template #extra>
+              <el-button type="primary">Operation</el-button>
+            </template>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Room
+                </div>
+              </template>
+              {{ which_floor }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  price
+                </div>
+              </template>
+              {{ room?.price }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Type
+                </div>
+              </template>
+              {{ room?.roomTypeName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Available
+                </div>
+              </template>
+              <el-tag size="small">{{ room?.isAvailable ? 'Yes' : 'No' }}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Discount
+                </div>
+              </template>
+              {{ room?.discount }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Capacity
+                </div>
+              </template>
+              {{ room?.capacity }}
+            </el-descriptions-item>
+          </el-descriptions>
         </div>
       </el-dialog>
 
@@ -276,26 +263,31 @@ import {
 } from 'echarts/renderers';
 
 
-import type {UploadProps, UploadInstance } from 'element-plus'
+import type { UploadProps, UploadInstance } from 'element-plus'
+const token = ref('')
+token.value = localStorage.getItem('token')!
+const upload_url = ref('')
 const upload_tip = ref('jpg/png files with a size less than 500kb')
-var hotel_img:File
-const beforeUpload: UploadProps['beforeUpload'] = (file) => {
-  hotel_img = file
-  console.log(hotel_img)
-  upload_tip.value = hotel_img.name+' has been chosen'
- return false
-}
-const submitUpload = () => {
-  request.post('/merchant/hotel/upload-cover?hotelId='+id_par.HotelId,{
-    picture:hotel_img
 
-  }).then((response)=>{
-    if(response.data.code==200){
-      console.log(response.data.data)
-    }
-  })
+const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
+    upload_tip.value = ('Hotel cover must be JPG or PNG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    upload_tip.value = ('Hotel cover size can not exceed 2MB!')
+    return false
+  }
+  console.log(rawFile.type)
+  return true
 }
-
+const imageUrl = ref('')
+const handleUploadSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  imageUrl.value = response.data.url
+  console.log(imageUrl.value)
+}
 const Time = new Date();
 const date = Time.toISOString().split('T')[0]
 console.log(date);
@@ -388,7 +380,7 @@ const click_room = (room_id: string) => {
   console.log(room_id)
   let url = '/public/get-roomInfo-by-roomId?roomId=1'
   request.get(url).then((response) => {
-    room.value= response.data.data
+    room.value = response.data.data
     console.log(room.value)
 
   })
@@ -482,6 +474,8 @@ watch(
   id_par,
   (new_val, old_val) => {
     if (id_par.HotelId != 'kong') {
+
+      upload_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-cover?hotelId=' + id_par.HotelId
       request.get('merchant/hotel/get?hotelId=' + id_par.HotelId).then(function (response) {
         if (response.data.code == 200) {
           hotel.detail = response.data.data;
@@ -533,9 +527,6 @@ watch(
     immediate: true
   }
 );
-// var image1 = ref('../images/floor2.png');
-// var image2 = ref('https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg');
-// var image3 = ref('https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg');
 var v1 = ref(false);
 var v2 = ref(false);
 var v3 = ref(false);
