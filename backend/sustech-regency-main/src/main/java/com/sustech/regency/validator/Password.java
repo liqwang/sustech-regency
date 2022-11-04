@@ -28,9 +28,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 //@Range(min = 8,max = 30)
 public @interface Password {
 
-	String message() default "密码格式错误";
+    String message() default "密码格式错误";
 
-	Class<?>[] groups() default {}; //没有这行会报ConstraintDefinitionException
+    Class<?>[] groups() default {}; //没有这行会报ConstraintDefinitionException
 
-	Class<? extends Payload>[] payload() default {}; //没有这行会报ConstraintDefinitionException
+    Class<? extends Payload>[] payload() default {}; //没有这行会报ConstraintDefinitionException
 }

@@ -59,7 +59,7 @@ public class MerchantController {
                                             @ApiParam(value = "酒店名字") @RequestParam(required = false) String name,
                                             @ApiParam(value = "酒店电话") @RequestParam(required = false) String tel,
                                             @ApiParam(value = "区域内详细地址") @RequestParam(required = false) String address) {
-        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude,getUserId(), name, tel, address));
+        return ApiResponse.success(merchantService.updateHotel(hotelId, latitude, longitude, getUserId(), name, tel, address));
     }
 
     @ApiOperation("商家获取自己下面所有酒店信息")
@@ -78,50 +78,50 @@ public class MerchantController {
         return ApiResponse.success(merchantService.getOneHotel(hotelId, latitude, longitude, getUserId(), name, tel));
     }
 
-    @ApiOperation(value = "商家上传酒店展示图片或视频",notes = "为指定的酒店(hotelId)上传展示图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @ApiOperation(value = "商家上传酒店展示图片或视频", notes = "为指定的酒店(hotelId)上传展示图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("hotel/upload-media")
-    public ApiResponse<Map> uploadHotelMedia (@ApiParam(required = true)
-                                              @NotNull(message = "Picture or video shouldn't be null")
-                                              @RequestParam MultipartFile media,
+    public ApiResponse<Map> uploadHotelMedia(@ApiParam(required = true)
+                                             @NotNull(message = "Picture or video shouldn't be null")
+                                             @RequestParam MultipartFile media,
 
-                                              @ApiParam(value = "酒店id",required = true)
-                                              @NotNull(message = "hotelId shouldn't be null")
-                                              @RequestParam Integer hotelId){
+                                             @ApiParam(value = "酒店id", required = true)
+                                             @NotNull(message = "hotelId shouldn't be null")
+                                             @RequestParam Integer hotelId) {
         String url = merchantService.uploadHotelMedia(media, hotelId);
-        return ApiResponse.success(Map.of("url",url));
+        return ApiResponse.success(Map.of("url", url));
     }
 
-    @ApiOperation(value = "商家上传酒店封面",notes = "为指定的酒店(hotelId)上传封面(jpg,jpeg,png),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
+    @ApiOperation(value = "商家上传酒店封面", notes = "为指定的酒店(hotelId)上传封面(jpg,jpeg,png),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("hotel/upload-cover")
     public ApiResponse<Map> uploadHotelCover(@ApiParam(required = true)
                                              @NotNull(message = "Picture shouldn't be null")
                                              @RequestParam MultipartFile picture,
 
-                                             @ApiParam(value = "酒店id",required = true)
+                                             @ApiParam(value = "酒店id", required = true)
                                              @NotNull(message = "hotelId shouldn't be null")
-                                             @RequestParam Integer hotelId){
+                                             @RequestParam Integer hotelId) {
         String url = merchantService.uploadHotelCover(picture, hotelId);
-        return ApiResponse.success(Map.of("url",url));
+        return ApiResponse.success(Map.of("url", url));
     }
 
-    @ApiOperation(value = "商家删除酒店图片或视频",notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
+    @ApiOperation(value = "商家删除酒店图片或视频", notes = "删除指定酒店(hotelId)的图片或视频(mediaId)")
     @PostMapping("hotel/delete-media")
-    public ApiResponse deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid",required = true)
+    public ApiResponse deleteHotelMedia(@ApiParam(value = "图片或视频的32位uuid", required = true)
                                         @NotNull(message = "mediaId shouldn't be null")
                                         @RequestParam String mediaId,
 
-                                        @ApiParam(value = "酒店id",required = true)
+                                        @ApiParam(value = "酒店id", required = true)
                                         @NotNull(message = "hotelId shouldn't be null")
-                                        @RequestParam Integer hotelId){
-        merchantService.deleteHotelMedia(mediaId,hotelId);
+                                        @RequestParam Integer hotelId) {
+        merchantService.deleteHotelMedia(mediaId, hotelId);
         return ApiResponse.success();
     }
 
     @ApiOperation("商家查询某个酒店的流水")
     @GetMapping("/hotel/get-HistoricalBills")
     public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
-                                          @ApiParam (value = "开始时间",required = true) @RequestParam @DateParam @NotNull Date startTime,
-                                          @ApiParam (value = "结束时间",required = true) @RequestParam  @DateParam @NotNull Date endTime){
-        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId,startTime,endTime));
+                                                       @ApiParam(value = "开始时间", required = true) @RequestParam @DateParam @NotNull Date startTime,
+                                                       @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime) {
+        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime));
     }
 }

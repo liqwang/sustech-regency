@@ -17,36 +17,37 @@ import static com.sustech.regency.web.util.AssertUtil.asserts;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-	@Resource
-	private FileUtil fileUtil;
-	@Resource
-	private RoomTypeDao roomTypeDao;
-	@Resource
-	private RoomTypeExhibitionDao roomTypeExhibitionDao;
+    @Resource
+    private FileUtil fileUtil;
+    @Resource
+    private RoomTypeDao roomTypeDao;
+    @Resource
+    private RoomTypeExhibitionDao roomTypeExhibitionDao;
 
-	@Override
-	public String uploadRoomTypeCover(MultipartFile picture, Integer roomTypeId) {
-		return fileUtil.uploadDisplayCover(picture,roomTypeDao,roomTypeId);
-	}
+    @Override
+    public String uploadRoomTypeCover(MultipartFile picture, Integer roomTypeId) {
+        return fileUtil.uploadDisplayCover(picture, roomTypeDao, roomTypeId);
+    }
 
-	@Override
-	public String uploadRoomTypeMedia(MultipartFile media, Integer roomTypeId) {
-		return fileUtil.uploadDisplayMedia(media,roomTypeExhibitionDao,new RoomTypeExhibition(),
-										   roomTypeId,roomTypeDao);
-	}
+    @Override
+    public String uploadRoomTypeMedia(MultipartFile media, Integer roomTypeId) {
+        return fileUtil.uploadDisplayMedia(media, roomTypeExhibitionDao, new RoomTypeExhibition(),
+                roomTypeId, roomTypeDao);
+    }
 
-	@Resource
-	private FileDao fileDao;
-	@Override
-	public void deleteRoomTypeMedia(String mediaId, Integer roomTypeId) {
-		asserts(fileDao.selectById(mediaId)!=null,"该文件不存在");
-		RoomTypeExhibition roomTypeExhibition =
-				roomTypeExhibitionDao.selectOne(
-						new LambdaQueryWrapper<RoomTypeExhibition>()
-								.eq(RoomTypeExhibition::getRoomTypeId, roomTypeId)
-								.eq(RoomTypeExhibition::getFileId, mediaId)
-				);
-		asserts(roomTypeExhibition!=null,"该文件不是该房型的展示图片或视频");
-		fileUtil.deleteFile(mediaId);
-	}
+    @Resource
+    private FileDao fileDao;
+
+    @Override
+    public void deleteRoomTypeMedia(String mediaId, Integer roomTypeId) {
+        asserts(fileDao.selectById(mediaId) != null, "该文件不存在");
+        RoomTypeExhibition roomTypeExhibition =
+                roomTypeExhibitionDao.selectOne(
+                        new LambdaQueryWrapper<RoomTypeExhibition>()
+                                .eq(RoomTypeExhibition::getRoomTypeId, roomTypeId)
+                                .eq(RoomTypeExhibition::getFileId, mediaId)
+                );
+        asserts(roomTypeExhibition != null, "该文件不是该房型的展示图片或视频");
+        fileUtil.deleteFile(mediaId);
+    }
 }

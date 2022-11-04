@@ -35,8 +35,8 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<HotelInfo> getAllHotelInfos(Integer merchantId) {
         return hotelDao.selectJoinList(
-                     HotelInfo.class,
-                     new MPJLambdaWrapper<HotelInfo>()
+                HotelInfo.class,
+                new MPJLambdaWrapper<HotelInfo>()
                         .select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
                         .selectAs(Province::getName, HotelInfo::getProvinceName)
                         .selectAs(City::getName, HotelInfo::getCityName)
@@ -121,45 +121,46 @@ public class MerchantServiceImpl implements MerchantService {
     private FileUtil fileUtil;
     @Resource
     private HotelExhibitionDao hotelExhibitionDao;
+
     @Override
     public String uploadHotelMedia(MultipartFile media, Integer hotelId) {
         checkHotelAndOwner(hotelId);
-        return fileUtil.uploadDisplayMedia(media,hotelExhibitionDao,new HotelExhibition(hotelId,null));
+        return fileUtil.uploadDisplayMedia(media, hotelExhibitionDao, new HotelExhibition(hotelId, null));
     }
 
     @Resource
     private FileDao fileDao;
+
     @Override
     public String uploadHotelCover(MultipartFile picture, Integer hotelId) {
         Hotel hotel = checkHotelAndOwner(hotelId);
-        return fileUtil.uploadDisplayCover(picture,hotelDao,hotel);
+        return fileUtil.uploadDisplayCover(picture, hotelDao, hotel);
     }
 
     @Override
     public void deleteHotelMedia(String mediaId, Integer hotelId) {
         checkHotelAndOwner(hotelId);
-        asserts(fileDao.selectById(mediaId)!=null,"该文件不存在");
-        HotelExhibition hotelExhibition=hotelExhibitionDao.selectOne(
-                                             new LambdaQueryWrapper<HotelExhibition>()
-                                                .eq(HotelExhibition::getHotelId, hotelId)
-                                                .eq(HotelExhibition::getFileId, mediaId));
-        asserts(hotelExhibition!=null,"该文件不是该酒店的展示图片或视频");
+        asserts(fileDao.selectById(mediaId) != null, "该文件不存在");
+        HotelExhibition hotelExhibition = hotelExhibitionDao.selectOne(
+                new LambdaQueryWrapper<HotelExhibition>()
+                        .eq(HotelExhibition::getHotelId, hotelId)
+                        .eq(HotelExhibition::getFileId, mediaId));
+        asserts(hotelExhibition != null, "该文件不是该酒店的展示图片或视频");
         fileUtil.deleteFile(mediaId);
     }
 
     @Override
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime) {
-        Float[] money=new Float[differentDays(startTime,EndTime)];
+        Float[] money = new Float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId);
-        for (Room room:
-             rooms) {
+        for (Room room :
+                rooms) {
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            orderLambdaQueryWrapper.eq(Order::getRoomId,room.getId());
+            orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
-            for (Order o:
-                 orders) {
-                if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())){
-                    money[differentDays(startTime,o.getDateEnd())]=o.getFee();
+            for (Order o : orders) {
+                if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
+                    money[differentDays(startTime, o.getDateEnd())] = o.getFee();
                 }
 
             }
@@ -170,47 +171,47 @@ public class MerchantServiceImpl implements MerchantService {
     /**
      * @return 该hotelId对应的酒店
      */
-    private Hotel checkHotelAndOwner(Integer hotelId){
+    private Hotel checkHotelAndOwner(Integer hotelId) {
         Hotel hotel = hotelDao.selectById(hotelId);
-        asserts(hotel!=null,"酒店不存在");
-        asserts(getUserId().equals(hotel.getMerchantId()),"该酒店属于别人");
+        asserts(hotel != null, "酒店不存在");
+        asserts(getUserId().equals(hotel.getMerchantId()), "该酒店属于别人");
         return hotel;
     }
+
     /**
      * date2比date1多的天数
+     *
      * @param date1
      * @param date2
      * @return
      */
-    private static int differentDays(Date date1,Date date2) {
+    private static int differentDays(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
 
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-        int day1= cal1.get(Calendar.DAY_OF_YEAR);
+        int day1 = cal1.get(Calendar.DAY_OF_YEAR);
         int day2 = cal2.get(Calendar.DAY_OF_YEAR);
 
         int year1 = cal1.get(Calendar.YEAR);
         int year2 = cal2.get(Calendar.YEAR);
-        if(year1 != year2) {//同一年
-            int timeDistance = 0 ;
-            for(int i = year1 ; i < year2 ; i ++)
-            {
-                if(i%4==0 && i%100!=0 || i%400==0)    //闰年
+        if (year1 != year2) {//同一年
+            int timeDistance = 0;
+            for (int i = year1; i < year2; i++) {
+                if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0)    //闰年
                 {
                     timeDistance += 366;
-                }
-                else    //不是闰年
+                } else    //不是闰年
                 {
                     timeDistance += 365;
                 }
             }
 
-            return timeDistance + (day2-day1) ;
+            return timeDistance + (day2 - day1);
         } else {// 不同年
-            System.out.println("判断day2 - day1 : " + (day2-day1));
-            return day2-day1;
+            System.out.println("判断day2 - day1 : " + (day2 - day1));
+            return day2 - day1;
         }
     }
 

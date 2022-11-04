@@ -111,39 +111,39 @@ public class PublicController {
     @ApiOperation("根据省市区酒店名字获得酒店信息")
     @GetMapping("/get-hotels-by-location")
     public ApiResponse<List<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
-                                                  @ApiParam(value = "城市名字") @RequestParam(required = false)  String CityName,
-                                                  @ApiParam (value = "区的名字")@RequestParam(required = false) String RegionName,
-                                                  @ApiParam (value = "酒店名字") @RequestParam(required = false) String HotelName) {
-        return ApiResponse.success(publicService.getHotelsByLocation(ProvinceName ,CityName, RegionName, HotelName));
+                                                  @ApiParam(value = "城市名字") @RequestParam(required = false) String CityName,
+                                                  @ApiParam(value = "区的名字") @RequestParam(required = false) String RegionName,
+                                                  @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName) {
+        return ApiResponse.success(publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName));
     }
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
     @GetMapping("/get-rooms-by-hotel")
-    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId){
+    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
     }
 
     @ApiOperation("根据酒店ID获取房间最低价格")
     @GetMapping("/get-min_price-by-hotel")
-    public ApiResponse<Float> getMinPriceByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId){
+    public ApiResponse<Float> getMinPriceByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getMinPriceOfHotel(hotelId));
     }
 
     @ApiOperation("根据酒店ID获取评论数量")
     @GetMapping("/get-comment_number-by-hotel")
-    public ApiResponse<Integer> getCommentOfHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam  @NotNull Integer hotelId){
+    public ApiResponse<Integer> getCommentOfHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getCommentsNumberByHotel(hotelId));
     }
 
     @ApiOperation("根据房间Id获取房间信息")
     @GetMapping("/get-roomInfo-by-roomId")
-    public ApiResponse<RoomInfo> getRoomInfoByRoomId(@ApiParam(value = "房间Id", required = true) @RequestParam @NotNull Integer roomId){
+    public ApiResponse<RoomInfo> getRoomInfoByRoomId(@ApiParam(value = "房间Id", required = true) @RequestParam @NotNull Integer roomId) {
         return ApiResponse.success(publicService.getRoomInfoByRoomId(roomId));
     }
 
     @ApiOperation("根据酒店Id获得所有房型信息")
     @GetMapping("/get-roomTypes-by-HotelId")
-    public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId){
+    public ApiResponse<List<RoomType>> getRoomTypesByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
 
