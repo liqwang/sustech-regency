@@ -6,6 +6,7 @@ import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
@@ -152,4 +153,14 @@ public class PublicController {
     public ApiResponse<String> getMerchantUsernameByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getMerchantUsernameByHotelId(hotelId));
     }
+
+    @ApiOperation("根据酒店Id获取所有评论")
+    @GetMapping("/get-hotelComments")
+    public ApiResponse<List<Comment>> getCommentsByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getCommentsByHotelId(hotelId));
+    }
+
+
+
+
 }

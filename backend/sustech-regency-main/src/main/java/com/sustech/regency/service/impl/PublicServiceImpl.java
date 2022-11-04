@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
@@ -205,5 +206,22 @@ public class PublicServiceImpl implements PublicService {
                 .eq(Hotel::getId, hotelId)
                 .leftJoin(Hotel.class, Hotel::getMerchantId, User::getId);
         return userDao.selectJoinOne(User.class, wrapper).getName();
+    }
+
+    @Override
+    public List<Comment> getCommentsByHotelId(Integer hotelId) {
+        MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Order::getCommentTime,Order::getComment,Order::getStars)
+                .selectAs(User::getName,Comment::getUserName)
+                .selectAs(Hotel::getName,Comment::getHotelName)
+                .selectAs(RoomType::getName,Comment::getRoomType);
+        wrapper.eq(Hotel::getId,hotelId);
+        wrapper.innerJoin(User.class,User::getId,Order::getId)
+                .innerJoin(Room.class,Room::getId,Order::getRoomId)
+                .innerJoin(Hotel.class,Hotel::getId,Room::getHotelId)
+                .innerJoin(RoomType.class,RoomType::getId,Room::getTypeId );
+        List<Comment> comments = orderDao.selectJoinList(Comment.class,wrapper);
+        return comments;
+
     }
 }
