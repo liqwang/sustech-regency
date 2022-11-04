@@ -1,10 +1,12 @@
 package com.sustech.regency.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.LoginLogDao;
 import com.sustech.regency.db.dao.UserDao;
 import com.sustech.regency.db.dao.UserWithRoleDao;
 import com.sustech.regency.db.po.LoginLog;
+import com.sustech.regency.db.po.Role;
 import com.sustech.regency.db.po.User;
 import com.sustech.regency.db.po.UserWithRole;
 import com.sustech.regency.db.util.Redis;
@@ -27,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 import static com.sustech.regency.util.VerificationUtil.validateCode;
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
     private LoginLogDao loginLogDao;
 
     @Override
-    public Map<String,Object> register(String verificationCode, String email, String username, String password, Integer roleId) {
+    public UserInfo register(String verificationCode, String email, String username, String password, Integer roleId) {
         String trueCode = redis.getObject("verification:" + email);
         validateCode(verificationCode,trueCode);
         //判断该email是否已被注册
@@ -74,15 +76,29 @@ public class UserServiceImpl implements UserService {
         return authenticateAndGetUserInfo(user);
     }
 
-    private Map<String,Object> authenticateAndGetUserInfo(User user){
+    @SuppressWarnings("CommentedOutCode")
+    private UserInfo authenticateAndGetUserInfo(User user){
         //直接认证通过，就不经过AuthenticationManager#authenticate了
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
         SecurityContextHolder.getContext().setAuthentication(authentication); //存入SecurityContext
         redis.setObject("login:" + user.getId(), user, 60 * 60 * 2); //把完整用户信息存入Redis, sid作为key, ttl为2h
         String jwt = JwtUtil.createJwt(String.valueOf(user.getId()));//使用id生成JWT返回
+        //1.查询头像URL
         String headshotUrl = fileUtil.getCoverUrl(user);
-        return Map.of("token",jwt,
-                      "userInfo",new UserInfo(user.getId(),user.getName(),user.getEmail(),headshotUrl));
+        //2.查询roles
+        List<String> roles= userWithRoleDao.selectJoinList(
+                                Role.class,
+                                new MPJLambdaWrapper<Role>()
+                                   .select(Role::getName)
+                                   .innerJoin(Role.class, Role::getId, UserWithRole::getRoleId)
+                                   .eq(UserWithRole::getUserId, user.getId()))
+                           .stream().map(Role::getName).toList();
+//        List<String> roles = userWithRoleDao.selectList(new LambdaQueryWrapper<UserWithRole>()
+//                                                           .eq(UserWithRole::getUserId, user.getId()))
+//                            .stream().map(UserWithRole::getRoleId)
+//                            .map(roleId -> roleDao.selectById(roleId).getName())
+//                            .toList();
+        return new UserInfo(jwt,user.getId(),user.getName(),user.getEmail(),headshotUrl,roles);
     }
 
     @Override
@@ -99,7 +115,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private FileUtil fileUtil;
     @Override
-    public Map<String,Object> login(String usernameOrEmail, String password) {
+    public UserInfo login(String usernameOrEmail, String password) {
         LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
         if(usernameOrEmail.contains("@")){ //邮箱
             wrapper.eq(User::getEmail,usernameOrEmail);

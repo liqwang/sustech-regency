@@ -3,6 +3,7 @@ package com.sustech.regency.controller;
 import com.sustech.regency.model.param.FindPasswordParam;
 import com.sustech.regency.model.param.LoginParam;
 import com.sustech.regency.model.param.RegisterParam;
+import com.sustech.regency.model.vo.UserInfo;
 import com.sustech.regency.service.UserService;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
@@ -35,15 +36,15 @@ public class UserController {
         return ApiResponse.success();
     }
 
-    @ApiOperation(value = "注册", notes = "返回token以及用户的详细信息")
+    @ApiOperation(value = "注册")
     @PostMapping("/register")
-    public ApiResponse<Map<String, Object>> register(@Validated @RequestBody RegisterParam registerParam) {
-        Map<String, Object> map = userService.register(registerParam.getVerificationCode(),
-                registerParam.getEmail(),
-                registerParam.getUsername(),
-                registerParam.getPassword(),
-                registerParam.getRoleId());
-        return ApiResponse.success(map);
+    public ApiResponse<UserInfo> register(@Validated @RequestBody RegisterParam registerParam) {
+        UserInfo userInfo =userService.register(registerParam.getVerificationCode(),
+                                                registerParam.getEmail(),
+                                                registerParam.getUsername(),
+                                                registerParam.getPassword(),
+                                                registerParam.getRoleId());
+        return ApiResponse.success(userInfo);
     }
 
     @ApiOperation("找回密码")
@@ -55,11 +56,11 @@ public class UserController {
         return ApiResponse.success();
     }
 
-    @ApiOperation(value = "登录", notes = "返回token以及用户的详细信息")
+    @ApiOperation(value = "登录")
     @PostMapping("/login")
-    public ApiResponse<Map<String, Object>> login(@Validated @RequestBody LoginParam loginParam) {
-        Map<String, Object> map = userService.login(loginParam.getUsernameOrEmail(), loginParam.getPassword());
-        return ApiResponse.success(map);
+    public ApiResponse<UserInfo> login(@Validated @RequestBody LoginParam loginParam) {
+        UserInfo userInfo = userService.login(loginParam.getUsernameOrEmail(), loginParam.getPassword());
+        return ApiResponse.success(userInfo);
     }
 
     @ApiOperation(value = "用户上传头像", notes = "**需要token验证**，返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
