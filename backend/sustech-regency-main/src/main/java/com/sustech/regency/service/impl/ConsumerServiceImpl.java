@@ -126,7 +126,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public void like(Integer hotelId) {
-
+        Collection collection = Collection.builder().userId(getUserId()).hotelId(hotelId).build();
+        collectionDao.insert(collection);
     }
 
     @Override

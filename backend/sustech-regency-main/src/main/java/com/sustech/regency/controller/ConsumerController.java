@@ -66,4 +66,11 @@ public class ConsumerController {
         consumerService.RoomReservation(roomId, startTime, endTime, price, getUserId(), payerName, payerIdNumber, cohabitantIdNums, cohabitantNames);
         return ApiResponse.success();
     }
+
+    @ApiOperation("收藏酒店")
+    @PostMapping("/like-hotel")
+    public ApiResponse  likeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId){
+        consumerService.like(hotelId);
+        return ApiResponse.success();
+    }
 }
