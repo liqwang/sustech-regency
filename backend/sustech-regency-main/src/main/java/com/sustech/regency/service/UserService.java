@@ -21,5 +21,5 @@ public interface UserService {
     /**
      * @return 返回成功上传后的获取URL
      */
-    String uploadHeadShot(MultipartFile file, Integer userId);
+    String uploadHeadShot(MultipartFile picture, Integer userId);
 }

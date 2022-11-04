@@ -67,8 +67,8 @@ public class UserController {
     @PostMapping("/upload-headshot")
     public ApiResponse<Map> uploadHeadShot(@ApiParam(required = true)
                                            @NotNull(message = "Picture shouldn't be null")
-                                           @RequestParam MultipartFile file) {
-        String url = userService.uploadHeadShot(file, getUserId());
+                                           @RequestParam MultipartFile picture) {
+        String url = userService.uploadHeadShot(picture, getUserId());
         return ApiResponse.success(Map.of("url", url));
     }
 }

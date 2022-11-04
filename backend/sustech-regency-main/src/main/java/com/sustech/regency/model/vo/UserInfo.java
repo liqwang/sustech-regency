@@ -12,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UserInfo {
-	private String token;
-	private Integer id;
-	private String name;
-	private String email;
-	private String headshotUrl;
-	private List<String> roles;
+    private String token;
+    private Integer id;
+    private String name;
+    private String email;
+    private String headshotUrl;
+    private Boolean isConsumer;
+    private Boolean isMerchant;
+    private Integer merchantHotelId;
 }
