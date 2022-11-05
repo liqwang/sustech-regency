@@ -29,4 +29,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(200, "OK", data);
     }
+
+	public static ApiResponse<String> badRequest(String message){
+		return new ApiResponse<>(400,message);
+	}
 }

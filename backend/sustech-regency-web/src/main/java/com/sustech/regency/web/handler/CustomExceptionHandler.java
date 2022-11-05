@@ -6,9 +6,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ReportAsSingleViolation;
+
+import static com.sustech.regency.web.vo.ApiResponse.badRequest;
 
 /**
  * 只能捕获到API阶段的Exception, 无法捕获filter链中的Exception<p>
@@ -19,9 +22,15 @@ import javax.validation.ReportAsSingleViolation;
  */
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ApiResponse handleMissingServletRequestPartException(MissingServletRequestPartException e){
+        return badRequest("Missing request part ["+e.getRequestPartName()+"]");
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ApiResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
-        return new ApiResponse(400,"Missing param ["+e.getParameterName()+"]");
+        return badRequest("Missing param ["+e.getParameterName()+"]");
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -29,14 +38,15 @@ public class CustomExceptionHandler {
     public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         String field = fieldError.getField();
-        return new ApiResponse(400, "["+field+"]"+ fieldError.getDefaultMessage());
+        return badRequest("["+field+"]"+ fieldError.getDefaultMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
-        String message = e.getMessage().split(" ")[1];
-        String field = e.getMessage().split(":")[0].split("\\.")[1];
-        return new ApiResponse(400, "["+field+"] "+ message);
+        String fullField = e.getMessage().split(":")[0];
+        String field = fullField.split("\\.")[1];
+        String message = e.getMessage().replace(fullField, "");
+        return badRequest("["+field+"]"+ message);
     }
 
     @ExceptionHandler(ApiException.class)
