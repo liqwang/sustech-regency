@@ -17,12 +17,11 @@ import javax.validation.constraints.Size;
 @Builder
 public class FindPasswordParam {
 	@ApiModelProperty(value="验证码",required=true,example="\"114514\"")
-	@Size(min=6,max=6,message="验证码必须为6位")
+	@Size(min=6,max=6,message="必须为6位")
 	String verificationCode;
 
 	@ApiModelProperty(required=true)
-	@Email(message = "邮箱格式错误")
-	@NotEmpty(message = "邮箱不能为空")
+	@Email @NotEmpty
 	String email;
 
 	@ApiModelProperty(required = true)

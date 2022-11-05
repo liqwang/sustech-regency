@@ -16,7 +16,6 @@ import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import static org.apache.logging.log4j.util.Strings.isNotEmpty;
 
 @PathController("/public")
 public class PublicController {
@@ -55,10 +55,8 @@ public class PublicController {
     public ApiResponse<List<City>> getAllCities(@RequestParam(required = false) String province) {
         MPJLambdaWrapper<City> wrapper = new MPJLambdaWrapper<>();
         wrapper.selectAll(City.class)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        if (Strings.isNotEmpty(province)) {
-            wrapper.eq(Province::getName, province);
-        }
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .eq(isNotEmpty(province),Province::getName, province);
         return ApiResponse.success(cityDao.selectJoinList(City.class, wrapper));
     }
 
@@ -67,17 +65,14 @@ public class PublicController {
 
     @ApiOperation("获取一个城市的所有区")
     @GetMapping("/region/all")
-    public ApiResponse<List<Region>> getAllRegions(@RequestParam(required = false) String province, @RequestParam(required = false) String city) {
+    public ApiResponse<List<Region>> getAllRegions(@RequestParam(required = false) String province,
+                                                   @RequestParam(required = false) String city) {
         MPJLambdaWrapper<Region> wrapper = new MPJLambdaWrapper<>();
         wrapper.selectAll(Region.class)
                 .innerJoin(City.class, City::getId, Region::getCityId)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        if (Strings.isNotEmpty(province)) {
-            wrapper.eq(Province::getName, province);
-        }
-        if (Strings.isNotEmpty(city)) {
-            wrapper.eq(City::getName, city);
-        }
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .eq(isNotEmpty(province),Province::getName, province)
+                .eq(isNotEmpty(city),City::getName, city);
         return ApiResponse.success(regionDao.selectJoinList(Region.class, wrapper));
     }
 
@@ -178,5 +173,4 @@ public class PublicController {
     public ApiResponse<List<RoomType>> getRoomIdByHotelIdWithRoomNum(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
-
 }

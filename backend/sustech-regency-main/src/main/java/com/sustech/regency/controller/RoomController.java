@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
@@ -20,13 +21,13 @@ public class RoomController {
 
     @ApiOperation("添加一个房间")
     @PostMapping("/room/add")
-    public ApiResponse<Boolean> addNewRoom(@ApiParam(value = "房间号", required = true) @RequestParam Integer roomNum,
-                                           @ApiParam(value = "价格", required = true) @RequestParam Float price,
-                                           @ApiParam(value = "楼层", required = true) @RequestParam Integer floor,
-                                           @ApiParam(value = "房间类型", required = true) @RequestParam Integer typeId,
-                                           @ApiParam(value = "属于哪个酒店", required = true) @RequestParam Integer hotelId,
-                                           @ApiParam(value = "是否空置中", required = true) @RequestParam Boolean isAvailable,
-                                           @ApiParam(value = "折扣率", required = true) @RequestParam Float discount) {
+    public ApiResponse<Boolean> addNewRoom(@ApiParam(value = "房间号", required = true) @RequestParam @NotNull Integer roomNum,
+                                           @ApiParam(value = "价格", required = true) @RequestParam @NotNull Float price,
+                                           @ApiParam(value = "楼层", required = true) @RequestParam @NotNull Integer floor,
+                                           @ApiParam(value = "房间类型", required = true) @RequestParam @NotNull Integer typeId,
+                                           @ApiParam(value = "属于哪个酒店", required = true) @RequestParam @NotNull Integer hotelId,
+                                           @ApiParam(value = "是否空置中", required = true) @RequestParam @NotNull Boolean isAvailable,
+                                           @ApiParam(value = "折扣率", required = true) @RequestParam @NotNull Float discount) {
         Room room = Room.builder().roomNum(roomNum)
                 .price(price)
                 .floor(floor)
@@ -40,13 +41,13 @@ public class RoomController {
 
     @ApiOperation("商家删除一个酒店房间")
     @PostMapping("/room/delete")
-    public ApiResponse<Boolean> deleteRoom(@ApiParam(value = "房间Id", required = true) @RequestParam Integer roomId) {
+    public ApiResponse<Boolean> deleteRoom(@ApiParam(value = "房间Id", required = true) @RequestParam @NotNull Integer roomId) {
         return ApiResponse.success(roomService.deleteRoom(getUserId(), roomId));
     }
 
     @ApiOperation("商家更新一个酒店房间信息")
     @PostMapping("/room/updateOne")
-    public ApiResponse<Boolean> updateOneRoom(@ApiParam(value = "房间Id", required = true) @RequestParam Integer roomId,
+    public ApiResponse<Boolean> updateOneRoom(@ApiParam(value = "房间Id", required = true) @RequestParam @NotNull Integer roomId,
                                               @ApiParam(value = "房间号") @RequestParam(required = false) Integer roomNum,
                                               @ApiParam(value = "价格") @RequestParam(required = false) Float price,
                                               @ApiParam(value = "楼层") @RequestParam(required = false) Integer floor,
