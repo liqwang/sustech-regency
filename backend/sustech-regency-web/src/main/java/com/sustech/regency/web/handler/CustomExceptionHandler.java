@@ -43,10 +43,10 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
-        String fullField = e.getMessage().split(":")[0];
-        String field = fullField.split("\\.")[1];
-        String message = e.getMessage().replace(fullField, "");
-        return badRequest("["+field+"]"+ message);
+        String[] split = e.getMessage().split(": ");
+        String field = split[0].split("\\.")[1];
+        String message = split[1];
+        return badRequest("["+field+"] "+message);
     }
 
     @ExceptionHandler(ApiException.class)
