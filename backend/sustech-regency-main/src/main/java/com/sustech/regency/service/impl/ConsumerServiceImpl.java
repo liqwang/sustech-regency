@@ -163,4 +163,12 @@ public class ConsumerServiceImpl implements ConsumerService {
         }
         return likes;
     }
+
+    @Override
+    public List<Order> getOrders() {
+        LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        orderLambdaQueryWrapper.eq(Order::getPayerId,getUserId());
+        List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
+        return orders;
+    }
 }

@@ -1,5 +1,6 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.db.po.Order;
 import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.ConsumerService;
@@ -80,9 +81,15 @@ public class ConsumerController {
         return ApiResponse.success();
     }
 
-//    @ApiOperation("用户查看自己收藏的酒店")
-//    @GetMapping("/get-lieks")
-//    public ApiResponse<List<HotelInfo>> getLikes() {
-//        return ApiResponse.success(consumerService.getHotelInfoFromLikes());
-//    }
+    @ApiOperation("用户查看自己收藏的酒店")
+    @GetMapping("/get-likes")
+    public ApiResponse<List<HotelInfo>> getLikes() {
+        return ApiResponse.success(consumerService.getHotelInfoFromLikes());
+    }
+
+    @ApiOperation("用户查看自己订单")
+    @GetMapping("/get-orders")
+    public ApiResponse<List<Order>> getOrders() {
+        return ApiResponse.success(consumerService.getOrders());
+    }
 }

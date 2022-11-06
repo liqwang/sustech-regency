@@ -1,6 +1,7 @@
 package com.sustech.regency.service;
 
 import com.sustech.regency.db.po.Hotel;
+import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +23,6 @@ public interface ConsumerService {
     void dislike(Integer hotelId);
 
     List<HotelInfo> getHotelInfoFromLikes();
+
+    List<Order> getOrders();
 }
