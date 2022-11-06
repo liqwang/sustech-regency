@@ -15,7 +15,7 @@ public interface PublicService {
     //通过省市区的到酒店信息
     List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName);
 
-    List<Room> getRoomsByHotel(Integer hotelId);
+    List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId);
 
     List<String> getPictureUrls(Integer hotelId);
 

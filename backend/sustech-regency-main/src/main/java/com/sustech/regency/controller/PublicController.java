@@ -115,8 +115,9 @@ public class PublicController {
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
     @GetMapping("/get-rooms-by-hotel")
-    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
-        return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
+    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                   @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+        return ApiResponse.success(publicService.getRoomsByHotel(hotelId,roomTypeId));
     }
 
     @ApiOperation("根据酒店ID获取房间最低价格")

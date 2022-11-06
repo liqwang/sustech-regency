@@ -84,10 +84,23 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public List<Room> getRoomsByHotel(Integer hotelId) {
+    public List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId) {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Room::getHotelId, hotelId);
-        return roomDao.selectList(wrapper);
+        List<Room> rooms = roomDao.selectList(wrapper);
+        List<Room> roomList = new ArrayList<>();
+        if (roomTypeId!=null){
+            for (Room r :
+                    rooms) {
+                if (r.getTypeId().equals(roomTypeId)) {
+                    roomList.add(r);
+                }
+            }
+        }
+        if (roomTypeId==null){
+            return rooms;
+        }
+        return roomList;
     }
 
     @Override
@@ -184,7 +197,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
-        List<Room> rooms = getRoomsByHotel(hotelId);
+        List<Room> rooms = getRoomsByHotel(hotelId,null);
         List<Integer> typeIds = new ArrayList<>();
         for (Room room : rooms) {
             if (!typeIds.contains(room.getTypeId())) typeIds.add(room.getTypeId());
