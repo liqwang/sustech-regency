@@ -1,11 +1,14 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.db.po.RoomType;
+import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,4 +80,9 @@ public class ConsumerController {
         return ApiResponse.success();
     }
 
+//    @ApiOperation("用户查看自己收藏的酒店")
+//    @GetMapping("/get-lieks")
+//    public ApiResponse<List<HotelInfo>> getLikes() {
+//        return ApiResponse.success(consumerService.getHotelInfoFromLikes());
+//    }
 }

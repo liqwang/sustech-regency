@@ -62,6 +62,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Resource
     private PublicService publicService;
 
+
     @Override
     public void deleteCommentMedia(String mediaId, Integer orderId) {
         checkOrderAndOwner(orderId);
@@ -131,6 +132,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public void like(Integer hotelId) {
+        LambdaQueryWrapper<Collection> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Collection::getHotelId,hotelId).eq(Collection::getUserId,getUserId());
+        Collection one = collectionDao.selectOne(wrapper);
+        asserts (one == null ,"You have liked this hotel before");
         Collection collection = Collection.builder().userId(getUserId()).hotelId(hotelId).build();
         collectionDao.insert(collection);
     }
@@ -153,8 +158,6 @@ public class ConsumerServiceImpl implements ConsumerService {
         for (Collection c:
              collections) {
             Integer hotel_id = c.getHotelId();
-            LambdaQueryWrapper<Hotel> hotelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            hotelLambdaQueryWrapper.eq(Hotel::getId,hotel_id);
             HotelInfo hotel = publicService.getOneHotelByHotelId(hotel_id);
             likes.add(hotel);
         }

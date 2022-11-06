@@ -22,5 +22,4 @@ public interface ConsumerService {
     void dislike(Integer hotelId);
 
     List<HotelInfo> getHotelInfoFromLikes();
-
 }
