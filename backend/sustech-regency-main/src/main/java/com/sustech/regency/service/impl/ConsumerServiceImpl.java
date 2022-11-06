@@ -6,12 +6,14 @@ import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.HideService;
+import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +58,9 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private PublicService publicService;
 
     @Override
     public void deleteCommentMedia(String mediaId, Integer orderId) {
@@ -132,11 +137,27 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public void dislike(Integer hotelId) {
-
+        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        collectionLambdaQueryWrapper.eq(Collection::getHotelId,hotelId);
+        Collection collection = collectionDao.selectOne(collectionLambdaQueryWrapper);
+        asserts(collection!=null,"Hotel have not been liked");
+        collectionDao.delete(collectionLambdaQueryWrapper);
     }
 
     @Override
     public List<HotelInfo> getHotelInfoFromLikes() {
-        return null;
+        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        collectionLambdaQueryWrapper.eq(Collection::getUserId,getUserId());
+        List<Collection> collections = collectionDao.selectList(collectionLambdaQueryWrapper);
+        List<HotelInfo> likes = new ArrayList<>();
+        for (Collection c:
+             collections) {
+            Integer hotel_id = c.getHotelId();
+            LambdaQueryWrapper<Hotel> hotelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            hotelLambdaQueryWrapper.eq(Hotel::getId,hotel_id);
+            HotelInfo hotel = publicService.getOneHotelByHotelId(hotel_id);
+            likes.add(hotel);
+        }
+        return likes;
     }
 }

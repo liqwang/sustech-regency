@@ -65,9 +65,16 @@ public class ConsumerController {
 
     @ApiOperation("收藏酒店")
     @PostMapping("/like-hotel")
-    public ApiResponse  likeHotel(@ApiParam(value = "酒店Id", required = true)
-                                  @NotNull @RequestParam Integer hotelId){
+    public ApiResponse likeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId){
         consumerService.like(hotelId);
         return ApiResponse.success();
     }
+
+    @ApiOperation("移出收藏酒店")
+    @PostMapping("/dislike-hotel")
+    public ApiResponse dislikeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId){
+        consumerService.dislike(hotelId);
+        return ApiResponse.success();
+    }
+
 }
