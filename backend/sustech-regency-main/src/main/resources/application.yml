@@ -5,6 +5,8 @@ spring:
     time-zone: GMT+8
 #    date-format: yyyy-MM-dd HH:mm:ss
   mvc:
+    servlet:
+      load-on-startup: 1 #SpringBoot的接口第一次访问很慢，因为DispatchServlet默认是懒加载的
     pathmatch:
       #解决整合Swagger报错的问题->https://blog.csdn.net/dchua123/article/details/121918921
       matching-strategy: ant_path_matcher
