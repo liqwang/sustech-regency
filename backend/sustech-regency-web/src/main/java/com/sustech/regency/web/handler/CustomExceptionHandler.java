@@ -11,6 +11,8 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import javax.validation.ConstraintViolationException;
 import javax.validation.ReportAsSingleViolation;
 
+import java.net.SocketException;
+
 import static com.sustech.regency.web.vo.ApiResponse.badRequest;
 
 /**
@@ -22,6 +24,11 @@ import static com.sustech.regency.web.vo.ApiResponse.badRequest;
  */
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(SocketException.class)
+    public ApiResponse handleSocketException(){
+        return ApiResponse.internalServerError("无法连接至数据库");
+    }
 
     @ExceptionHandler(MissingServletRequestPartException.class)
     public ApiResponse handleMissingServletRequestPartException(MissingServletRequestPartException e){
@@ -38,7 +45,7 @@ public class CustomExceptionHandler {
     public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         String field = fieldError.getField();
-        return badRequest("["+field+"]"+ fieldError.getDefaultMessage());
+        return badRequest("["+field+"] "+ fieldError.getDefaultMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

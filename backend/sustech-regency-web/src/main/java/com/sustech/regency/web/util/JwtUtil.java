@@ -52,12 +52,12 @@ public class JwtUtil {
             ttlMills = DEFAULT_TTL * 1000;
         }
         return Jwts.builder()
-                .setId(uuid)
-                .setSubject(subject)    //设置主题，这里是Json数据
-                .setIssuer(ISSUER)  //签发者
-                .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS256, createKey()) //HS256对称加密算法
-                .setExpiration(new Date(System.currentTimeMillis() + ttlMills));
+                   .setId(uuid)
+                   .setSubject(subject) //设置主题，这里是Json数据
+                   .setIssuer(ISSUER) //签发者
+                   .setIssuedAt(new Date())
+                   .signWith(SignatureAlgorithm.HS256, createKey()) //HS256对称加密算法
+                   .setExpiration(new Date(System.currentTimeMillis() + ttlMills));
     }
 
     public static SecretKey createKey() {
