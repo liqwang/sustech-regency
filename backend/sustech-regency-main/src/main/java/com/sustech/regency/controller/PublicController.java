@@ -100,7 +100,7 @@ public class PublicController {
             response.getOutputStream().write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
-            throw ApiException.INTERNAL_SEVER_ERROR;
+            throw ApiException.internalServerError("无法获取文件");
         }
     }
 

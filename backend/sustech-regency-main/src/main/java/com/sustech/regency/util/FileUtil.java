@@ -60,7 +60,7 @@ public class FileUtil {
             cn.hutool.core.io.FileUtil.writeBytes(file.getBytes(), dist);
         } catch (IOException e) {
             e.printStackTrace();
-            throw ApiException.INTERNAL_SEVER_ERROR;
+            throw ApiException.internalServerError("文件写入失败");
         }
         fileDao.insert(new com.sustech.regency.db.po.File(uuid, curTime, null, suffix));
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/public/file" + dateDir + newFileName;

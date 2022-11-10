@@ -9,8 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiResponse<T> {
 
-    public static final ApiResponse SUCCESS = new ApiResponse(200, "OK");
-
 	@ApiModelProperty(example="200")
 	private int code;
 	@ApiModelProperty(example="\"ok\"")
@@ -23,14 +21,22 @@ public class ApiResponse<T> {
     }
 
     public static ApiResponse success() {
-        return SUCCESS;
+        return success(null);
     }
 
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(200, "OK", data);
     }
 
-	public static ApiResponse<String> badRequest(String message){
+	public static ApiResponse badRequest(String message){
 		return new ApiResponse<>(400,message);
+	}
+
+	public static ApiResponse internalServerError(){
+		return internalServerError("Internal Server Error");
+	}
+
+	public static ApiResponse internalServerError(String message){
+		return new ApiResponse(500,message);
 	}
 }
