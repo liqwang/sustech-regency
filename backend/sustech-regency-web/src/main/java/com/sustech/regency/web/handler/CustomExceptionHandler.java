@@ -1,7 +1,9 @@
 package com.sustech.regency.web.handler;
 
 import com.sustech.regency.web.vo.ApiResponse;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +48,11 @@ public class CustomExceptionHandler {
         FieldError fieldError = e.getBindingResult().getFieldError();
         String field = fieldError.getField();
         return badRequest("["+field+"] "+ fieldError.getDefaultMessage());
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class,HttpRequestMethodNotSupportedException.class})
+    public ApiResponse handleTwoHttpExceptions(Exception e) {
+        return badRequest(e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
