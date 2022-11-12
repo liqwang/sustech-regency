@@ -1,10 +1,14 @@
 spring:
   redis:
     timeout: 300ms #连接超时时间
-  datasource:
-    url: jdbc:mysql://quanquancho.com:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-file-root-path: backend/file #相对于项目根目录的路径
-
 #    host: localhost
 #    port: 6379
 #    database: 0 #数据库编号
+  datasource:
+    url: jdbc:mysql://quanquancho.com:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+
+alipay:
+  notify-url: xxx #必须可以公网访问，支付宝异步回调URL
+#  return-url: #必须可以公网访问，支付宝同步回调地址，如果是二维码扫码支付可以不配置
+
+file-root-path: backend/file #相对于项目根目录的路径

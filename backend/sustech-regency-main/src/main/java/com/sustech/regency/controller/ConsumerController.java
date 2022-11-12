@@ -1,27 +1,24 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.model.param.ReserveParam;
 import com.sustech.regency.db.po.Order;
-import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.ConsumerService;
-import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
-
-import static com.sustech.regency.util.VerificationUtil.getUserId;
+import java.util.List;
 
 @PathController("/consumer")
 public class ConsumerController {
@@ -52,24 +49,20 @@ public class ConsumerController {
     }
 
 
-    //price后面需要写一个方法来计算，可能需要结合bonus和积分什么的
-    @ApiOperation("预定酒店")
-    @PostMapping("/reserve-hotel-room")
-    public ApiResponse reserveRoom(@ApiParam(value = "房间Id", required = true) @RequestParam @NotNull Integer roomId,
-                                   @ApiParam(value = "预定开始时间", required = true) @RequestParam @DateParam @NotNull Date startTime,
-                                   @ApiParam(value = "预定结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime,
-                                   @ApiParam(value = "总价", required = true) @RequestParam @NotNull Float price,
-                                   @ApiParam(value = "付款人名字", required = true) @RequestParam @NotEmpty String payerName,
-                                   @ApiParam(value = "付款人身份证号", required = true) @RequestParam @NotEmpty String payerIdNumber,
-                                   @ApiParam(value = "同住人身份证号列表（和后面名字要一一对应）") @RequestParam @NotEmpty List<String> cohabitantIdNums,
-                                   @ApiParam(value = "同住人的名字列表") @RequestParam @NotEmpty List<String> cohabitantNames) {
-        consumerService.RoomReservation(roomId, startTime, endTime, price, getUserId(), payerName, payerIdNumber, cohabitantIdNums, cohabitantNames);
-        return ApiResponse.success();
+    @ApiOperation(value = "预订房间",notes = "返回支付二维码的Base64编码，过期时间15分钟")
+    @PostMapping("/reserve-room")
+    public ApiResponse<String> reserveRoom(@RequestBody @Validated ReserveParam reserveParam) {
+        String base64QrCode= consumerService.reserveRoom(reserveParam.getRoomId(),
+                                                        reserveParam.getStartTime(),
+                                                        reserveParam.getEndTime(),
+                                                        reserveParam.getCohabitants());
+        return ApiResponse.success(base64QrCode);
     }
 
     @ApiOperation("收藏酒店")
     @PostMapping("/like-hotel")
-    public ApiResponse likeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId){
+    public ApiResponse  likeHotel(@ApiParam(value = "酒店Id", required = true)
+                                  @NotNull @RequestParam Integer hotelId){
         consumerService.like(hotelId);
         return ApiResponse.success();
     }
