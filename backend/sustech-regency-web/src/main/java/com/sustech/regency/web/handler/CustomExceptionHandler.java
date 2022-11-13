@@ -1,5 +1,6 @@
 package com.sustech.regency.web.handler;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import com.sustech.regency.web.vo.ApiResponse;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -13,8 +14,6 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import javax.validation.ConstraintViolationException;
 import javax.validation.ReportAsSingleViolation;
 
-import java.net.SocketException;
-
 import static com.sustech.regency.web.vo.ApiResponse.badRequest;
 
 /**
@@ -27,8 +26,8 @@ import static com.sustech.regency.web.vo.ApiResponse.badRequest;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(SocketException.class)
-    public ApiResponse handleSocketException(){
+    @ExceptionHandler(CommunicationsException.class)
+    public ApiResponse handleCommunicationsException(){
         return ApiResponse.internalServerError("无法连接至数据库");
     }
 
