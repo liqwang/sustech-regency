@@ -99,7 +99,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         alipayInfo.setTimeoutExpress(alipayUtil.getPayTimeout()); //支付超时时间
         alipayInfo.setStoreId(getUserId()+""); //付款userId?商户门店编号?
         String qrCodeUrl = alipayUtil.qrCodePay(alipayInfo);
-        return encode(qrCodeUrl);
+        return encode(qrCodeUrl,"alipay-logo.png",true);
 
 //        //能活到这里说明日期合法了,需要加到订单里
 //        Order order = Order.builder().roomId(roomId)

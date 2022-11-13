@@ -22,8 +22,8 @@ import static org.springframework.util.FileCopyUtils.copyToByteArray;
 public class QRCodeUtil {
     private static final String CHARSET = "utf-8";
     private static final int QRCODE_SIZE = 300; //二维码边长的像素
-    private static final int LOGO_WIDTH = 90;
-    private static final int LOGO_HEIGHT = 90;
+    private static final int LOGO_WIDTH = 60;
+    private static final int LOGO_HEIGHT = 60;
     private static final Map<EncodeHintType, Object> HINTS =
             Map.of(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H,
                     EncodeHintType.CHARACTER_SET, CHARSET,
@@ -31,7 +31,7 @@ public class QRCodeUtil {
 
     /**
      * <a href="https://www.youtube.com/watch?v=XW8sgT_D0To">二维码编码科普</a>
-     * @param imgPath 嵌入二维码中央的Logo路径，如果为null，则不添加
+     * @param imgPath 嵌入二维码中央的Logo路径(resource中)，如果为null，则不添加
      * @param needCompress 如果嵌入图片，是否需要压缩
      * @return 支付二维码的Base64编码
      */
@@ -80,18 +80,13 @@ public class QRCodeUtil {
 
     /**
      * 将图片嵌入二维码中央
-     *
      * @param qrCode 需要嵌入中央Logo的二维码
+     * @param imgPath 嵌入二维码中央的Logo路径(resource中)，如果为null，则不添加
      */
     @SneakyThrows(IOException.class)
     private static void embedImage(BufferedImage qrCode, String imgPath, boolean needCompress){
-        File file = new File(imgPath);
-        if (!file.exists()) {
-            System.err.println(imgPath + ":该文件不存在");
-            return;
-        }
-        Image srcImage;
-        srcImage = ImageIO.read(file);
+        @SuppressWarnings("ConstantConditions")
+        Image srcImage = ImageIO.read(QRCodeUtil.class.getClassLoader().getResourceAsStream(imgPath));
         int width = srcImage.getWidth(null);
         int height = srcImage.getHeight(null);
         if (needCompress) {
