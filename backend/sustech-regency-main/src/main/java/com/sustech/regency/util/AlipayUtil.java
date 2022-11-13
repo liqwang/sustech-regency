@@ -1,17 +1,14 @@
 package com.sustech.regency.util;
 
+import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradePrecreateModel;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 import static com.alipay.api.AlipayConstants.FORMAT_JSON;
 
@@ -46,9 +43,8 @@ public class AlipayUtil {
 		payRequest.setNotifyUrl(notifyUrl); //异步回调地址
 		AlipayTradePrecreateResponse payResponse;
 		payResponse=alipayClient.execute(payRequest);
-		Map<String,Object> responseBodyMap = new ObjectMapper().readValue(payResponse.getBody(), new TypeReference<>(){});
-		//noinspection unchecked
-		return ((Map<String, String>)responseBodyMap.get("alipay_trade_precreate_response")).get("qr_code");
+		return JSONUtil.parseObj(payResponse.getBody())
+			  .getByPath("alipay_trade_precreate_response.qr_code",String.class);
 	}
 
 	private AlipayClient getAlipayClient(){

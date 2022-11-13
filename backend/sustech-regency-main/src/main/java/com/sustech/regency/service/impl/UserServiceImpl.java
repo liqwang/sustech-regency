@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,7 +77,6 @@ public class UserServiceImpl implements UserService {
         return authenticateAndGetUserInfo(user);
     }
 
-    @SuppressWarnings("CommentedOutCode")
     private UserInfo authenticateAndGetUserInfo(User user) {
         //直接认证通过，就不经过AuthenticationManager#authenticate了
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), null);
@@ -95,11 +93,6 @@ public class UserServiceImpl implements UserService {
                                 .innerJoin(Role.class, Role::getId, UserWithRole::getRoleId)
                                 .eq(UserWithRole::getUserId, user.getId()))
                 .stream().map(Role::getId).collect(Collectors.toSet());
-//        List<String> roles = userWithRoleDao.selectList(new LambdaQueryWrapper<UserWithRole>()
-//                                                           .eq(UserWithRole::getUserId, user.getId()))
-//                            .stream().map(UserWithRole::getRoleId)
-//                            .map(roleId -> roleDao.selectById(roleId).getName())
-//                            .toList();
         Integer merchantHotelId = null;
         if (roles.contains(2)) {
             merchantHotelId = hotelDao.selectOne(
@@ -139,9 +132,11 @@ public class UserServiceImpl implements UserService {
         //生成LoginLog
         @SuppressWarnings("ConstantConditions")
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String ipAddress = request.getRemoteAddr();
-        int port = request.getRemotePort();
-        loginLogDao.insert(new LoginLog(user.getId(), new Date(), ipAddress, port));
+        loginLogDao.insert(new LoginLog()
+                              .setUserId(user.getId())
+                              .setIpAddress(request.getRemoteAddr())
+                              .setPort(request.getRemotePort())
+                              .setTime(new Date()));
         return authenticateAndGetUserInfo(user);
     }
 
