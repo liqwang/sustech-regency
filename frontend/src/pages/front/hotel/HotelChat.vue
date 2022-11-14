@@ -178,7 +178,7 @@ socket.onmessage = (message) => {
 }
 
 socket.onclose = () => {
-  console.log('websocet已关闭')
+  console.log('websocket已关闭')
 }
 
 socket.onerror = () => {

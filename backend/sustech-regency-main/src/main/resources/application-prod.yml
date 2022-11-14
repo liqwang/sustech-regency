@@ -4,13 +4,18 @@ server:
     key-store-password: VO8Pqyrl
     key-store-type: PKCS12
     key-store: classpath:7998226_quanquancho.com.pfx
-file-root-path: file #容器内的文件绝对路径
 
 spring:
   redis:
     timeout: 300ms #连接超时时间
     host: redis #docker-compose中定义的域名
-  datasource:
-    url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
 #    port: 6379
 #    database: 0 #数据库编号
+  datasource:
+    url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+
+alipay:
+  notify-url: xxx #必须可以公网访问，支付宝异步回调URL
+#  return-url: #必须可以公网访问，支付宝同步回调地址，如果是二维码扫码支付可以不配置
+
+file-root-path: file #容器内的文件绝对路径

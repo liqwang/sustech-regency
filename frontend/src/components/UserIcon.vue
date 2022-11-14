@@ -28,7 +28,7 @@
 import { UserFilled } from '@element-plus/icons-vue'
 import router from '../router'
 
-const token = $ref(localStorage.getItem('token'))
+const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
 const user = $ref(localStorage.getItem('user'))
 const username = user ? JSON.parse(localStorage.getItem('user') as string).name : ''
 const userId = user ? JSON.parse(localStorage.getItem('user') as string).id : null

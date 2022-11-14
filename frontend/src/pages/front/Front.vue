@@ -73,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+import { reactive } from 'vue';
 import UserIcon from '../../components/UserIcon.vue';
 import request from '../../utils/request'
 
@@ -119,11 +120,11 @@ interface Region {
   cityId: number
 }
 
-const token = $ref(localStorage.getItem('token'))
+const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
 const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
 let hotels: Hotel[] = []
-let hotelInfos = $ref<HotelInfo[]>([])
+let hotelInfos = reactive<HotelInfo[]>([])
 
 let province = $ref('')
 let city = $ref('')
@@ -149,6 +150,7 @@ request.get('/public/province/all').then(res => {
 const getHotels = (provinceName: string, cityName: string, regionName: string) => {
   request.get(`/public/get-hotels-by-location?CityName=${cityName}&&ProvinceName=${provinceName}&&RegionName=${regionName}`).then(res => {
     hotels = res.data.data
+    console.log('response data: ', hotels)
     hotels.forEach(async (hotel) => {
       let response = await request.get(`/public/get-comment_number-by-hotel?hotelId=${hotel.id}`)
       const comment = response.data.data
@@ -162,9 +164,9 @@ const getHotels = (provinceName: string, cityName: string, regionName: string) =
         minPrice: price
       }
       hotelInfos.push(hotelInfo)
+      console.log("hotelInfos", hotelInfos)
     })
     console.log(hotels)
-    console.log(hotelInfos)
   })
 }
 

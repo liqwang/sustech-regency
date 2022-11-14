@@ -1,7 +1,5 @@
 package com.sustech.regency.db.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.sustech.regency.db.annotation.DateField;
 import com.sustech.regency.db.annotation.DateTimeField;
@@ -18,8 +16,7 @@ import java.util.Date;
 @Builder
 @TableName("`order`")
 public class Order {
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
     private Integer roomId;
     @DateField
     private Date dateStart;
@@ -27,7 +24,7 @@ public class Order {
     private Date dateEnd;
     private Integer payerId;
     private Float fee;
-    private Integer status; //需要设置不同的status数字对应说明状态 0代表订单异常 1代表已付款 2代表订单进行中 3代表订单已完成
+    private OrderStatus status;
     private String comment;
     @DateTimeField
     private Date commentTime;

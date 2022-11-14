@@ -3,7 +3,7 @@
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
       :size="formSize" status-icon>
       <el-form-item label="用户头像" prop="avatar">
-        <el-upload class="avatar-uploader" action="http://quanquancho.com:8080/user/upload-headshot"
+        <el-upload class="avatar-uploader" action="http://quanquancho.com:8080/user/upload-headshot" name="picture"
           :headers="{ 'token': token }" :show-file-list="false" :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar" :alt="ruleForm.avatarUrl" />
@@ -14,7 +14,7 @@
       </el-form-item>
       <br>
       <el-form-item label="用户名" prop="username" required>
-        <el-input v-model="ruleForm.username" />
+        <el-input v-model="ruleForm.username" disabled />
       </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="ruleForm.phone" />
@@ -38,14 +38,14 @@ import type { FormInstance, FormRules } from 'element-plus'
 
 import type { UploadProps } from 'element-plus'
 
-interface User {
+interface UserInfo {
   avatarUrl: string
   username: string
   phone: string
   idNumber: string
 }
 
-const token = localStorage.getItem('token')
+const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
 const imageUrl = ref('')
 
@@ -73,7 +73,7 @@ const user = JSON.parse(localStorage.getItem('user') as string)
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive<User>({
+const ruleForm = reactive<UserInfo>({
   avatarUrl: user.headshotUrl,
   username: user.name,
   phone: '',

@@ -5,13 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserInfo {
-	private Integer id;
-	private String name;
-	private String email;
-	private String headshotUrl;
+    private String token;
+    private Integer id;
+    private String name;
+    private String email;
+    private String headshotUrl;
+    private Boolean isConsumer;
+    private Boolean isMerchant;
+    private Integer merchantHotelId;
 }

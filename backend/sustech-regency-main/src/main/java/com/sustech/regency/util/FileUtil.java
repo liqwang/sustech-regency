@@ -5,7 +5,7 @@ import com.github.yulichang.base.MPJBaseMapper;
 import com.sustech.regency.db.dao.FileDao;
 import com.sustech.regency.db.po.DisPlayable;
 import com.sustech.regency.db.po.Exhibitable;
-import com.sustech.regency.web.handler.ApiException;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static cn.hutool.core.io.FileUtil.getSuffix;
+import static cn.hutool.core.io.FileUtil.writeBytes;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
 @Component
@@ -39,10 +40,11 @@ public class FileUtil {
     /**
      * @return 前端获取文件的URL
      */
+    @SneakyThrows(IOException.class)
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public String uploadFile(MultipartFile file, String uuid) {
         String originalFilename = file.getOriginalFilename();
-        String suffix = cn.hutool.core.io.FileUtil.getSuffix(originalFilename);
+        String suffix = getSuffix(originalFilename);
 
         String newFileName = uuid + "." + suffix;
 
@@ -55,13 +57,8 @@ public class FileUtil {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        try {
-            File dist = new File(baseDir + newFileName);
-            cn.hutool.core.io.FileUtil.writeBytes(file.getBytes(), dist);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw ApiException.INTERNAL_SEVER_ERROR;
-        }
+        File dist = new File(baseDir + newFileName);
+        writeBytes(file.getBytes(), dist);
         fileDao.insert(new com.sustech.regency.db.po.File(uuid, curTime, null, suffix));
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/public/file" + dateDir + newFileName;
     }

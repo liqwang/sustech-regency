@@ -1,14 +1,20 @@
 package com.sustech.regency.web.handler;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import com.sustech.regency.web.vo.ApiResponse;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ReportAsSingleViolation;
+
+import static com.sustech.regency.web.vo.ApiResponse.badRequest;
 
 /**
  * 只能捕获到API阶段的Exception, 无法捕获filter链中的Exception<p>
@@ -19,9 +25,20 @@ import javax.validation.ReportAsSingleViolation;
  */
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(CommunicationsException.class)
+    public ApiResponse handleCommunicationsException(){
+        return ApiResponse.internalServerError("无法连接至数据库");
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ApiResponse handleMissingServletRequestPartException(MissingServletRequestPartException e){
+        return badRequest("Missing request part ["+e.getRequestPartName()+"]");
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ApiResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
-        return new ApiResponse(400,"Missing param ["+e.getParameterName()+"]");
+        return badRequest("Missing param ["+e.getParameterName()+"]");
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -29,14 +46,20 @@ public class CustomExceptionHandler {
     public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         String field = fieldError.getField();
-        return new ApiResponse(400, "["+field+"]"+ fieldError.getDefaultMessage());
+        return badRequest("["+field+"] "+ fieldError.getDefaultMessage());
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class,HttpRequestMethodNotSupportedException.class})
+    public ApiResponse handleTwoHttpExceptions(Exception e) {
+        return badRequest(e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
-        String message = e.getMessage().split(" ")[1];
-        String field = e.getMessage().split(":")[0].split("\\.")[1];
-        return new ApiResponse(400, "["+field+"] "+ message);
+        String[] split = e.getMessage().split(": ");
+        String field = split[0].split("\\.")[1];
+        String message = split[1];
+        return badRequest("["+field+"] "+message);
     }
 
     @ExceptionHandler(ApiException.class)

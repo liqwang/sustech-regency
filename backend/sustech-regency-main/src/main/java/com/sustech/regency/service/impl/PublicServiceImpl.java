@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
@@ -15,10 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.Max;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -85,10 +84,23 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public List<Room> getRoomsByHotel(Integer hotelId) {
+    public List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId) {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Room::getHotelId, hotelId);
-        return roomDao.selectList(wrapper);
+        List<Room> rooms = roomDao.selectList(wrapper);
+        List<Room> roomList = new ArrayList<>();
+        if (roomTypeId!=null){
+            for (Room r :
+                    rooms) {
+                if (r.getTypeId().equals(roomTypeId)) {
+                    roomList.add(r);
+                }
+            }
+        }
+        if (roomTypeId==null){
+            return rooms;
+        }
+        return roomList;
     }
 
     @Override
@@ -185,7 +197,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
-        List<Room> rooms = getRoomsByHotel(hotelId);
+        List<Room> rooms = getRoomsByHotel(hotelId,null);
         List<Integer> typeIds = new ArrayList<>();
         for (Room room : rooms) {
             if (!typeIds.contains(room.getTypeId())) typeIds.add(room.getTypeId());
@@ -206,4 +218,78 @@ public class PublicServiceImpl implements PublicService {
                 .leftJoin(Hotel.class, Hotel::getMerchantId, User::getId);
         return userDao.selectJoinOne(User.class, wrapper).getName();
     }
+
+    @Override
+    public List<Comment> getCommentsByHotelId(Integer hotelId) {
+        MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars)
+                .selectAs(User::getName, Comment::getUserName)
+                .selectAs(Hotel::getName, Comment::getHotelName)
+                .selectAs(RoomType::getName, Comment::getRoomType);
+        wrapper.eq(Hotel::getId, hotelId);
+        wrapper.innerJoin(User.class, User::getId, Order::getId)
+                .innerJoin(Room.class, Room::getId, Order::getRoomId)
+                .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
+                .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
+        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
+        return comments;
+    }
+
+    @Override
+    public HotelInfo getOneHotelByHotelId(Integer hotelId) {
+        MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
+        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getStars)
+                .selectAs(Province::getName, HotelInfo::getProvinceName)
+                .selectAs(City::getName, HotelInfo::getCityName)
+                .selectAs(Region::getName, HotelInfo::getRegionName)
+                .selectAs(File::getId, HotelInfo::getCoverUrl);
+        wrapper.eq(Hotel::getId, hotelId);
+        wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
+                .innerJoin(City.class, City::getId, Region::getCityId)
+                .innerJoin(Province.class, Province::getId, City::getProvinceId);
+        HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class, wrapper);
+
+        LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        fileLambdaQueryWrapper.eq(File::getId, hotelInfo.getCoverUrl());
+        File file = fileDao.selectOne(fileLambdaQueryWrapper);
+        if (file != null) {
+            if (file.getDeleteTime() == null) hotelInfo.setCoverUrl(FileUtil.getUrl(file));
+        }
+        hotelInfo.setPictureUrls(getPictureUrls(hotelInfo.getId()));
+        hotelInfo.setVideoUrls(getVideoUrls(hotelInfo.getId()));
+        return hotelInfo;
+    }
+
+    @Override
+    public Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum) {
+        LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomLambdaQueryWrapper.eq(Room::getRoomNum, roomNum);
+        List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
+        for (Room r :
+                rooms) {
+            if (Objects.equals(r.getHotelId(), hotelId)) {
+                return r.getId();
+            }
+        }
+        asserts(true,"Room does not exist!");
+        return null;
+    }
+
+    @Override
+    public List<RoomType> getRoomTypesByHotel(Integer hotelId) {
+        LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomLambdaQueryWrapper.eq(Room::getHotelId,hotelId);
+        List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
+        return rooms.stream().map(Room::getTypeId)
+                .map(typeId->roomTypeDao.selectById(typeId))
+                .distinct()
+                .collect(Collectors.toList());
+
+//        HashSet<RoomType> roomTypes = new HashSet<>();
+//        for (Room r :
+//                rooms) {
+//            if (!roomTypes.contains(r.getTypeId())) roomTypes.add(r.getTypeId());
+//        }
+    }
+
 }

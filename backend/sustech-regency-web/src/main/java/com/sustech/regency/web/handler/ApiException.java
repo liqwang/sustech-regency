@@ -7,7 +7,6 @@ import lombok.Getter;
  */
 @Getter
 public class ApiException extends RuntimeException {
-    public static final ApiException INTERNAL_SEVER_ERROR = new ApiException(500, "Internal server error");
 
     private final int code;
 
@@ -18,5 +17,13 @@ public class ApiException extends RuntimeException {
 
     public static ApiException badRequest(String message) {
         return new ApiException(400, message);
+    }
+
+    public static ApiException internalServerError(){
+        return internalServerError("Internal server error");
+    }
+
+    public static ApiException internalServerError(String message){
+        return new ApiException(500,message);
     }
 }

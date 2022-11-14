@@ -6,6 +6,7 @@ import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
 import com.sustech.regency.db.dao.RegionDao;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.HideService;
@@ -15,7 +16,6 @@ import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import static org.apache.logging.log4j.util.Strings.isNotEmpty;
 
 @PathController("/public")
 public class PublicController {
@@ -54,10 +55,8 @@ public class PublicController {
     public ApiResponse<List<City>> getAllCities(@RequestParam(required = false) String province) {
         MPJLambdaWrapper<City> wrapper = new MPJLambdaWrapper<>();
         wrapper.selectAll(City.class)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        if (Strings.isNotEmpty(province)) {
-            wrapper.eq(Province::getName, province);
-        }
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .eq(isNotEmpty(province),Province::getName, province);
         return ApiResponse.success(cityDao.selectJoinList(City.class, wrapper));
     }
 
@@ -66,17 +65,14 @@ public class PublicController {
 
     @ApiOperation("获取一个城市的所有区")
     @GetMapping("/region/all")
-    public ApiResponse<List<Region>> getAllRegions(@RequestParam(required = false) String province, @RequestParam(required = false) String city) {
+    public ApiResponse<List<Region>> getAllRegions(@RequestParam(required = false) String province,
+                                                   @RequestParam(required = false) String city) {
         MPJLambdaWrapper<Region> wrapper = new MPJLambdaWrapper<>();
         wrapper.selectAll(Region.class)
                 .innerJoin(City.class, City::getId, Region::getCityId)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-        if (Strings.isNotEmpty(province)) {
-            wrapper.eq(Province::getName, province);
-        }
-        if (Strings.isNotEmpty(city)) {
-            wrapper.eq(City::getName, city);
-        }
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .eq(isNotEmpty(province),Province::getName, province)
+                .eq(isNotEmpty(city),City::getName, city);
         return ApiResponse.success(regionDao.selectJoinList(Region.class, wrapper));
     }
 
@@ -104,7 +100,7 @@ public class PublicController {
             response.getOutputStream().write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
-            throw ApiException.INTERNAL_SEVER_ERROR;
+            throw ApiException.internalServerError("无法获取文件");
         }
     }
 
@@ -119,8 +115,9 @@ public class PublicController {
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
     @GetMapping("/get-rooms-by-hotel")
-    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
-        return ApiResponse.success(publicService.getRoomsByHotel(hotelId));
+    public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                   @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+        return ApiResponse.success(publicService.getRoomsByHotel(hotelId,roomTypeId));
     }
 
     @ApiOperation("根据酒店ID获取房间最低价格")
@@ -152,4 +149,31 @@ public class PublicController {
     public ApiResponse<String> getMerchantUsernameByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getMerchantUsernameByHotelId(hotelId));
     }
+
+    @ApiOperation("根据酒店Id获取所有评论")
+    @GetMapping("/get-hotelComments")
+    public ApiResponse<List<Comment>> getCommentsByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getCommentsByHotelId(hotelId));
+    }
+
+    @ApiOperation("根据酒店Id获取酒店信息")
+    @GetMapping("/get-hotelInfo-byId")
+    public ApiResponse<HotelInfo> getHotelInfoByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getOneHotelByHotelId(hotelId));
+    }
+
+    @ApiOperation("根据酒店ID和房号获得房间ID")
+    @GetMapping("/get-roomId-byHotelWithRoomNUm")
+    public ApiResponse<Integer> getRoomIdByHotelIdWithRoomNum(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                              @ApiParam(value = "房间号", required = true) @RequestParam @NotNull Integer roomId) {
+        return ApiResponse.success(publicService.getRoomIdByHotelWithRoomNum(hotelId,roomId));
+    }
+
+    @ApiOperation("根据酒店ID获得房间types")
+    @GetMapping("/get-roomTypes-byHotelId")
+    public ApiResponse<List<RoomType>> getRoomIdByHotelIdWithRoomNum(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
+    }
+
+
 }

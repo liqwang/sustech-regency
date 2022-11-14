@@ -152,7 +152,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime) {
         Float[] money = new Float[differentDays(startTime, EndTime)];
-        List<Room> rooms = publicService.getRoomsByHotel(hotelId);
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
         for (Room room :
                 rooms) {
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();

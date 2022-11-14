@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class LoginParam {
 	@ApiModelProperty(value = "用户名或邮箱", required = true)
-	@NotEmpty(message = "Username or email shouldn't be null")
+	@NotEmpty
 	private String usernameOrEmail;
 
 	@ApiModelProperty(required = true, example = "***********")

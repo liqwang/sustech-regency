@@ -1,5 +1,8 @@
 package com.sustech.regency.service;
 
+import com.sustech.regency.model.param.Cohabitant;
+import com.sustech.regency.db.po.Order;
+import com.sustech.regency.model.vo.HotelInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -13,5 +16,17 @@ public interface ConsumerService {
 
     void deleteCommentMedia(String mediaId, Integer orderId);
 
-    void RoomReservation(Integer roomId, Date startTime, Date endTime, Float price, Integer payerId, String payerName, String payerIdNumber, List<String> cohabitantIdNumbers, List<String> cohabitantNames);
+    /**
+     * @param cohabitants 同住人列表
+     * @return 支付二维码图片的Base64编码
+     */
+    String reserveRoom(Integer roomId, Date startTime, Date endTime, List<Cohabitant> cohabitants);
+
+    void like(Integer hotelId);
+
+    void dislike(Integer hotelId);
+
+    List<HotelInfo> getHotelInfoFromLikes();
+
+    List<Order> getOrders();
 }

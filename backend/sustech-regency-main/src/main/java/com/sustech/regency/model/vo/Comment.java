@@ -18,7 +18,6 @@ public class Comment {
     private Date commentTime;
     private String comment;
     private String userName;
-    private String userId;
     private String hotelName;
     private String roomType;
     private Float stars;

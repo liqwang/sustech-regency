@@ -16,6 +16,7 @@
     </properties>
 
     <dependencies>
+        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>com.sustech.regency</groupId>
             <artifactId>sustech-regency-web</artifactId>
@@ -23,6 +24,7 @@
         </dependency>
 
 
+        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
@@ -37,7 +39,23 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
+            <!--suppress MavenPackageUpdate -->
             <version>5.8.4</version>
+        </dependency>
+
+        <!--suppress VulnerableLibrariesLocal -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <!--suppress MavenPackageUpdate -->
+            <version>4.13.0.ALL</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <!--suppress MavenPackageUpdate -->
+            <version>3.3.0</version>
         </dependency>
     </dependencies>
 
