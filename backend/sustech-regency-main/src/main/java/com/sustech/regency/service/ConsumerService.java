@@ -22,6 +22,8 @@ public interface ConsumerService {
      */
     String reserveRoom(Integer roomId, Date startTime, Date endTime, List<Cohabitant> cohabitants);
 
+    void roomPayed(Long orderId);
+
     void like(Integer hotelId);
 
     void dislike(Integer hotelId);
