@@ -19,5 +19,5 @@ public class UserInfo {
     private String headshotUrl;
     private Boolean isConsumer;
     private Boolean isMerchant;
-    private Integer merchantHotelId;
+    private List<Integer> merchantHotelIds;
 }

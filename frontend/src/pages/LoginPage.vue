@@ -333,7 +333,7 @@ interface User {
   headshotUrl: string
   isConsumer: boolean
   isMerchant: boolean
-  merchantHotelId: number
+  merchantHotelIds: number[]
 }
 
 const username = ref('')
@@ -360,7 +360,7 @@ const Login = () => {
           headshotUrl: res.data.data.headshotUrl,
           isConsumer: res.data.data.isConsumer,
           isMerchant: res.data.data.isMerchant,
-          merchantHotelId: res.data.data.merchantHotelId
+          merchantHotelIds: res.data.data.merchantHotelIds
         }
         console.log('user', user)
         localStorage.setItem('token', JSON.stringify(res.data.data.token))
