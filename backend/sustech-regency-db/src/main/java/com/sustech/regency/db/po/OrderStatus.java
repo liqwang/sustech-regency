@@ -10,7 +10,18 @@ import org.apache.ibatis.type.EnumOrdinalTypeHandler;
  * 当数据库的存储类型为int, bigint, smallint等类型时，使用{@link EnumOrdinalTypeHandler}进行映射
  */
 public enum OrderStatus {
-
+	
+	/**
+	 * 十五分钟内未支付
+	 */
+	NOT_PAYED,
+	/**
+	 * 超过十五分钟未支付，订单超时
+	 */
+	TIMEOUT,
+	/**
+	 * 十五分钟内支付
+	 */
 	PAYED,
 	NOT_COMMENTED,
 	COMMENTED,

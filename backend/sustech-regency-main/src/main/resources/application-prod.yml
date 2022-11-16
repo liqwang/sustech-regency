@@ -15,7 +15,7 @@ spring:
     url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
 
 alipay:
-  notify-url: xxx #必须可以公网访问，支付宝异步回调URL
+  notify-url: https://quanquancho.com:8080/public/payed #必须可以公网访问，支付宝异步回调URL
 #  return-url: #必须可以公网访问，支付宝同步回调地址，如果是二维码扫码支付可以不配置
 
 file-root-path: file #容器内的文件绝对路径

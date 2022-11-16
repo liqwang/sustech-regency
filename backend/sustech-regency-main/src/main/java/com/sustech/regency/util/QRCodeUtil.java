@@ -19,6 +19,7 @@ import java.util.Map;
 import static javax.imageio.ImageIO.createImageOutputStream;
 import static org.springframework.util.FileCopyUtils.copyToByteArray;
 
+@SuppressWarnings("unused")
 public class QRCodeUtil {
     private static final String CHARSET = "utf-8";
     private static final int QRCODE_SIZE = 300; //二维码边长的像素

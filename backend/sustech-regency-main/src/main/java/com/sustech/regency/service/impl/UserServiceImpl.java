@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,15 +94,17 @@ public class UserServiceImpl implements UserService {
                                 .innerJoin(Role.class, Role::getId, UserWithRole::getRoleId)
                                 .eq(UserWithRole::getUserId, user.getId()))
                 .stream().map(Role::getId).collect(Collectors.toSet());
-        Integer merchantHotelId = null;
+        List<Integer> merchantHotelIds = null;
         if (roles.contains(2)) {
-            merchantHotelId = hotelDao.selectOne(
-                    new MPJLambdaWrapper<Hotel>()
-                            .selectAll(Hotel.class)
-                            .innerJoin(User.class, User::getId, Hotel::getMerchantId)
-                            .eq(User::getId, user.getId())).getId();
+            merchantHotelIds = hotelDao.selectList(
+                            new MPJLambdaWrapper<Hotel>()
+                                    .selectAll(Hotel.class)
+                                    .innerJoin(User.class, User::getId, Hotel::getMerchantId)
+                                    .eq(User::getId, user.getId()))
+                    .stream().map(Hotel::getId)
+                    .collect(Collectors.toSet()).stream().toList();
         }
-        return new UserInfo(jwt, user.getId(), user.getName(), user.getEmail(), headshotUrl, roles.contains(1), roles.contains(2), merchantHotelId);
+        return new UserInfo(jwt, user.getId(), user.getName(), user.getEmail(), headshotUrl, roles.contains(1), roles.contains(2), merchantHotelIds);
     }
 
     @Override
@@ -133,10 +136,10 @@ public class UserServiceImpl implements UserService {
         @SuppressWarnings("ConstantConditions")
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         loginLogDao.insert(new LoginLog()
-                              .setUserId(user.getId())
-                              .setIpAddress(request.getRemoteAddr())
-                              .setPort(request.getRemotePort())
-                              .setTime(new Date()));
+                .setUserId(user.getId())
+                .setIpAddress(request.getRemoteAddr())
+                .setPort(request.getRemotePort())
+                .setTime(new Date()));
         return authenticateAndGetUserInfo(user);
     }
 

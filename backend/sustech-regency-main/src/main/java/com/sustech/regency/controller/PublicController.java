@@ -9,13 +9,14 @@ import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
-import com.sustech.regency.service.HideService;
+import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +37,6 @@ public class PublicController {
 
     @Resource
     private ProvinceDao provinceDao;
-
-    @Resource
-    private HideService hideService;
 
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
@@ -175,5 +173,23 @@ public class PublicController {
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
 
-
+    @Resource
+    private ConsumerService consumerService;
+    /**
+     * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
+     * <ul>
+     *      <li>【重要】验证签名，详见<a href="https://opendocs.alipay.com/common/02mse7">支付宝官方文档</a></li>
+     *      <li>验证out_trade_no是否为系统中创建的订单号</li>
+     *      <li>验证total_amount支付金额</li>
+     *      <li>验证seller_id(seller_email))是否为out_trade_no这笔单据的对应的操作方(一个商户可能有多个seller_id/seller_email）</li>
+     *      <li>验证app_id是否正确</li>
+     *      <li>验证trade_status是否为TRADE_SUCCESS或TRADE_FINISHED</li>
+     * </ul>
+     */
+    @ApiOperation(value = "用户扫码支付后，支付宝的通知API", hidden = true)
+    @PostMapping("/payed")
+    @SneakyThrows
+    public void payed(@RequestParam("out_trade_no") Long orderId){
+        consumerService.roomPayed(orderId);
+    }
 }
