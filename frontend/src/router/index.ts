@@ -3,6 +3,12 @@ import LoginPage from '../pages/LoginPage.vue'
 import ChangePassword from '../pages/ChangePassword.vue'
 import register from '../pages/register3.vue'
 import merchant from '../pages/merchant.vue'
+import room from '../pages/room/room.vue'
+import roomDetail from '../pages/room/roomDetail.vue'
+import roomImg from '../pages/room/roomImg.vue'
+import roomOrder from '../pages/room/orders.vue'
+
+
 import Front from '../pages/front/Front.vue'
 import chat from '../pages/chat.vue'
 import HotelPage from '../pages/front/hotel/HotelPage.vue'
@@ -26,6 +32,16 @@ const routes: RouteRecordRaw[] = [
     name: 'merchant',
     component: merchant,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/merchant/room',
+    name: 'merchant_room',
+    component: room,
+    meta: { requiresAuth: true },
+    children:[{path: '', name: 'detail', component: roomDetail},
+    {path: 'picture', name: 'img', component: roomImg},
+    {path: 'order', name: 'order', component: roomOrder},
+  ]
   },
   {
     path: '/signup',

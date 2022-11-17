@@ -83,7 +83,7 @@ const toUserPage = () => {
 }
 
 const dialog = ref(false);
-const username = ref(localStorage.getItem('username') == null ? '未登录' : localStorage.getItem('username'));
+const username = ref(localStorage.getItem('user') == null ? '未登录' : JSON.parse(localStorage.getItem('user') as string).name);
 </script>
 <style scoped lang="scss">
 #top {

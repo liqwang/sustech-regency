@@ -258,6 +258,7 @@ import {
 
 
 import type { UploadProps, UploadInstance } from 'element-plus'
+import router from '../router';
 const token = ref('')
 token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
 const upload_url = ref('')
@@ -370,14 +371,18 @@ const room = ref<Room>()
 
 const click_room = (room_id: string) => {
   which_floor.value = room_id
-
+  router.push({
+      path:'merchant/room',
+    })
   console.log(room_id)
-  let url = '/public/get-roomInfo-by-roomId?roomId=1'
-  request.get(url).then((response) => {
-    room.value = response.data.data
-    console.log(room.value)
+  localStorage.setItem('roomId',room_id)
+  localStorage.setItem('hotelId',id_par.HotelId)
+  // let url = '/public/get-roomInfo-by-roomId?roomId=1'
+  // request.get(url).then((response) => {
+  //   room.value = response.data.data
+  //   console.log(room.value)
 
-  })
+  // })
 }
 
 type Province = {
