@@ -59,6 +59,13 @@ public class ConsumerController {
         return ApiResponse.success(base64QrCode);
     }
 
+    @ApiOperation(value = "订单退款")
+    @PostMapping("/refund")
+    public ApiResponse refund(@RequestParam @NotNull Long orderId) {
+        consumerService.cancelOrder(orderId);
+        return ApiResponse.success();
+    }
+
     @ApiOperation("收藏酒店")
     @PostMapping("/like-hotel")
     public ApiResponse  likeHotel(@ApiParam(value = "酒店Id", required = true)

@@ -7,6 +7,7 @@ import com.alipay.api.domain.AlipayTradePrecreateModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.sustech.regency.web.handler.ApiException;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,10 +37,17 @@ public class AlipayUtil {
 		return encode(qrCodeUrl,"alipay-logo.png",true);
 	}
 
-	public void refund(AlipayTradeRefundModel refundInfo){
+	/**
+	 * @return 退款成功时间
+	 */
+	public Date refund(AlipayTradeRefundModel refundInfo){
 		AlipayTradeRefundRequest refundRequest = new AlipayTradeRefundRequest();
 		refundRequest.setBizModel(refundInfo);
-		//Todo
+		JSONObject response = getResponse(refundRequest)
+							 .get("alipay_trade_refund_response", JSONObject.class);
+		if(response.getStr("msg").equals("Success")){
+			return response.get("gmt_refund_pay",Date.class);
+		}else{throw ApiException.internalServerError("退款失败");}
 	}
 
 	/**

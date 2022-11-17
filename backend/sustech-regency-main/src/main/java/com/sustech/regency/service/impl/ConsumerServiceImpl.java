@@ -2,6 +2,7 @@ package com.sustech.regency.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.alipay.api.domain.AlipayTradePrecreateModel;
+import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sustech.regency.db.po.OrderStatus.PAYED;
+import static com.sustech.regency.db.po.OrderStatus.REFUNDED;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
@@ -82,6 +84,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private String payTimeout;
     @Override
     public synchronized String reserveRoom(Integer roomId, Date startDate, Date endDate, List<Cohabitant> cohabitants) {
+        //Todo:同住人如何处理?
         asserts(endDate.after(startDate),"退房日期要在入住日期之后");
         asserts(startDate.after(new Date()),"入住日期已过");
         Room room = roomDao.selectById(roomId);
@@ -123,6 +126,26 @@ public class ConsumerServiceImpl implements ConsumerService {
                                .setId(orderId)
                                .setStatus(PAYED)
                                .setPayTime(payTime));
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) {
+        //1.校验
+        Order order = orderDao.selectById(orderId);
+        asserts(order!=null,"该订单不存在");
+        asserts(order.getPayerId().equals(getUserId()),"这不是你的订单");
+        asserts(order.getStatus()==PAYED,"该订单不是已付款状态");
+
+        //2.调用支付宝API退款
+        AlipayTradeRefundModel refundInfo = new AlipayTradeRefundModel();
+        refundInfo.setRefundAmount(order.getFee()+"");
+        refundInfo.setOutTradeNo(order.getId()+"");
+        Date refundTime = alipayUtil.refund(refundInfo);
+
+        //3.修改数据库
+        order.setStatus(REFUNDED)
+             .setRefundTime(refundTime);
+        orderDao.updateById(order);
     }
 
     @Override

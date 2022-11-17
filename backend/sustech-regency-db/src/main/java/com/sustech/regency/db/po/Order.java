@@ -36,5 +36,5 @@ public class Order {
     @DateTimeField
     private Date createTime;
     @DateTimeField
-    private Date cancelTime;
+    private Date refundTime;
 }

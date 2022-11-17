@@ -16,6 +16,8 @@ public interface ConsumerService {
 
     void deleteCommentMedia(String mediaId, Integer orderId);
 
+    void cancelOrder(Long orderId);
+
     /**
      * @param cohabitants 同住人列表
      * @return 支付二维码图片的Base64编码
