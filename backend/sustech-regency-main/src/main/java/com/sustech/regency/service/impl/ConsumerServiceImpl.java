@@ -24,7 +24,6 @@ import java.util.List;
 import static com.sustech.regency.db.po.OrderStatus.PAYED;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
-import static com.sustech.regency.util.QRCodeUtil.encode;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -118,11 +117,12 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public void roomPayed(Long orderId) {
+    public void roomPayed(Long orderId,Date payTime) {
+        //Todo:用WebSocket通知前端进行页面跳转
         orderDao.updateById(new Order()
                                .setId(orderId)
                                .setStatus(PAYED)
-                               .setPayTime(new Date()));
+                               .setPayTime(payTime));
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface ConsumerService {
      */
     String reserveRoom(Integer roomId, Date startTime, Date endTime, List<Cohabitant> cohabitants);
 
-    void roomPayed(Long orderId);
+    void roomPayed(Long orderId,Date payTime);
 
     void like(Integer hotelId);
 

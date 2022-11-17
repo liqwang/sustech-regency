@@ -11,12 +11,12 @@ import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.PublicService;
+import com.sustech.regency.web.annotation.DateTimeParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.handler.ApiException;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import static org.apache.logging.log4j.util.Strings.isNotEmpty;
@@ -188,8 +189,8 @@ public class PublicController {
      */
     @ApiOperation(value = "用户扫码支付后，支付宝的通知API", hidden = true)
     @PostMapping("/payed")
-    @SneakyThrows
-    public void payed(@RequestParam("out_trade_no") Long orderId){
-        consumerService.roomPayed(orderId);
+    public void payed(@RequestParam("gmt_create") @DateTimeParam Date payTime,
+                      @RequestParam("out_trade_no") Long orderId){
+        consumerService.roomPayed(orderId,payTime);
     }
 }
