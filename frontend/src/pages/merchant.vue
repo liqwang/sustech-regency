@@ -12,7 +12,7 @@
     </el-row>
     <el-row id="r2">
       <el-col :span="1">
-        <el-button @click="goback" id="back" type="primary" :icon="ArrowLeft">Log out</el-button>
+        <el-button @click="goback" id="back" type="success" :icon="ArrowLeft">Log out</el-button>
       </el-col>
       <el-col :span="19"></el-col>
       <el-col :span="2">
@@ -110,7 +110,7 @@ const username = ref(localStorage.getItem('user') == null ? '未登录' : JSON.p
   }
 
   #r1 {
-    // height: 10vh;
+    height: 9vh;
   }
 
   #drop {
@@ -120,8 +120,8 @@ const username = ref(localStorage.getItem('user') == null ? '未登录' : JSON.p
   }
 
   #back {
-    position: relative;
-    top: 0;
+    position: absolute;
+    top: -4vh;
   }
 }
 

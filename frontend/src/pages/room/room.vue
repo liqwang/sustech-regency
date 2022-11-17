@@ -1,8 +1,14 @@
 <template>
   <div class="common-layout">
   <el-container>
-    <el-header style="background-color:aliceblue">
-    
+    <el-header style="background-color:aliceblue;height: 5vh;" >
+      <el-breadcrumb separator="/" style="top:2vh;position:absolute">
+    <el-breadcrumb-item :to="{ path: '/' }">home</el-breadcrumb-item>
+    <el-breadcrumb-item
+    :to="{ path: '/merchant' }" >merchant</el-breadcrumb-item
+    >
+    <el-breadcrumb-item :to="{ path: '/merchant/room' }">room</el-breadcrumb-item>
+  </el-breadcrumb>
     </el-header>
   <el-container>
       <el-aside width="200px" style="background-color:antiquewhite;height: 100vh;">
@@ -31,7 +37,7 @@
         </el-menu-item>
       </el-menu>
       </el-aside>
-      <el-main>
+      <el-main >
 <router-view></router-view>
         
       </el-main>

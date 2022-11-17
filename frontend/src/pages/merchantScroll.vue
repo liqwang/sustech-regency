@@ -66,19 +66,28 @@
       <br>
 
       <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }" :on-success="handleUploadSuccess"
-        :before-upload="beforeUpload" name="picture" :action=upload_url :auto-upload="true">
+        :before-upload="beforeUpload" name="picture" :action=upload_cover_url :auto-upload="true">
         <template #trigger>
-          <el-button type="primary">select file</el-button>
+          <el-button type="primary">upload cover</el-button>
         </template>
         <template #tip>
           <div class="el-upload__tip">
-            {{ upload_tip }}
+            {{ cover_tip }}
           </div>
         </template>
       </el-upload>
-      <!-- <el-image  :src=imageUrl fit="fill" /> -->
 
-
+      <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }" :on-success="handleUploadSuccess_media"
+        :before-upload="beforeUpload_media" name="media" :action=upload_media_url :auto-upload="true">
+        <template #trigger>
+          <el-button type="primary">upload media</el-button>
+        </template>
+        <template #tip>
+          <div class="el-upload__tip">
+            {{ media_tip }}
+          </div>
+        </template>
+      </el-upload>
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
         <div v-show="which_floor == ''">
@@ -261,20 +270,33 @@ import type { UploadProps, UploadInstance } from 'element-plus'
 import router from '../router';
 const token = ref('')
 token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
-const upload_url = ref('')
-const upload_tip = ref('jpg/png files with a size less than 500kb')
-
+const upload_cover_url = ref('')
+const upload_media_url = ref('')
+const cover_tip = ref('upload the cover of your hotel')
+const media_tip = ref('upload the presentation media')
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
-    upload_tip.value = ('Hotel cover must be JPG or PNG format!')
+    cover_tip.value = ('Hotel cover must be JPG or PNG format!')
     return false
   } else if (rawFile.size / 1024 / 1024 > 2) {
-    upload_tip.value = ('Hotel cover size can not exceed 2MB!')
+    cover_tip.value = ('Hotel cover size can not exceed 2MB!')
     return false
   }
   console.log(rawFile.type)
   return true
 }
+const beforeUpload_media: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
+    media_tip.value = ('Hotel cover must be JPG or PNG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    media_tip.value = ('Hotel cover size can not exceed 2MB!')
+    return false
+  }
+  console.log(rawFile.type)
+  return true
+}
+
 const imageUrl = ref('')
 const handleUploadSuccess: UploadProps['onSuccess'] = (
   response,
@@ -282,6 +304,14 @@ const handleUploadSuccess: UploadProps['onSuccess'] = (
 ) => {
   imageUrl.value = response.data.url
   console.log(imageUrl.value)
+}
+const mediaUrl = ref('')
+const handleUploadSuccess_media: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  mediaUrl.value = response.data.url
+  console.log(mediaUrl.value)
 }
 const Time = new Date();
 const date = Time.toISOString().split('T')[0]
@@ -473,9 +503,9 @@ watch(
   id_par,
   (new_val, old_val) => {
     if (id_par.HotelId != 'kong') {
-
-      upload_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-cover?hotelId=' + id_par.HotelId
-      request.get('merchant/hotel/get?hotelId=' + id_par.HotelId).then(function (response) {
+      upload_media_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-media?hotelId=' + id_par.HotelId
+      upload_cover_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-cover?hotelId=' + id_par.HotelId
+      request.get('public/get-hotelInfo-byId?hotelId=' + id_par.HotelId).then(function (response) {
         if (response.data.code == 200) {
           hotel.detail = response.data.data;
           console.log(hotel.detail);
@@ -483,8 +513,6 @@ watch(
             + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId
           request.get(url).then(function (response) {
             if (response.data.code == 200) {
-              console.log(response.data.data)
-              console.log(url)
               chart_data.value = []
               for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i] == null) {
