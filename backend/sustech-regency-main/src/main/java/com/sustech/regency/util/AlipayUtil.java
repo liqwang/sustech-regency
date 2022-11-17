@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Date;
+
+import static com.sustech.regency.util.QRCodeUtil.encode;
 
 @Component
 public class AlipayUtil {
@@ -22,14 +25,15 @@ public class AlipayUtil {
 	private AlipayClient alipayClient;
 
 	/**
-	 * @return 支付宝返回的二维码URL
+	 * @return 支付二维码的Base64编码
 	 */
-	public String qrCodePay(AlipayTradePrecreateModel payInfo){
+	public String getPayQrCode(AlipayTradePrecreateModel payInfo){
 		AlipayTradePrecreateRequest payRequest = new AlipayTradePrecreateRequest();
 		payRequest.setBizModel(payInfo); //设置支付信息
 		payRequest.setNotifyUrl(notifyUrl); //异步回调地址
-		return getResponse(payRequest)
-			  .getByPath("alipay_trade_precreate_response.qr_code",String.class);
+		String qrCodeUrl = getResponse(payRequest)
+						  .getByPath("alipay_trade_precreate_response.qr_code", String.class);
+		return encode(qrCodeUrl,"alipay-logo.png",true);
 	}
 
 	public void refund(AlipayTradeRefundModel refundInfo){

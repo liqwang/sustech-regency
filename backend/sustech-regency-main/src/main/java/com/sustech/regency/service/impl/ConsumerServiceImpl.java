@@ -114,8 +114,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         alipayInfo.setSubject(roomTypeDao.selectById(room.getTypeId()).getName()+days+"天"); //产品名称
         alipayInfo.setTotalAmount(room.getPrice()*days*room.getDiscount()+""); //金额
         alipayInfo.setTimeoutExpress(payTimeout); //支付超时时间
-        String qrCodeUrl = alipayUtil.qrCodePay(alipayInfo);
-        return encode(qrCodeUrl,"alipay-logo.png",true);
+        return alipayUtil.getPayQrCode(alipayInfo);
     }
 
     @Override
