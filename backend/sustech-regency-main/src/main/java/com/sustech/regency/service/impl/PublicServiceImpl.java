@@ -15,7 +15,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Max;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +49,9 @@ public class PublicServiceImpl implements PublicService {
     @Resource
     private RoomTypeDao roomTypeDao;
 
+    @Resource
+    private RoomTypeExhibitionDao roomTypeExhibitionDao;
+
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
@@ -76,8 +78,8 @@ public class PublicServiceImpl implements PublicService {
             if (file != null) {
                 if (file.getDeleteTime() == null) a.setCoverUrl(FileUtil.getUrl(file));
             }
-            a.setPictureUrls(getPictureUrls(a.getId()));
-            a.setVideoUrls(getVideoUrls(a.getId()));
+            a.setPictureUrls(getHotelPictureUrls(a.getId()));
+            a.setVideoUrls(getHotelVideoUrls(a.getId()));
 
         }
         return hotelInfos;
@@ -104,7 +106,7 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public List<String> getPictureUrls(Integer hotelId) {
+    public List<String> getHotelPictureUrls(Integer hotelId) {
         LambdaQueryWrapper<HotelExhibition> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(HotelExhibition::getHotelId, hotelId);
         List<HotelExhibition> list = hotelExhibitionDao.selectList(wrapper);
@@ -123,7 +125,43 @@ public class PublicServiceImpl implements PublicService {
 
 
     @Override
-    public List<String> getVideoUrls(Integer hotelId) {
+    public List<String> getRoomTypeVideoUrls(Integer roomTypeId) {
+        LambdaQueryWrapper<RoomTypeExhibition> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoomTypeExhibition::getRoomTypeId, roomTypeId);
+        List<RoomTypeExhibition> list = roomTypeExhibitionDao.selectList(wrapper);
+        List<String> videoList = new ArrayList<>();
+        for (RoomTypeExhibition he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) videoList.add(FileUtil.getUrl(file));
+            }
+        }
+        return videoList;
+    }
+
+    @Override
+    public List<String> getRoomTypePictureUrls(Integer roomTypeId) {
+        LambdaQueryWrapper<RoomTypeExhibition> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoomTypeExhibition::getRoomTypeId, roomTypeId);
+        List<RoomTypeExhibition> list = roomTypeExhibitionDao.selectList(wrapper);
+        List<String> pictureList = new ArrayList<>();
+
+        for (RoomTypeExhibition he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && !file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) pictureList.add(FileUtil.getUrl(file));
+            }
+        }
+        return pictureList;
+    }
+
+
+    @Override
+    public List<String> getHotelVideoUrls(Integer hotelId) {
         LambdaQueryWrapper<HotelExhibition> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(HotelExhibition::getHotelId, hotelId);
         List<HotelExhibition> list = hotelExhibitionDao.selectList(wrapper);
@@ -193,8 +231,8 @@ public class PublicServiceImpl implements PublicService {
         if (file != null) {
             if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
         }
-        roomInfo.setPictureUrls(getPictureUrls(roomInfo.getId()));
-        roomInfo.setVideoUrls(getVideoUrls(roomInfo.getId()));
+        roomInfo.setPictureUrls(getHotelPictureUrls(roomInfo.getId()));
+        roomInfo.setVideoUrls(getHotelVideoUrls(roomInfo.getId()));
         return roomInfo;
     }
 
@@ -258,8 +296,8 @@ public class PublicServiceImpl implements PublicService {
         if (file != null) {
             if (file.getDeleteTime() == null) hotelInfo.setCoverUrl(FileUtil.getUrl(file));
         }
-        hotelInfo.setPictureUrls(getPictureUrls(hotelInfo.getId()));
-        hotelInfo.setVideoUrls(getVideoUrls(hotelInfo.getId()));
+        hotelInfo.setPictureUrls(getHotelPictureUrls(hotelInfo.getId()));
+        hotelInfo.setVideoUrls(getHotelVideoUrls(hotelInfo.getId()));
         return hotelInfo;
     }
 
