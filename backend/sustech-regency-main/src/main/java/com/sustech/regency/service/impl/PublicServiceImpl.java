@@ -184,8 +184,11 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
         wrapper.eq(Room::getId, room.getId());
         RoomInfo roomInfo = roomDao.selectJoinOne(RoomInfo.class, wrapper);
+        LambdaQueryWrapper<RoomType> roomTypeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomTypeLambdaQueryWrapper.eq(RoomType::getId,roomInfo.getTypeId());
+        RoomType type = roomTypeDao.selectOne(roomTypeLambdaQueryWrapper);
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        fileLambdaQueryWrapper.eq(File::getId, roomInfo.getCoverUrl());
+        fileLambdaQueryWrapper.eq(File::getId, type.getCoverId());
         File file = fileDao.selectOne(fileLambdaQueryWrapper);
         if (file != null) {
             if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
