@@ -287,7 +287,8 @@ public class PublicServiceImpl implements PublicService {
         wrapper.eq(Hotel::getId, hotelId);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .innerJoin(File.class,File::getId,Hotel::getCoverId);
         HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class, wrapper);
 
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
