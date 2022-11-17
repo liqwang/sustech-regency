@@ -64,10 +64,10 @@ public class PublicServiceImpl implements PublicService {
         if (Strings.isNotEmpty(hotelName)) wrapper.eq(Hotel::getName, hotelName);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-//                .innerJoin(File.class, File::getSuffix, Hotel::getCoverId);
-
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .innerJoin(File.class, File::getId, Hotel::getCoverId);
         List<HotelInfo> hotelInfos = hotelDao.selectJoinList(HotelInfo.class, wrapper);
+
         for (HotelInfo a :
                 hotelInfos) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -184,8 +184,11 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
         wrapper.eq(Room::getId, room.getId());
         RoomInfo roomInfo = roomDao.selectJoinOne(RoomInfo.class, wrapper);
+        LambdaQueryWrapper<RoomType> roomTypeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roomTypeLambdaQueryWrapper.eq(RoomType::getId,roomInfo.getTypeId());
+        RoomType type = roomTypeDao.selectOne(roomTypeLambdaQueryWrapper);
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        fileLambdaQueryWrapper.eq(File::getId, roomInfo.getCoverUrl());
+        fileLambdaQueryWrapper.eq(File::getId, type.getCoverId());
         File file = fileDao.selectOne(fileLambdaQueryWrapper);
         if (file != null) {
             if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
