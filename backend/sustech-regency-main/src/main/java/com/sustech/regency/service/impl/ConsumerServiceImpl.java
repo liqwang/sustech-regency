@@ -11,6 +11,7 @@ import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.util.AlipayUtil;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,13 +72,15 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     /**
      * Todo:先暴力加锁，后续要优化<p>
-     * Todo:实现订单超时未支付，参考:<a href="https://juejin.cn/post/7023543229337305124">1</a>,<a href="https://cloud.tencent.com/developer/article/1592068">2</a><p>
+     * Todo:实现订单超时未支付，RabbitMQ延时队列 or Redis的key过期，参考:<a href="https://juejin.cn/post/7023543229337305124">1</a>
      * Todo:实现当前时间超过endTime自动转为NOT_COMMENTED状态
      */
     @Resource
     private AlipayUtil alipayUtil;
     @Resource
     private RoomTypeDao roomTypeDao;
+    @Value("${alipay.pay-timeout}")
+    private String payTimeout;
     @Override
     public synchronized String reserveRoom(Integer roomId, Date startDate, Date endDate, List<Cohabitant> cohabitants) {
         asserts(endDate.after(startDate),"退房日期要在入住日期之后");
@@ -88,8 +91,8 @@ public class ConsumerServiceImpl implements ConsumerService {
                 new LambdaQueryWrapper<Order>()
                    .select(Order::getId) //避免回表
                    .eq(Order::getRoomId,roomId)
-                   .le(Order::getDateStart,endDate)
-                   .ge(Order::getDateEnd,startDate)
+                   .lt(Order::getDateStart,endDate)
+                   .gt(Order::getDateEnd,startDate)
                    .and(queryWrapper->
                         queryWrapper.eq(Order::getStatus, PAYED)
                                     .or() //这两个状态下该房间是被占有的
@@ -110,7 +113,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         alipayInfo.setOutTradeNo(order.getId()+"");
         alipayInfo.setSubject(roomTypeDao.selectById(room.getTypeId()).getName()+days+"天"); //产品名称
         alipayInfo.setTotalAmount(room.getPrice()*days*room.getDiscount()+""); //金额
-        alipayInfo.setTimeoutExpress(alipayUtil.getPayTimeout()); //支付超时时间
+        alipayInfo.setTimeoutExpress(payTimeout); //支付超时时间
         String qrCodeUrl = alipayUtil.qrCodePay(alipayInfo);
         return encode(qrCodeUrl,"alipay-logo.png",true);
     }

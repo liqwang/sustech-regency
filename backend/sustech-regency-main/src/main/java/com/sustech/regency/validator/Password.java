@@ -12,11 +12,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 校验顺序：先按顺序校验元注解，再用自身的Validator校验<p>
- * 但是如果使用了{@code @}{@link ReportAsSingleViolation}，那么报错信息并不会使用底层元注解的信息，而是会被上层的默认信息覆盖，影响了注解复用<p>
- * 参考源码：
+ * 但是如果使用了{@link ReportAsSingleViolation @ReportAsSingleViolation}，那么报错信息并不会使用底层元注解的信息，而是会被上层的默认信息覆盖，影响了注解复用
  * <ul>
- *     <li>{@link org.hibernate.validator.internal.engine.constraintvalidation.ComposingConstraintTree#prepareFinalConstraintViolations}</li>
- *     <li>{@link org.hibernate.validator.internal.engine.constraintvalidation.ComposingConstraintTree#reportAsSingleViolation}</li>
+ *     <li>{@link org.hibernate.validator.internal.engine.constraintvalidation.ComposingConstraintTree#prepareFinalConstraintViolations prepareFinalConstraintViolations}</li>
+ *     <li>{@link org.hibernate.validator.internal.engine.constraintvalidation.ComposingConstraintTree#reportAsSingleViolation reportAsSingleViolation}</li>
  * </ul>
  */
 @SuppressWarnings("JavadocReference")
