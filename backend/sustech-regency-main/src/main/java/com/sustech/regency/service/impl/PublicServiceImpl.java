@@ -64,10 +64,10 @@ public class PublicServiceImpl implements PublicService {
         if (Strings.isNotEmpty(hotelName)) wrapper.eq(Hotel::getName, hotelName);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
-                .innerJoin(Province.class, Province::getId, City::getProvinceId);
-//                .innerJoin(File.class, File::getSuffix, Hotel::getCoverId);
-
+                .innerJoin(Province.class, Province::getId, City::getProvinceId)
+                .innerJoin(File.class, File::getId, Hotel::getCoverId);
         List<HotelInfo> hotelInfos = hotelDao.selectJoinList(HotelInfo.class, wrapper);
+
         for (HotelInfo a :
                 hotelInfos) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
