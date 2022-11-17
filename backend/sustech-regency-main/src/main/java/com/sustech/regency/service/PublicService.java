@@ -1,14 +1,11 @@
 package com.sustech.regency.service;
 
-import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
-import io.swagger.models.auth.In;
 
-import java.util.Date;
 import java.util.List;
 
 public interface PublicService {
@@ -17,9 +14,14 @@ public interface PublicService {
 
     List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId);
 
-    List<String> getPictureUrls(Integer hotelId);
+    List<String> getHotelPictureUrls(Integer hotelId);
 
-    List<String> getVideoUrls(Integer hotelId);
+    List<String> getHotelVideoUrls(Integer roomlId);
+
+    List<String> getRoomTypePictureUrls(Integer hotelId);
+
+    List<String> getRoomTypeVideoUrls(Integer roomId);
+
 
     Float getMinPriceOfHotel(Integer hotelId);
 
