@@ -12,8 +12,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 用于序列化<p>
- * 加上{@code @JacksonAnnotationsInside}才能被标记为组合注解，而Spring中则不需要，取决于框架底层的反射判断逻辑<p>
- * Jackson的核心判断方法是{@link com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector#isAnnotationBundle(Annotation)}<p>
+ * 加上{@link JacksonAnnotationsInside @JacksonAnnotationsInside}才能被标记为组合注解，而Spring中则不需要，取决于框架底层的反射判断逻辑<p>
+ * Jackson的核心判断方法是{@link com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector#isAnnotationBundle(Annotation) isAnnotationBundle}<p>
  * <a href="https://blog.csdn.net/wangpengfei_p/article/details/125564903">此部分的Jackson源码解析</a>
  */
 @Target(FIELD)

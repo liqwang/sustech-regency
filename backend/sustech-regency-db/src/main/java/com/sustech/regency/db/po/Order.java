@@ -10,6 +10,9 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 
+/**
+ * 入住时间认为是 dateStart中午-dateEnd中午
+ */
 @Data
 @Accessors(chain = true)
 @TableName("`order`")
@@ -32,4 +35,6 @@ public class Order {
     private Date payTime;
     @DateTimeField
     private Date createTime;
+    @DateTimeField
+    private Date cancelTime;
 }
