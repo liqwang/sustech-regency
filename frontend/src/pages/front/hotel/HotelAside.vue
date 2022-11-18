@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar>
-    <h5 class="mb-2">Sustech Rengency</h5>
+    <router-link to="/" class="mb-2" target="_blank">Sustech Rengency</router-link>
     <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
       <el-menu-item :index="'/hotel/' + hotelId">
         <el-icon>
@@ -24,7 +24,7 @@
         <el-icon>
           <Comment />
         </el-icon>
-        <span>点评</span>
+        <span>评论</span>
       </el-menu-item>
       <!-- 这里添加左侧菜单栏的chat栏 -->
       <el-menu-item :index="'/hotel/' + hotelId + '/chat'">

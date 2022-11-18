@@ -8,12 +8,12 @@
   <div style="margin: 30px 0">
     <div style="margin: 10px 0">
       <div style="border-bottom: 1px solid orangered; padding: 10px 0; font-size: 20px;">评论</div>
-      <div style="padding: 10px 0">
+      <!-- <div style="padding: 10px 0">
         <el-input size="small" type="textarea" v-model="commentContent"></el-input>
       </div>
       <div class="" style="text-align: right">
         <el-button type="primary" size="small" @click="saveComment">评论</el-button>
-      </div>
+      </div> -->
     </div>
 
     <div>
@@ -33,10 +33,10 @@
               </el-icon>
               <span style="margin-left: 5px">{{ item.time }}</span>
             </div>
-            <div style="text-align: right; flex: 1;">
+            <!-- <div style="text-align: right; flex: 1;">
               <el-button style="margin-left: 5px" type="text">回复</el-button>
               <el-button type="text" style="color: red">删除</el-button>
-            </div>
+            </div> -->
           </div>
         </div>
 

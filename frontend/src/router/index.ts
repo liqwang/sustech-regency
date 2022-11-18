@@ -19,6 +19,7 @@ import HotelFloorPlan from '../pages/front/hotel/HotelFloorPlan.vue'
 import HotelComment from '../pages/front/hotel/HotelComment.vue'
 import HotelChat from '../pages/front/hotel/HotelChat.vue'
 import UserSetting from '../pages/front/user/UserSetting.vue'
+import UserOrder from '../pages/front/user/UserOrder.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -38,10 +39,10 @@ const routes: RouteRecordRaw[] = [
     name: 'merchant_room',
     component: room,
     meta: { requiresAuth: true },
-    children:[{path: '', name: 'detail', component: roomDetail},
-    {path: 'picture', name: 'img', component: roomImg},
-    {path: 'order', name: 'order', component: roomOrder},
-  ]
+    children: [{ path: '', name: 'detail', component: roomDetail },
+    { path: 'picture', name: 'img', component: roomImg },
+    { path: 'order', name: 'order', component: roomOrder },
+    ]
   },
   {
     path: '/signup',
@@ -79,7 +80,10 @@ const routes: RouteRecordRaw[] = [
     name: 'user',
     component: UserPage,
     meta: { requiresAuth: true },
-    children: [{ path: 'setting', name: 'setting', component: UserSetting }]
+    children: [
+      { path: 'setting', name: 'setting', component: UserSetting, meta: { requiresAuth: true } },
+      { path: 'order', name: 'order', component: UserOrder, meta: { requiresAuth: true } }
+    ]
   }
 ]
 

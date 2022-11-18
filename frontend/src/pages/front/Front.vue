@@ -16,7 +16,7 @@
     </el-carousel>
   </div>
   <div>
-    <el-row justify="center">
+    <el-row justify="space-evenly">
       <el-col :span="4">
         省
         <el-select v-model="province" placeholder="Select">
@@ -36,6 +36,13 @@
         <el-select v-model="region" placeholder="Select">
           <el-option v-for="region in regions" :key="region" :value="region" />
         </el-select>
+      </el-col>
+
+      <el-col :span="4">
+        <el-button type="primary" style="width: 100px; margin-left: 10px;" :icon="Search" @click="search"
+          :disabled="listLoading">
+          查询
+        </el-button>
       </el-col>
     </el-row>
   </div>
@@ -76,6 +83,7 @@
 import { reactive } from 'vue';
 import UserIcon from '../../components/UserIcon.vue';
 import request from '../../utils/request'
+import { Search } from '@element-plus/icons-vue'
 
 interface Hotel {
   address: string,
@@ -141,6 +149,12 @@ const urls = [
 let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
 let regions = $ref<string[]>([])
+
+const listLoading = $ref(false)
+
+const search = () => {
+
+}
 
 request.get('/public/province/all').then(res => {
   const provinceList = res.data.data as City[]

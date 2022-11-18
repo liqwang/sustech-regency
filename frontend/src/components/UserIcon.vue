@@ -5,7 +5,12 @@
   </span>
   <el-dropdown trigger="click">
     <span style="margin-left: 12px">
-      <el-avatar :icon="UserFilled"></el-avatar>
+      <div v-if="avatarUrl">
+        <el-avatar :src="avatarUrl"></el-avatar>
+      </div>
+      <div v-else>
+        <el-avatar :icon="UserFilled"></el-avatar>
+      </div>
     </span>
     <template #dropdown>
       <el-dropdown-menu>
@@ -32,6 +37,8 @@ const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
 const user = $ref(localStorage.getItem('user'))
 const username = user ? JSON.parse(localStorage.getItem('user') as string).name : ''
 const userId = user ? JSON.parse(localStorage.getItem('user') as string).id : null
+
+const avatarUrl = user ? JSON.parse(localStorage.getItem('user') as string).headshotUrl : ''
 
 const login = () => {
   router.push('/login')

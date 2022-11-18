@@ -8,8 +8,10 @@
         </el-icon>
         <span>首页</span>
       </el-menu-item>
-      <el-menu-item index="2">
-        <el-icon> </el-icon>
+      <el-menu-item index="/user/order">
+        <el-icon>
+          <Message />
+        </el-icon>
         <span>我的订单</span>
       </el-menu-item>
       <el-menu-item index="3">
@@ -29,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { HomeFilled, House, Setting } from '@element-plus/icons-vue'
+import { HomeFilled, House, Setting, Message } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
