@@ -15,8 +15,7 @@
           <div id="username">用户名/邮箱</div>
           <el-input v-model="username" placeholder="请输入用户名/邮箱" :prefix-icon="User" clearable id="input_username" />
           <div id="pwd">密码</div>
-          <el-input v-model="pwd" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password id="input_pwd"
-            @keyup.enter="Login" />
+          <el-input v-model="pwd" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password id="input_pwd" @keyup.enter="Login" />
 
           <div id="btn_area">
             <el-button type="primary" round id="btn_login" @click="Login">登录账号</el-button>
@@ -62,7 +61,6 @@
 
 /* 在850px以下直接用left */
 @media screen and (max-width: 850px) {
-
   #btn_sign,
   #btn_get_pwd_back {
     margin: 0;

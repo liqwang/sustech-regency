@@ -8,9 +8,7 @@ import roomDetail from '../pages/room/roomDetail.vue'
 import roomImg from '../pages/room/roomImg.vue'
 import roomOrder from '../pages/room/orders.vue'
 
-
 import Front from '../pages/front/Front.vue'
-import chat from '../pages/chat.vue'
 import HotelPage from '../pages/front/hotel/HotelPage.vue'
 import UserPage from '../pages/front/user/UserPage.vue'
 import HotelIntroduction from '../pages/front/hotel/HotelIntroduction.vue'
@@ -39,9 +37,10 @@ const routes: RouteRecordRaw[] = [
     name: 'merchant_room',
     component: room,
     meta: { requiresAuth: true },
-    children: [{ path: '', name: 'detail', component: roomDetail },
-    { path: 'picture', name: 'img', component: roomImg },
-    { path: 'order', name: 'order', component: roomOrder },
+    children: [
+      { path: '', name: 'detail', component: roomDetail },
+      { path: 'picture', name: 'img', component: roomImg },
+      { path: 'order', name: 'order', component: roomOrder }
     ]
   },
   {
