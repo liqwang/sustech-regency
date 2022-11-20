@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sustech.regency.component.OrderWebSocket;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
-import com.sustech.regency.model.param.Cohabitant;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.service.ConsumerService;
@@ -88,8 +87,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Value("${alipay.pay-timeout}")
     private String payTimeout;
     @Override
-    public synchronized PayInfo reserveRoom(Integer roomId, Date startDate, Date endDate, List<Cohabitant> cohabitants) {
-        //Todo:同住人如何处理?
+    public synchronized PayInfo reserveRoom(Integer roomId, Date startDate, Date endDate) {
         asserts(endDate.after(startDate),"退房日期要在入住日期之后");
         asserts(startDate.after(new Date()),"入住日期已过");
         Room room = roomDao.selectById(roomId);
