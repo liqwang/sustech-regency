@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', name: 'detail', component: roomDetail },
       { path: 'picture', name: 'img', component: roomImg },
-      { path: 'order', name: 'order', component: roomOrder }
+      { path: 'order', name: 'orders', component: roomOrder }
     ]
   },
   {
