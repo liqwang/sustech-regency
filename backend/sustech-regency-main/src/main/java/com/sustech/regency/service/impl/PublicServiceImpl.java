@@ -231,8 +231,8 @@ public class PublicServiceImpl implements PublicService {
         if (file != null) {
             if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
         }
-        roomInfo.setPictureUrls(getHotelPictureUrls(roomInfo.getId()));
-        roomInfo.setVideoUrls(getHotelVideoUrls(roomInfo.getId()));
+        roomInfo.setPictureUrls(getRoomTypePictureUrls(roomInfo.getId()));
+        roomInfo.setVideoUrls(getRoomTypeVideoUrls(roomInfo.getId()));
         return roomInfo;
     }
 
