@@ -81,6 +81,6 @@ const commentList = Array.from({ length: 20 }).fill(comment) as Comment[]
 #bgi {
   /* background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png'); */
   width: auto;
-  height: 82vh;
+  height: 86vh;
 }
 </style>

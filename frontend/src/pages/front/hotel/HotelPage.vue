@@ -54,6 +54,8 @@ console.log('hotelId: ', hotelId)
 <style scoped>
 #bgi {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
+  padding-left: 20px;
+  padding-right: 20px;
 }
 #head {
   height: 8vh;
