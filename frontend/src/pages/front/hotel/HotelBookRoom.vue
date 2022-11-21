@@ -80,8 +80,8 @@
       <el-col :span="12" :offset="0" v-for="i in rooms">
         <el-card class="box-card" @click="update(i.id)">
           <div style="display: inline-flex; flex-direction: row; align-items: center">
-            <div class="roomnum">{{ i.roomNum }}</div>
-            <div class="roomtype">房间类型：{{ type[i.typeId] }}</div>
+            <div class="roomnum">{{ i.num }}</div>
+            <div class="roomtype">房间类型：{{ i.type }}</div>
             <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
             <div class="nowPrice">价格：{{ i.price }}元</div>
             <div class="nowPrice" v-if="i.discount < 1">
@@ -337,7 +337,6 @@ const form = reactive({
   hc: 1
 })
 
-const type = { 1: '单人间', 2: '双人间' }
 onMounted(() => {
   setInterval(() => {
     now = new Date().toLocaleString()
@@ -357,12 +356,36 @@ const clear = () => {
 const onSubmit = () => {
   console.log(form)
 }
-
-let rooms = $ref(Object)
+interface temproom {
+  id: number
+  num: number
+  type: string
+  discount: number
+  price: number
+}
+let rooms: temproom[] = $ref()
 const getRooms = () => {
+  rooms = []
   request.get(`/public/get-rooms-by-hotel?hotelId=${hotelId}`).then((res) => {
-    // console.log(res.data.data)
-    rooms = res.data.data
+    console.log(res.data.data)
+    for (const key in res.data.data) {
+      const element = res.data.data[key]
+      var i: number = element.typeId
+      var T: string = ''
+      if (i == 1) {
+        T = '单人间'
+      }
+      if (i == 2) {
+        T = '双人间'
+      }
+      rooms.push({
+        id: element.id,
+        num: element.roomNum,
+        type: T,
+        discount: element.discount,
+        price: element.price
+      })
+    }
   })
 }
 getRooms()
@@ -370,22 +393,34 @@ getRooms()
 let chooseid = $ref(0)
 let show = $ref(false)
 interface room {
-  cover?: string
-  roomNum?: number
-  typeName?: string
-  isAvailable?: boolean
-  floor?: number
-  haslivingroom?: boolean
-  price?: number
-  discount?: number
-  toiletNum?: number
-  pics?: string[]
-  videos?: string
+  cover: string
+  roomNum: number
+  typeName: string
+  isAvailable: boolean
+  floor: number
+  haslivingroom: boolean
+  price: number
+  discount: number
+  toiletNum: number
+  pics: string[]
+  videos: string
 }
 //这里写的是展示房间详情页的东西
 let pictures: string[] = $ref([])
 
-let info: room = reactive({})
+let info: room = reactive({
+  cover: 'null',
+  roomNum: 0,
+  typeName: '单人间',
+  isAvailable: false,
+  floor: 10,
+  haslivingroom: false,
+  price: 1,
+  discount: 1,
+  toiletNum: 1,
+  pics: [],
+  videos: 'null'
+})
 
 const update = (i: number) => {
   chooseid = i
