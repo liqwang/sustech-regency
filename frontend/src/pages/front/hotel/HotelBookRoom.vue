@@ -350,7 +350,12 @@ onMounted(() => {
 })
 
 const clear = () => {
-  ;(form.start = ''), (form.end = ''), (form.min = ''), (form.max = ''), (form.hc = 1), (form.type = '')
+  form.start = ''
+  form.end = ''
+  form.min = ''
+  form.max = ''
+  form.hc = 1
+  form.type = ''
 }
 
 const onSubmit = () => {
@@ -370,8 +375,8 @@ const getRooms = () => {
     console.log(res.data.data)
     for (const key in res.data.data) {
       const element = res.data.data[key]
-      var i: number = element.typeId
-      var T: string = ''
+      let i: number = element.typeId
+      let T: string = ''
       if (i == 1) {
         T = '单人间'
       }
@@ -426,9 +431,8 @@ const update = (i: number) => {
   chooseid = i
   request.get(`/public/get-roomInfo-by-roomId?roomId=${chooseid}`).then((res) => {
     pictures = []
-    res.data.data = res.data.data
-    //info.cover = res.data.data.coverUrl
-    info.cover = 'src/assets/1.jpeg'
+    info.cover = res.data.data.coverUrl
+    // info.cover = 'src/assets/1.jpeg'
     pictures.push(info.cover)
     info.roomNum = res.data.data.roomNum
     info.typeName = res.data.data.roomTypeName
@@ -438,8 +442,8 @@ const update = (i: number) => {
     info.price = res.data.data.price
     info.discount = res.data.data.discount
     info.toiletNum = res.data.data.toiletNum
-    // info.pics = res.data.data.pictureUrls
-    info.pics = ['src/assets/2.jpeg', 'src/assets/3.jpeg', 'src/assets/4.jpeg', 'src/assets/5.jpeg', 'src/assets/6.jpeg']
+    info.pics = res.data.data.pictureUrls
+    // info.pics = ['src/assets/2.jpeg', 'src/assets/3.jpeg', 'src/assets/4.jpeg', 'src/assets/5.jpeg', 'src/assets/6.jpeg']
     for (const key in info.pics) {
       pictures.push(info.pics[key])
     }
