@@ -37,20 +37,6 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue'
-import { Setting } from '@element-plus/icons-vue'
-import HotelAside from './HotelAside.vue'
-import UserIcon from '../../../components/UserIcon.vue'
-import { useRoute, useRouter } from 'vue-router'
-
-const route = useRoute()
-const router = useRouter()
-
-const hotelId = $ref(router.currentRoute.value.params['hotelId'])
-console.log('hotelId: ', hotelId)
-</script>
-
 <style scoped>
 #bgi {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
@@ -119,3 +105,16 @@ console.log('hotelId: ', hotelId)
   padding: 0.5rem;
 }
 </style>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { Setting } from '@element-plus/icons-vue'
+import HotelAside from './HotelAside.vue'
+import UserIcon from '../../../components/UserIcon.vue'
+import { useRoute, useRouter } from 'vue-router'
+import request from '../../../utils/request'
+
+const route = useRoute()
+const router = useRouter()
+const hotelId = $ref(router.currentRoute.value.params['hotelId'])
+</script>

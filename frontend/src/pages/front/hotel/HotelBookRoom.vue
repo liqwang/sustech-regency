@@ -75,18 +75,145 @@
   <!-- 空行间隔 -->
   <div class="null"></div>
   <!-- 展示区域 -->
-  <el-row>
-    <el-col :span="0" :offset="0"></el-col>
-    <el-col :span="24" :offset="0">
-      <el-card class="box-card">
-        <div v-for="o in 4" :key="o" class="text item">{{ 'Room ' + o }}</div>
-      </el-card>
-    </el-col>
-    <el-col :span="0" :offset="0"></el-col>
-  </el-row>
+  <el-card class="box-card">
+    <el-row :gutter="20">
+      <el-col :span="12" :offset="0" v-for="i in rooms">
+        <el-card class="box-card" @click="update(i.id)">
+          <div style="display: inline-flex; flex-direction: row; align-items: center">
+            <div class="roomnum">{{ i.roomNum }}</div>
+            <div class="roomtype">房间类型：{{ type[i.typeId] }}</div>
+            <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
+            <div class="nowPrice">价格：{{ i.price }}元</div>
+            <div class="nowPrice" v-if="i.discount < 1">
+              <span>限时特价：</span>
+              <span id="kill">{{ (i.price * i.discount).toFixed(3) }}</span>
+              <span>元</span>
+            </div>
+          </div>
+        </el-card>
+        <!-- {{ i }} -->
+      </el-col>
+    </el-row>
+  </el-card>
+
+  <!-- 按钮点开详情以及下订单 -->
+  <el-dialog v-model="show" top="5vh" width="80%">
+    <div style="height: 75vh" id="room">
+      <!-- 在这里展示room的详细信息 -->
+      <el-row :gutter="20">
+        <el-col :span="24" :offset="0">
+          <div id="head">{{ info.roomNum }} 房间详情</div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="16" :offset="0"
+          ><div id="left">
+            <el-carousel :interval="4000" height="62vh" v-if="pictures.length > 0">
+              <el-carousel-item v-for="i in pictures" :key="i">
+                <img :src="i" alt="" />
+              </el-carousel-item>
+            </el-carousel></div
+        ></el-col>
+        <el-col :span="8" :offset="0"
+          ><div id="right">
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">房间号</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ info.roomNum }}</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">楼层</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ info.floor }}层</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">目前状态</div></el-col>
+              <el-col :span="9" :offset="0" v-if="info.isAvailable"><div class="black">可预定</div></el-col>
+              <el-col :span="9" :offset="0" v-if="!info.isAvailable"><div class="black">可预定</div></el-col>
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">是否有客厅</div></el-col>
+              <el-col :span="9" :offset="0" v-if="info.haslivingroom"><div class="black">是</div></el-col>
+              <el-col :span="9" :offset="0" v-if="!info.haslivingroom"><div class="black">否</div></el-col>
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">厕所个数</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ info.toiletNum }}个</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">价格</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ info.price }}元</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row" v-if="info.discount < 1">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">限时折扣</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ info.discount }}折</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row" v-if="info.discount < 1">
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+              <el-col :span="9" :offset="0"><div class="black">限时特价</div></el-col>
+              <el-col :span="9" :offset="0"
+                ><div class="black">{{ (info.price * info.discount).toFixed(3) }}元</div></el-col
+              >
+              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row">
+              <el-col :span="3" :offset="0"></el-col>
+              <el-col :span="9" :offset="0">
+                <el-button type="primary" plain @click="booknow()">立即预定</el-button>
+              </el-col>
+              <el-col :span="9" :offset="0">
+                <el-button type="info" plain @click="show = !show">返回酒店</el-button>
+              </el-col>
+              <el-col :span="3" :offset="0"></el-col>
+            </el-row>
+
+            <!-- {{ info }} -->
+          </div></el-col
+        >
+      </el-row>
+    </div>
+  </el-dialog>
+
+  <el-dialog v-model="paypage" title="付款码" width="30%">
+    <el-image style="width: 100%; border-radius: 6px" :src="getBase64(base)"></el-image>
+  </el-dialog>
 </template>
 
 <style scoped>
+.row {
+  padding-top: 5px;
+  padding-bottom: 3px;
+}
 .null {
   padding-bottom: 1rem;
 }
@@ -101,24 +228,90 @@
 .box-card {
   border-radius: 15px;
 }
+#kill {
+  color: red;
+}
+.black {
+  font-weight: 500;
+  font-size: 16px;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  height: 2rem;
+  width: 100%;
+}
+.roomnum,
+.roomtype,
+.roomprice,
+.disc {
+  font-size: small;
+  margin-right: 0.5rem;
+}
+
+.roomnum {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.nowPrice {
+  margin-right: 0.5rem;
+}
+
+#room {
+  height: 100%;
+  width: 100%;
+  display: block;
+  /* background-color: aqua; */
+}
+#head {
+  font-size: 2rem;
+  font-weight: 750;
+  font-family: BlinkMacSystemFont, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: 10vh;
+  /* background-color: red; */
+}
+#left {
+  height: 62vh;
+  /* background-color: black; */
+}
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-fit: cover;
+}
+#right {
+  height: 62vh;
+  /* background-color: greenyellow; */
+}
 </style>
 
 <script lang="ts" setup>
-import { da } from 'element-plus/es/locale'
-import { reactive, ref, onMounted } from 'vue'
+import { da, fa } from 'element-plus/es/locale'
+import { useRoute, useRouter } from 'vue-router'
+import { reactive, ref, onMounted, h } from 'vue'
+import request from '../../../utils/request'
+import { number } from 'echarts/core'
+import { ElNotification } from 'element-plus'
+
+const router = useRouter()
+const hotelId = $ref(router.currentRoute.value.params['hotelId'])
 
 const Timer = ref('')
-onMounted(() => {
-  setInterval(() => {
-    let now = new Date().toLocaleString()
-    let date = now.split(' ')[0]
-    let time = now.split(' ')[1]
-    let year = date.split('/')[0]
-    let month = date.split('/')[1]
-    let day = date.split('/')[2]
-    Timer.value = `${year}年${month}月${day}日  北京时间${time}`
-  }, 500)
-})
+let now = $ref('')
+let date = $ref('')
+let time = $ref('')
+let year = $ref('')
+let month = $ref('')
+let day = $ref('')
+let paypage = $ref(false)
+let base = $ref('')
+
 const options = [
   {
     value: '1',
@@ -139,9 +332,22 @@ const form = reactive({
   min: '',
   max: '',
   //房型
-  type: '',
+  type: '1',
   //同住人数
   hc: 1
+})
+
+const type = { 1: '单人间', 2: '双人间' }
+onMounted(() => {
+  setInterval(() => {
+    now = new Date().toLocaleString()
+    date = now.split(' ')[0]
+    time = now.split(' ')[1]
+    year = date.split('/')[0]
+    month = date.split('/')[1]
+    day = date.split('/')[2]
+    Timer.value = `${year}年${month}月${day}日  北京时间${time}`
+  }, 500)
 })
 
 const clear = () => {
@@ -152,5 +358,104 @@ const onSubmit = () => {
   console.log(form)
 }
 
-const getRooms = () => {}
+let rooms = $ref(Object)
+const getRooms = () => {
+  request.get(`/public/get-rooms-by-hotel?hotelId=${hotelId}`).then((res) => {
+    // console.log(res.data.data)
+    rooms = res.data.data
+  })
+}
+getRooms()
+
+let chooseid = $ref(0)
+let show = $ref(false)
+interface room {
+  cover?: ''
+  roomNum?: ''
+  typeName?: ''
+  isAvailable?: ''
+  floor?: ''
+  haslivingroom?: ''
+  price?: ''
+  discount?: ''
+  toiletNum?: ''
+  pics?: ''
+  videos?: ''
+}
+let chooseinfo = $ref(Object)
+//这里写的是展示房间详情页的东西
+let pictures = $ref([])
+
+let info: room = reactive({})
+
+const update = (i: number) => {
+  chooseid = i
+  request.get(`/public/get-roomInfo-by-roomId?roomId=${chooseid}`).then((res) => {
+    pictures = []
+    chooseinfo = res.data.data
+    //
+    // info.cover = chooseinfo.coverUrl
+    info.cover = 'src/assets/1.jpeg'
+    pictures.push(info.cover)
+    info.roomNum = chooseinfo.roomNum
+    info.typeName = chooseinfo.roomTypeName
+    info.isAvailable = chooseinfo.isAvailable
+    info.floor = chooseinfo.floor
+    info.haslivingroom = chooseinfo.hasLivingRoom
+    info.price = chooseinfo.price
+    info.discount = chooseinfo.discount
+    info.toiletNum = chooseinfo.toiletNum
+    // info.pics = chooseinfo.pictureUrls
+    info.pics = ['src/assets/2.jpeg', 'src/assets/3.jpeg', 'src/assets/4.jpeg', 'src/assets/5.jpeg', 'src/assets/6.jpeg']
+    for (const key in info.pics) {
+      pictures.push(info.pics[key])
+    }
+    info.videos = chooseinfo.videoUrls
+    //
+  })
+  show = !show
+}
+
+const getBase64 = (base: string) => {
+  return 'data:image/png;base64,' + base
+}
+const booknow = () => {
+  if (localStorage.token == null) {
+    ElNotification({
+      title: 'Failed',
+      message: h('i', { style: 'color: red' }, '请先登陆到您的账户')
+    })
+    router.push('/login')
+  } else {
+    if (form.start == '' || form.end == '') {
+      ElNotification({
+        title: 'Failed',
+        message: h('i', { style: 'color: red' }, '请先选择预定日期')
+      })
+      show = !show
+    } else {
+      request
+        .post(`/consumer/reserve-room`, {
+          endTime: form.end,
+          roomId: chooseid,
+          startTime: form.start
+        })
+        .then((res) => {
+          // console.log(res)
+          if (res.data.code == '400') {
+            ElNotification({
+              title: 'Failed',
+              message: h('i', { style: 'color: red' }, res.data.message)
+            })
+            show = !show
+          } else if (res.data.code == '200') {
+            // console.log(res.data.data)
+            base = res.data.data.base64QrCode.replace(/[\r\n]/g, '')
+            // console.log(base)
+            paypage = !paypage
+          }
+        })
+    }
+  }
+}
 </script>
