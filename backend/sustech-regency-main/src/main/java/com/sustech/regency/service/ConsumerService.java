@@ -1,8 +1,8 @@
 package com.sustech.regency.service;
 
-import com.sustech.regency.model.param.Cohabitant;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.PayInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -19,10 +19,9 @@ public interface ConsumerService {
     void cancelOrder(Long orderId);
 
     /**
-     * @param cohabitants 同住人列表
      * @return 支付二维码图片的Base64编码
      */
-    String reserveRoom(Integer roomId, Date startTime, Date endTime, List<Cohabitant> cohabitants);
+    PayInfo reserveRoom(Integer roomId, Date startTime, Date endTime);
 
     void roomPayed(Long orderId,Date payTime);
 

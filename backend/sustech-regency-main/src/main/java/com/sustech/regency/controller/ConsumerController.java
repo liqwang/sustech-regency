@@ -3,6 +3,7 @@ package com.sustech.regency.controller;
 import com.sustech.regency.model.param.ReserveParam;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
@@ -51,12 +52,11 @@ public class ConsumerController {
 
     @ApiOperation(value = "预订房间",notes = "返回支付二维码的Base64编码，过期时间15分钟")
     @PostMapping("/reserve-room")
-    public ApiResponse<String> reserveRoom(@RequestBody @Validated ReserveParam reserveParam) {
-        String base64QrCode= consumerService.reserveRoom(reserveParam.getRoomId(),
-                                                        reserveParam.getStartTime(),
-                                                        reserveParam.getEndTime(),
-                                                        reserveParam.getCohabitants());
-        return ApiResponse.success(base64QrCode);
+    public ApiResponse<PayInfo> reserveRoom(@RequestBody @Validated ReserveParam reserveParam) {
+        PayInfo payInfo=consumerService.reserveRoom(reserveParam.getRoomId(),
+                                                    reserveParam.getStartTime(),
+                                                    reserveParam.getEndTime());
+        return ApiResponse.success(payInfo);
     }
 
     @ApiOperation(value = "订单退款")
@@ -68,8 +68,8 @@ public class ConsumerController {
 
     @ApiOperation("收藏酒店")
     @PostMapping("/like-hotel")
-    public ApiResponse  likeHotel(@ApiParam(value = "酒店Id", required = true)
-                                  @NotNull @RequestParam Integer hotelId){
+    public ApiResponse likeHotel(@ApiParam(value = "酒店Id", required = true)
+                                 @NotNull @RequestParam Integer hotelId){
         consumerService.like(hotelId);
         return ApiResponse.success();
     }

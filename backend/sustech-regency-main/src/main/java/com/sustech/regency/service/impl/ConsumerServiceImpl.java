@@ -4,19 +4,23 @@ import cn.hutool.core.date.DateUtil;
 import com.alipay.api.domain.AlipayTradePrecreateModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.sustech.regency.component.OrderWebSocket;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
-import com.sustech.regency.model.param.Cohabitant;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.util.AlipayUtil;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,8 +87,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Value("${alipay.pay-timeout}")
     private String payTimeout;
     @Override
-    public synchronized String reserveRoom(Integer roomId, Date startDate, Date endDate, List<Cohabitant> cohabitants) {
-        //Todo:同住人如何处理?
+    public synchronized PayInfo reserveRoom(Integer roomId, Date startDate, Date endDate) {
         asserts(endDate.after(startDate),"退房日期要在入住日期之后");
         asserts(startDate.after(new Date()),"入住日期已过");
         Room room = roomDao.selectById(roomId);
@@ -116,16 +119,21 @@ public class ConsumerServiceImpl implements ConsumerService {
         alipayInfo.setSubject(roomTypeDao.selectById(room.getTypeId()).getName()+days+"天"); //产品名称
         alipayInfo.setTotalAmount(room.getPrice()*days*room.getDiscount()+""); //金额
         alipayInfo.setTimeoutExpress(payTimeout); //支付超时时间
-        return alipayUtil.getPayQrCode(alipayInfo);
+        String base64QrCode = alipayUtil.getPayQrCode(alipayInfo);
+        @SuppressWarnings("ConstantConditions")
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String webSocketUrl = "ws://"+request.getServerName()+":"+request.getServerPort()+"/websocket/order/"+order.getId();
+        return new PayInfo().setBase64QrCode(base64QrCode)
+                            .setWebSocketUrl(webSocketUrl);
     }
 
     @Override
     public void roomPayed(Long orderId,Date payTime) {
-        //Todo:用WebSocket通知前端进行页面跳转
         orderDao.updateById(new Order()
                                .setId(orderId)
                                .setStatus(PAYED)
                                .setPayTime(payTime));
+        OrderWebSocket.notifyFrontend(orderId);
     }
 
     @Override
