@@ -370,21 +370,20 @@ getRooms()
 let chooseid = $ref(0)
 let show = $ref(false)
 interface room {
-  cover?: ''
-  roomNum?: ''
-  typeName?: ''
-  isAvailable?: ''
-  floor?: ''
-  haslivingroom?: ''
-  price?: ''
-  discount?: ''
-  toiletNum?: ''
-  pics?: ''
-  videos?: ''
+  cover?: string
+  roomNum?: number
+  typeName?: string
+  isAvailable?: boolean
+  floor?: number
+  haslivingroom?: boolean
+  price?: number
+  discount?: number
+  toiletNum?: number
+  pics?: string[]
+  videos?: string
 }
-let chooseinfo = $ref(Object)
 //这里写的是展示房间详情页的东西
-let pictures = $ref([])
+let pictures: string[] = $ref([])
 
 let info: room = reactive({})
 
@@ -392,25 +391,24 @@ const update = (i: number) => {
   chooseid = i
   request.get(`/public/get-roomInfo-by-roomId?roomId=${chooseid}`).then((res) => {
     pictures = []
-    chooseinfo = res.data.data
-    //
-    // info.cover = chooseinfo.coverUrl
+    res.data.data = res.data.data
+    //info.cover = res.data.data.coverUrl
     info.cover = 'src/assets/1.jpeg'
     pictures.push(info.cover)
-    info.roomNum = chooseinfo.roomNum
-    info.typeName = chooseinfo.roomTypeName
-    info.isAvailable = chooseinfo.isAvailable
-    info.floor = chooseinfo.floor
-    info.haslivingroom = chooseinfo.hasLivingRoom
-    info.price = chooseinfo.price
-    info.discount = chooseinfo.discount
-    info.toiletNum = chooseinfo.toiletNum
-    // info.pics = chooseinfo.pictureUrls
+    info.roomNum = res.data.data.roomNum
+    info.typeName = res.data.data.roomTypeName
+    info.isAvailable = res.data.data.isAvailable
+    info.floor = res.data.data.floor
+    info.haslivingroom = res.data.data.hasLivingRoom
+    info.price = res.data.data.price
+    info.discount = res.data.data.discount
+    info.toiletNum = res.data.data.toiletNum
+    // info.pics = res.data.data.pictureUrls
     info.pics = ['src/assets/2.jpeg', 'src/assets/3.jpeg', 'src/assets/4.jpeg', 'src/assets/5.jpeg', 'src/assets/6.jpeg']
     for (const key in info.pics) {
       pictures.push(info.pics[key])
     }
-    info.videos = chooseinfo.videoUrls
+    info.videos = res.data.data.videoUrls
     //
   })
   show = !show
