@@ -1,9 +1,12 @@
 <template>
+
   <el-scrollbar height="80vh">
     <div v-if="show_content">
       <el-descriptions class="margin-top" title="The Hotel" :column="3" size="large" border>
         <template #extra>
           <el-button @click="edit" type="primary">Modify hotel</el-button>
+          <el-button @click="show_floor = true" type="primary" id="floor">Floor Graph</el-button>
+          <el-button type="danger" @click="on_sale = true">On sale!!!</el-button>
         </template>
         <el-descriptions-item>
           <template #label>
@@ -44,10 +47,10 @@
               <el-icon>
                 <tickets />
               </el-icon>
-              Floors
+              Province
             </div>
           </template>
-          <el-tag size="small">how many floors</el-tag>
+          <el-tag size="small">{{ hotel.detail.provinceName }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -61,7 +64,6 @@
           {{ hotel.detail.address }}
         </el-descriptions-item>
       </el-descriptions>
-      <el-button @click="show_floor = true" type="primary" id="floor">Floor Graph</el-button>
       <br>
       <br>
 
@@ -77,8 +79,9 @@
         </template>
       </el-upload>
 
-      <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }" :on-success="handleUploadSuccess_media"
-        :before-upload="beforeUpload_media" name="media" :action=upload_media_url :auto-upload="true">
+      <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }"
+        :on-success="handleUploadSuccess_media" :before-upload="beforeUpload_media" name="media"
+        :action=upload_media_url :auto-upload="true">
         <template #trigger>
           <el-button type="primary">upload media</el-button>
         </template>
@@ -124,7 +127,7 @@
             <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
             <img src="../images/floor_3_2.png" usemap="#floor_2" />
             <map name="floor_2">
-              <area shape="rect" coords="35,50,100,180" @click="click_room('201')" >
+              <area shape="rect" coords="35,50,100,180" @click="click_room('201')">
               <area shape="rect" coords="100,50,165,180" @click="click_room('202')">
               <area shape="rect" coords="165,50,230,180" @click="click_room('203')">
               <area shape="rect" coords="230,50,295,180" @click="click_room('204')">
@@ -148,7 +151,7 @@
               <area shape="rect" coords="485,100,555,225" @click="click_room('302')">
               <area shape="rect" coords="555,100,625,225" @click="click_room('303')">
               <area shape="rect" coords="625,100,695,225" @click="click_room('304')">
-              
+
               <area shape="rect" coords="60,300,130,435" @click="click_room('305')">
               <area shape="rect" coords="130,300,200,435" @click="click_room('306')">
               <area shape="rect" coords="200,300,270,435" @click="click_room('307')">
@@ -244,11 +247,24 @@
       </el-button>
     </div>
   </el-dialog>
+  <el-dialog title="Make a type of rooms be On-Sale!" v-model="on_sale">
+    <el-input-number v-model="sale_discount" :step="0.05" :min="0.05" :max="1" />
+    <br><br>
+    <el-radio v-model="sale_type" label=1>标准间</el-radio>
+    <el-radio v-model="sale_type"  label=2>双人间</el-radio>
+    <br>
+    <br>
+    <br>
+    <br>
+    <el-button @click="confirm_sale" type="primary">Confirm</el-button>
+  <el-button @click="cancle_sale" type="danger">Cancel</el-button>
+  </el-dialog>
+
 </template>
 <script lang="ts" setup>
 import { onMounted, onUpdated, onBeforeUpdate, onBeforeMount, ref, reactive, watch, h, Ref } from 'vue';
 import request from '../utils/request';
-import { ElNotification } from 'element-plus';
+import { ElNotification,ElMessage } from 'element-plus';
 import * as echarts from 'echarts/core';
 import {
   GridComponent,
@@ -268,6 +284,35 @@ import {
 
 import type { UploadProps, UploadInstance } from 'element-plus'
 import router from '../router';
+
+const on_sale = ref(false)
+const sale_type = ref(0)
+const sale_discount = ref(1)
+const confirm_sale=()=>{
+  if (sale_type.value>0 ){
+    let url =`/room/room/updateRooms?discount=${sale_discount.value}&typeId=${sale_type.value}&hotelId=${id_par.HotelId}`
+    request.post(url).then((res)=>{
+      if(res.data.code ==200){
+        ElNotification({
+        title: 'Success',
+        message: h('i', { style: 'color: green' }, 'these rooms are on sale now!')
+      })
+      on_sale.value = false
+      }else{
+        ElNotification({
+        title: 'Error',
+        message: h('i', { style: 'color: red' }, 'Some errors happened')
+      })
+      }
+    })
+  }else{
+    ElMessage('Please complete the infomation')
+  }
+}
+const cancle_sale=()=>{
+  on_sale.value = false
+  sale_type.value  =0 
+}
 const token = ref('')
 token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
 const upload_cover_url = ref('')
@@ -286,11 +331,11 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 const beforeUpload_media: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
-    media_tip.value = ('Hotel cover must be JPG or PNG format!')
+  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png' && rawFile.type != 'video/mp4') {
+    media_tip.value = ('Hotel media must be JPG or PNG or mp4 format!')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    media_tip.value = ('Hotel cover size can not exceed 2MB!')
+  } else if (rawFile.size / 1024 / 1024 > 100) {
+    media_tip.value = ('Hotel media size can not exceed 100MB!')
     return false
   }
   console.log(rawFile.type)
@@ -402,11 +447,11 @@ const room = ref<Room>()
 const click_room = (room_id: string) => {
   which_floor.value = room_id
   router.push({
-      path:'merchant/room',
-    })
+    path: 'merchant/room',
+  })
   console.log(room_id)
-  localStorage.setItem('roomId',room_id)
-  localStorage.setItem('hotelId',id_par.HotelId)
+  localStorage.setItem('roomId', room_id)
+  localStorage.setItem('hotelId', id_par.HotelId)
   // let url = '/public/get-roomInfo-by-roomId?roomId=1'
   // request.get(url).then((response) => {
   //   room.value = response.data.data
@@ -597,10 +642,10 @@ const f3 = () => {
 };
 </script>
 <style lang="scss">
-#floor {
-  position: relative;
-  top: 10px;
-}
+// #floor {
+//   position: relative;
+//   top: 10px;
+// }
 
 .d {
   width: 100%;
