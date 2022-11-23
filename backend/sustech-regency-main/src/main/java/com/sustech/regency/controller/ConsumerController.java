@@ -55,8 +55,7 @@ public class ConsumerController {
     public ApiResponse<PayInfo> reserveRoom(@RequestBody @Validated ReserveParam reserveParam) {
         PayInfo payInfo=consumerService.reserveRoom(reserveParam.getRoomId(),
                                                     reserveParam.getStartTime(),
-                                                    reserveParam.getEndTime(),
-                                                    reserveParam.getCohabitants());
+                                                    reserveParam.getEndTime());
         return ApiResponse.success(payInfo);
     }
 

@@ -231,8 +231,8 @@ public class PublicServiceImpl implements PublicService {
         if (file != null) {
             if (file.getDeleteTime() == null) roomInfo.setCoverUrl(FileUtil.getUrl(file));
         }
-        roomInfo.setPictureUrls(getHotelPictureUrls(roomInfo.getId()));
-        roomInfo.setVideoUrls(getHotelVideoUrls(roomInfo.getId()));
+        roomInfo.setPictureUrls(getRoomTypePictureUrls(roomInfo.getId()));
+        roomInfo.setVideoUrls(getRoomTypeVideoUrls(roomInfo.getId()));
         return roomInfo;
     }
 
@@ -268,7 +268,7 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(Hotel::getName, Comment::getHotelName)
                 .selectAs(RoomType::getName, Comment::getRoomType);
         wrapper.eq(Hotel::getId, hotelId);
-        wrapper.innerJoin(User.class, User::getId, Order::getId)
+        wrapper.innerJoin(User.class, User::getId, Order::getPayerId)
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
