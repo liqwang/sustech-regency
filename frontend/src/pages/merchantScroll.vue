@@ -4,9 +4,9 @@
     <div v-if="show_content">
       <el-descriptions class="margin-top" title="The Hotel" :column="3" size="large" border>
         <template #extra>
-          <el-button @click="edit" type="primary">Modify hotel</el-button>
-          <el-button @click="show_floor = true" type="primary" id="floor">Floor Graph</el-button>
-          <el-button type="danger" @click="on_sale = true">On sale!!!</el-button>
+          <el-button @click="edit" type="primary" :icon="Edit">Modify hotel</el-button>
+          <el-button @click="show_floor = true" type="warning" :icon="Location" id="floor">Floor Graph</el-button>
+          <el-button type="danger" @click="on_sale = true" :icon="Bell">On sale!!!</el-button>
         </template>
         <el-descriptions-item>
           <template #label>
@@ -70,7 +70,7 @@
       <el-upload ref="uploadRef" class="upload-demo" :headers="{ 'token': token }" :on-success="handleUploadSuccess"
         :before-upload="beforeUpload" name="picture" :action=upload_cover_url :auto-upload="true">
         <template #trigger>
-          <el-button type="primary">upload cover</el-button>
+          <el-button type="primary" :icon="Upload">upload cover</el-button>
         </template>
         <template #tip>
           <div class="el-upload__tip">
@@ -83,7 +83,7 @@
         :on-success="handleUploadSuccess_media" :before-upload="beforeUpload_media" name="media"
         :action=upload_media_url :auto-upload="true">
         <template #trigger>
-          <el-button type="primary">upload media</el-button>
+          <el-button type="primary" plain :icon="Upload">upload media</el-button>
         </template>
         <template #tip>
           <div class="el-upload__tip">
@@ -91,6 +91,13 @@
           </div>
         </template>
       </el-upload>
+
+      <el-button-group>
+        <el-button type="primary" @click="change_chart(1)" color="#626aef" plain>标准间</el-button>
+        <el-button type="primary" @click="change_chart(2)" color="#626aef" plain >
+          双人间
+        </el-button>
+      </el-button-group>
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
         <div v-show="which_floor == ''">
@@ -251,20 +258,21 @@
     <el-input-number v-model="sale_discount" :step="0.05" :min="0.05" :max="1" />
     <br><br>
     <el-radio v-model="sale_type" label=1>标准间</el-radio>
-    <el-radio v-model="sale_type"  label=2>双人间</el-radio>
+    <el-radio v-model="sale_type" label=2>双人间</el-radio>
     <br>
     <br>
     <br>
     <br>
     <el-button @click="confirm_sale" type="primary">Confirm</el-button>
-  <el-button @click="cancle_sale" type="danger">Cancel</el-button>
+    <el-button @click="cancle_sale" type="danger">Cancel</el-button>
   </el-dialog>
 
 </template>
 <script lang="ts" setup>
+import { Delete, Edit, Search, Share, Upload,Location,Bell } from '@element-plus/icons-vue'
 import { onMounted, onUpdated, onBeforeUpdate, onBeforeMount, ref, reactive, watch, h, Ref } from 'vue';
 import request from '../utils/request';
-import { ElNotification,ElMessage } from 'element-plus';
+import { ElNotification, ElMessage } from 'element-plus';
 import * as echarts from 'echarts/core';
 import {
   GridComponent,
@@ -288,30 +296,30 @@ import router from '../router';
 const on_sale = ref(false)
 const sale_type = ref(0)
 const sale_discount = ref(1)
-const confirm_sale=()=>{
-  if (sale_type.value>0 ){
-    let url =`/room/room/updateRooms?discount=${sale_discount.value}&typeId=${sale_type.value}&hotelId=${id_par.HotelId}`
-    request.post(url).then((res)=>{
-      if(res.data.code ==200){
+const confirm_sale = () => {
+  if (sale_type.value > 0) {
+    let url = `/room/room/updateRooms?discount=${sale_discount.value}&typeId=${sale_type.value}&hotelId=${id_par.HotelId}`
+    request.post(url).then((res) => {
+      if (res.data.code == 200) {
         ElNotification({
-        title: 'Success',
-        message: h('i', { style: 'color: green' }, 'these rooms are on sale now!')
-      })
-      on_sale.value = false
-      }else{
+          title: 'Success',
+          message: h('i', { style: 'color: green' }, 'these rooms are on sale now!')
+        })
+        on_sale.value = false
+      } else {
         ElNotification({
-        title: 'Error',
-        message: h('i', { style: 'color: red' }, 'Some errors happened')
-      })
+          title: 'Error',
+          message: h('i', { style: 'color: red' }, 'Some errors happened')
+        })
       }
     })
-  }else{
+  } else {
     ElMessage('Please complete the infomation')
   }
 }
-const cancle_sale=()=>{
+const cancle_sale = () => {
   on_sale.value = false
-  sale_type.value  =0 
+  sale_type.value = 0
 }
 const token = ref('')
 token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
@@ -400,7 +408,8 @@ onUpdated(() => {
     },
     series: [
       {
-        data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
+        // data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
+        data :[0,0,0,0,0,0,0],
         type: 'line'
       }
     ]
@@ -554,7 +563,21 @@ watch(
         if (response.data.code == 200) {
           hotel.detail = response.data.data;
           console.log(hotel.detail);
-          let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
+          
+        } else alert('Error');
+      });
+      show_content.value = true;
+    } else {
+      show_content.value = false;
+    }
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+);
+const change_chart=(index:number)=>{
+  let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
             + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId
           request.get(url).then(function (response) {
             if (response.data.code == 200) {
@@ -587,18 +610,7 @@ watch(
               option && myChart.setOption(option)
             }
           })
-        } else alert('Error');
-      });
-      show_content.value = true;
-    } else {
-      show_content.value = false;
-    }
-  },
-  {
-    deep: true,
-    immediate: true
-  }
-);
+}
 var v1 = ref(false);
 var v2 = ref(false);
 var v3 = ref(false);
