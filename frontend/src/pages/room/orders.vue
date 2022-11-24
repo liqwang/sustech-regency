@@ -1,4 +1,21 @@
 <template>
+  <div class="demo-date-picker">
+    <div class="block">
+      <el-checkbox-group v-model="checkList" >
+    <el-checkbox label="has comment" border />
+    <el-checkbox label="has paid" border/>
+  </el-checkbox-group><br>
+      <span class="demonstration">Select Days</span>
+      <el-date-picker
+        v-model="days"
+        type="daterange"
+        range-separator="To"
+        start-placeholder="Start date"
+        end-placeholder="End date"
+        size="default"
+      />
+    </div>
+    </div>
   <div class="demo-collapse">
     <el-collapse v-model="activeNames" @change="handleChange" accordion>
       <el-collapse-item title="The first order" name="1">
@@ -50,9 +67,32 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-
+const days = ref()
+const checkList = ref([])
 const activeNames = ref(['1'])
+const value = ref(0)
 const handleChange = (val: string[]) => {
   console.log(val)
 }
 </script>
+<style lang="scss" scoped>.demo-date-picker {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.demo-date-picker .block {
+  padding: 30px 0;
+  text-align: center;
+  border-right: solid 1px var(--el-border-color);
+  flex: 1;
+}
+.demo-date-picker .block:last-child {
+  border-right: none;
+}
+.demo-date-picker .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}</style>

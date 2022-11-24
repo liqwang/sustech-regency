@@ -94,11 +94,11 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 const beforeUpload_media: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
-    upload_tip_media.value = ('Room media must be JPG or PNG format!')
+  if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png' &&rawFile.type != 'video/mp4') {
+    upload_tip_media.value = ('Room media must be JPG or PNG or MP4 format!')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    upload_tip_media.value = ('Room media size can not exceed 2MB!')
+  } else if (rawFile.size / 1024 / 1024 > 100) {
+    upload_tip_media.value = ('Room media size can not exceed 100MB!')
     return false
   }
   console.log(rawFile.type)

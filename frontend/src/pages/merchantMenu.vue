@@ -28,6 +28,7 @@
   </div>
 </template>
 <script setup lang="ts">
+
 import request from '../utils/request';
 import { ref, reactive, computed } from 'vue';
 import { Document, Menu as IconMenu, Setting, ArrowLeft, Iphone, Location, OfficeBuilding, Tickets, User } from '@element-plus/icons-vue';
