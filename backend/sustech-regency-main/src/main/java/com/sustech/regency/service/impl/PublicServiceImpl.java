@@ -8,7 +8,6 @@ import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
-import com.sustech.regency.service.HideService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -36,12 +35,6 @@ public class PublicServiceImpl implements PublicService {
 
     @Resource
     private OrderDao orderDao;
-
-    @Resource
-    private HideService hideService;
-
-    @Resource
-    private CheckInDao checkInDao;
 
     @Resource
     private UserDao userDao;
@@ -272,8 +265,7 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
-        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
-        return comments;
+        return orderDao.selectJoinList(Comment.class, wrapper);
     }
 
     @Override
