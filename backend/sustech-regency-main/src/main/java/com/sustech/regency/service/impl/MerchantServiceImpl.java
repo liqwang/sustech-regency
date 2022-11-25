@@ -150,11 +150,16 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime) {
+    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime,Integer roomType) {
         Float[] money = new Float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
         for (Room room :
                 rooms) {
+            if (roomType!=null){
+                if(!Objects.equals(room.getTypeId(), roomType)){
+                    continue;
+                }
+            }
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);

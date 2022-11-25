@@ -40,7 +40,7 @@ public interface MerchantService {
 
     void deleteHotelMedia(String mediaId, Integer hotelId);
 
-    List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime);
+    List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime,Integer roomType);
 
     List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status);
 }

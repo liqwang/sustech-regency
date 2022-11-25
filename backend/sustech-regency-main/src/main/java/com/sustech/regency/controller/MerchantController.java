@@ -116,8 +116,9 @@ public class MerchantController {
     @GetMapping("/hotel/get-HistoricalBills")
     public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                        @ApiParam(value = "开始时间", required = true) @RequestParam @DateParam @NotNull Date startTime,
-                                                       @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime) {
-        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime));
+                                                       @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime,
+                                                       @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime,roomTypeId));
     }
 
     @ApiOperation("商家按条件筛选某个酒店的订单")
