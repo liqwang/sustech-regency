@@ -3,6 +3,7 @@ package com.sustech.regency.service;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
+import io.swagger.models.auth.In;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -40,4 +41,6 @@ public interface MerchantService {
     void deleteHotelMedia(String mediaId, Integer hotelId);
 
     List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime);
+
+    List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status);
 }
