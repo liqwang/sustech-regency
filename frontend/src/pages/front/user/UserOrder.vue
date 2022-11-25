@@ -44,7 +44,7 @@
   </el-card>
 
   <el-dialog v-model="dialogFormVisible" title="订单评价">
-    <el-form :model="form">
+    <el-form>
       <el-row>
         <el-col :span="4">
           商品评分
