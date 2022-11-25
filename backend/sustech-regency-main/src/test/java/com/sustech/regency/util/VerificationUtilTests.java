@@ -2,7 +2,7 @@ package com.sustech.regency.util;
 
 import org.junit.jupiter.api.Test;
 
-public class VerificationUtilTest {
+public class VerificationUtilTests {
 	@Test
 	void testJudge(){
 //		System.out.println(VerificationUtil.specialChars.size());
