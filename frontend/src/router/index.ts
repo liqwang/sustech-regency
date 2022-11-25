@@ -18,6 +18,7 @@ import HotelComment from '../pages/front/hotel/HotelComment.vue'
 import HotelChat from '../pages/front/hotel/HotelChat.vue'
 import UserSetting from '../pages/front/user/UserSetting.vue'
 import UserOrder from '../pages/front/user/UserOrder.vue'
+import UserCollection from '../pages/front/user/UserCollection.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -81,6 +82,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     children: [
       { path: 'setting', name: 'setting', component: UserSetting, meta: { requiresAuth: true } },
+      { path: 'collection', name: 'collection', component: UserCollection, meta: { requiresAuth: true } },
       { path: 'order', name: 'order', component: UserOrder, meta: { requiresAuth: true } }
     ]
   }
