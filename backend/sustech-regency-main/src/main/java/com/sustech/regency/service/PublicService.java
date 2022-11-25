@@ -40,4 +40,6 @@ public interface PublicService {
     Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum);
 
     List<RoomType> getRoomTypesByHotel(Integer hotelId);
+
+
 }

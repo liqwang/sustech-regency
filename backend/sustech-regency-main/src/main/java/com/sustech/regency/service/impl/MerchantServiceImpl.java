@@ -3,14 +3,13 @@ package com.sustech.regency.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.sustech.regency.db.dao.FileDao;
-import com.sustech.regency.db.dao.HotelDao;
-import com.sustech.regency.db.dao.HotelExhibitionDao;
-import com.sustech.regency.db.dao.OrderDao;
+import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.service.PublicService;
+import com.sustech.regency.service.RoomService;
 import com.sustech.regency.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,9 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Resource
     private OrderDao orderDao;
+
+    @Resource
+    private RoomService roomService;
 
     @Override
     public List<HotelInfo> getAllHotelInfos(Integer merchantId) {
@@ -209,6 +211,15 @@ public class MerchantServiceImpl implements MerchantService {
             }
         }
         return orderList;
+    }
+
+    @Override
+    public void notifySale(Integer hotelId, Integer roomType, Float saleRate) {
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
+        for (Room room:
+             rooms) {
+            roomService.updateOneRoom(getUserId(),room.getId(),null,null,null,null,null,null,saleRate);
+        }
     }
 
     /**
