@@ -1,6 +1,7 @@
 package com.sustech.regency.controller;
 
 import com.sustech.regency.db.po.Hotel;
+import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.annotation.DateParam;
@@ -115,7 +116,19 @@ public class MerchantController {
     @GetMapping("/hotel/get-HistoricalBills")
     public ApiResponse<List<Float>> getHistoricalBills(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                        @ApiParam(value = "开始时间", required = true) @RequestParam @DateParam @NotNull Date startTime,
-                                                       @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime) {
-        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime));
+                                                       @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime,
+                                                       @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime,roomTypeId));
+    }
+
+    @ApiOperation("商家按条件筛选某个酒店的订单")
+    @GetMapping("/hotel/get-selected-orders")
+    public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                      @ApiParam(value = "是否有评论", required = false) @RequestParam(required = false)  Boolean isComment,
+                                                      @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam  Date startTime,
+                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                      @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
+
+        return ApiResponse.success(merchantService.selectCustomerOrders(hotelId,isComment,startTime, endTime,status));
     }
 }

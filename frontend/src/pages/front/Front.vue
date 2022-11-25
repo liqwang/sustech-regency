@@ -40,63 +40,51 @@
     <el-row>
       <div id="main">
         <el-row style="height: 100%">
-          <!-- <el-col :span="12" :offset="0">
-            <div style="height: 2vh"></div>
-            <div class="null">
-              <div style="height: 9vh"></div>
-              <div style="height: 67vh; width: 100%">
-                <el-carousel height="60vh" align="center" type="" direction="vertical">
-                  <el-carousel-item v-for="url in urls" :key="url">
-                    <el-image :src="url" style="opacity: 1" />
-                  </el-carousel-item>
-                </el-carousel>
-              </div>
-            </div>
-            <div style="height: 3vh"></div>
-          </el-col> -->
-          <el-col :span="12" :offset="0">
-            <div style="height: 2vh"></div>
-            <div class="null">
-              <div style="height: 72vh; width: 100%">
+          <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 25px">
+            <el-card class="box-card" shadow="hover" style="border-radius: 10px">
+              <router-link :to="'/hotel/' + hotelInfo.id" target="_blank">
+                <div><el-image :src="url" /></div>
                 <el-row>
-                  <el-col :span="12" v-for="hotelInfo in hotelInfos">
-                    <el-card class="box-card" shadow="hover" style="border-radius: 10px">
-                      <router-link :to="'/hotel/' + hotelInfo.id" target="_blank">
-                        <div>
-                          <el-image :src="url" />
-                        </div>
-                        <el-row>
-                          <el-col :span="12" :offset="0">
-                            <div class="name" s>{{ hotelInfo.name }}</div>
-                          </el-col>
-                          <el-col :span="12" :offset="0">
-                            <div class="rate">
-                              <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
-                            </div>
-                          </el-col>
-                          <el-col :span="12" :offset="0" class="comment">
-                            <div class="comment">
-                              <div>共{{ hotelInfo.commentNum }}条评论</div>
-                            </div>
-                          </el-col>
-                          <el-col :span="12" :offset="0" class="price">
-                            ¥<span class="">{{ hotelInfo.minPrice }}</span>起
-                          </el-col>
-                        </el-row>
-                      </router-link>
-                    </el-card>
+                  <el-col :span="12" :offset="0">
+                    <div class="name" s>{{ hotelInfo.name }}</div>
+                  </el-col>
+                  <el-col :span="12" :offset="0">
+                    <div class="rate">
+                      <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
+                    </div>
+                  </el-col>
+                  <el-col :span="12" :offset="0" class="comment">
+                    <div class="comment">
+                      <div>共{{ hotelInfo.commentNum }}条评论</div>
+                    </div>
+                  </el-col>
+                  <el-col :span="12" :offset="0" class="price">
+                    ¥<span class="">{{ hotelInfo.minPrice }}</span
+                    >起
                   </el-col>
                 </el-row>
-
-                <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
-                  :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
-                  layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange" style="margin-top: 15px" />
-              </div>
-            </div>
-            <div style="height: 3vh"></div>
+              </router-link>
+            </el-card>
           </el-col>
         </el-row>
+      </div>
+    </el-row>
+
+    <el-row justify="center">
+      <div id="pages">
+        <el-pagination
+          v-model:currentPage="currentPage4"
+          v-model:page-size="pageSize4"
+          :page-sizes="[100, 200, 300, 400]"
+          :small="small"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="400"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          style="margin-top: 15px"
+        />
       </div>
     </el-row>
 
@@ -114,6 +102,9 @@
 </template>
 
 <style scoped>
+#pages {
+  height: 7vh;
+}
 .name {
   display: flex;
   flex-direction: row;
@@ -183,7 +174,7 @@
 
 #main {
   width: 100%;
-  height: 81vh;
+  height: 74vh;
 }
 
 #foot {

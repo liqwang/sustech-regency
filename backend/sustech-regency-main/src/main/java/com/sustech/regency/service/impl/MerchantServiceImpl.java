@@ -150,11 +150,16 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime) {
+    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime,Integer roomType) {
         Float[] money = new Float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
         for (Room room :
                 rooms) {
+            if (roomType!=null){
+                if(!Objects.equals(room.getTypeId(), roomType)){
+                    continue;
+                }
+            }
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
@@ -166,6 +171,44 @@ public class MerchantServiceImpl implements MerchantService {
             }
         }
         return new ArrayList<>(Arrays.asList(money));
+    }
+
+    @Override
+    public List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status) {
+        List<Order> orderList =  new ArrayList<>();
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
+        for (Room room :
+                rooms) {
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
+            List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
+            for (Order o : orders) {
+                boolean judge = true;
+                if (startTime!=null && EndTime!=null){
+                    if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
+                        judge =false;
+                    }
+                }
+
+                if (isComment!=null){
+                    if (o.getComment()==null){
+                        judge = false;
+                    }
+                }
+
+//                if (status!=null){
+//                    if(o.getStatus()==status){
+//                        judge = false;
+//                    }
+//                }
+
+                if (judge){
+                    orderList.add(o);
+                }
+
+            }
+        }
+        return orderList;
     }
 
     /**
