@@ -169,7 +169,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public void dislike(Integer hotelId) {
         LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        collectionLambdaQueryWrapper.eq(Collection::getHotelId,hotelId);
+        collectionLambdaQueryWrapper.eq(Collection::getHotelId,hotelId).eq(Collection::getUserId,getUserId());
         Collection collection = collectionDao.selectOne(collectionLambdaQueryWrapper);
         asserts(collection!=null,"Hotel have not been liked");
         collectionDao.delete(collectionLambdaQueryWrapper);

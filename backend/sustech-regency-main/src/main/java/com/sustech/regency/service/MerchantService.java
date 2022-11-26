@@ -45,4 +45,6 @@ public interface MerchantService {
     List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status);
 
     void notifySale(Integer hotelId, Integer roomType,Float saleRate);
+
+
 }
