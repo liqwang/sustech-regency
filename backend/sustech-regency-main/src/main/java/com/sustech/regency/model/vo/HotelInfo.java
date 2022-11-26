@@ -25,4 +25,6 @@ public class HotelInfo {
 	private String coverUrl;
 	private List<String> videoUrls;
 	private List<String> pictureUrls;
+	private Float minPrice;
+	private Integer commentNum;
 }

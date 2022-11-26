@@ -158,7 +158,11 @@ public class PublicController {
     @ApiOperation("根据酒店Id获取酒店信息")
     @GetMapping("/get-hotelInfo-byId")
     public ApiResponse<HotelInfo> getHotelInfoByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
-        return ApiResponse.success(publicService.getOneHotelByHotelId(hotelId));
+        HotelInfo hotelInfo = publicService.getOneHotelByHotelId(hotelId);
+        hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelId));
+        hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelId));
+
+        return ApiResponse.success(hotelInfo);
     }
 
     @ApiOperation("根据酒店ID和房号获得房间ID")
