@@ -30,7 +30,7 @@
             <!-- 用一行来展示文本域 -->
             <el-row>
               <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
-                placeholder="请输入信息" />
+                placeholder="请输入聊天信息" />
             </el-row>
             <!-- 用一行来展示发送按钮，放在最右边 -->
             <el-row justify="end">
@@ -140,7 +140,8 @@ interface Message {
   src: string
   dst: string
   text: string
-  time: string
+  time: string,
+  hotelId: number
 }
 
 let status = ref('')
@@ -149,8 +150,9 @@ let from = $ref('')
 let to = $ref('')
 let text = $ref('')
 
+const user = JSON.parse(localStorage.getItem('user') as string)
 const router = useRouter()
-const hotelId = router.currentRoute.value.params['hotelId']
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
 request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
   to = res.data.data
@@ -158,6 +160,17 @@ request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
 
 // histories 存储所有历史信息
 let histories = reactive<Message[]>([])
+
+// TODO: 判断当前用户是消费者还是商家
+// 如果是消费者
+if (user.isConsumer && !user.isMerchant) {
+  request.get(`/consumer/hotel/get-chat-history?user1=${user.name}&user2=${to}&hotelId=${hotelId}`)
+    .then(res => {
+      histories = res.data
+      console.log(histories)
+    })
+}
+
 const username = JSON.parse(localStorage.getItem('user') as string).name
 // const socketUrl = `ws://localhost:8080/websocket/${username}`
 const socketUrl = `ws://quanquancho.com:8080/websocket/${username}`
@@ -172,8 +185,8 @@ socket.onopen = () => {
 socket.onmessage = (message) => {
   console.log(`收到数据: ${message.data}`)
   const data = JSON.parse(message.data) as Message
-  if (data.src === to) {
-    histories.push({ src: data.src, dst: data.dst, text: data.text, time: data.time })
+  if (data.src === to && hotelId === data.hotelId) {
+    histories.push({ src: data.src, dst: data.dst, text: data.text, time: data.time, hotelId: hotelId })
   }
 }
 
@@ -190,60 +203,10 @@ const send = () => {
     ElMessage.error('请输入要发送的信息!')
   } else {
     const time = new Date().toLocaleString()
-    const message: Message = { src: from, dst: to, text: text, time: time }
+    const message: Message = { src: from, dst: to, text: text, time: time, hotelId: hotelId }
     socket.send(JSON.stringify(message))
     histories.push(message)
     text = ''
   }
 }
-
-/* socket.addEventListener('open', function () {
-  //建立连接的时候发过去自己的名字表明身份
-  socket.send(`FROM:${from}||TO:${from}||TEXT:MYNAME`)
-  //第一次探试一下对方是否在线
-  socket.send(`FROM:${from}||TO:${to}||TEXT:CONNECTION`)
-}) */
-
-
-//建立连接之后每三秒试探一次对方是否在线
-/* setInterval(function () {
-  socket.send(`FROM:${from}||TO:${to}||TEXT:CONNECTION`)
-}, 3000) */
-
-
-/* socket.addEventListener('message', function (e) {
-  console.log(e.data)
-  //分为两种情况，1.从SERVER发来的系统信息，2.从实际的用户处发过来的
-  let arr = e.data.split('||')
-  let FROM = arr[0].replace('FROM:', '')
-  let TO = arr[1].replace('TO:', '')
-  let TEXT = arr[2].replace('TEXT:', '')
-  if (FROM === 'SERVER') {
-    status.value = TEXT
-  } else {
-    let date = new Date().toLocaleString()
-    histories.push({
-      src: FROM,
-      des: TO,
-      text: TEXT,
-      time: date
-    })
-  }
-}) */
-
-/* const send = () => {
-  if (status.value == 'CONNECT_SUCCEED') {
-    let msg = `FROM:${from}||TO:${to}||TEXT:${text.value}`
-    socket.send(msg)
-    let date = new Date().toLocaleString()
-    histories.push({
-      src: from,
-      des: to,
-      text: text.value,
-      time: date
-    })
-    console.log(msg)
-    text.value = ''
-  }
-} */
 </script>
