@@ -1,5 +1,8 @@
 package com.sustech.regency.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sustech.regency.db.dao.ChatHistoryDao;
+import com.sustech.regency.db.po.ChatHistory;
 import com.sustech.regency.model.param.ReserveParam;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
@@ -28,6 +32,8 @@ public class ConsumerController {
     @Resource
     private ConsumerService consumerService;
 
+    @Resource
+    private ChatHistoryDao chatHistoryDao;
 
     @ApiOperation(value = "上传评论图片或视频", notes = "为指定的订单(orderId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("/comment/upload-media")
@@ -52,12 +58,12 @@ public class ConsumerController {
     }
 
 
-    @ApiOperation(value = "预订房间",notes = "返回支付二维码的Base64编码，过期时间15分钟")
+    @ApiOperation(value = "预订房间", notes = "返回支付二维码的Base64编码，过期时间15分钟")
     @PostMapping("/reserve-room")
     public ApiResponse<PayInfo> reserveRoom(@RequestBody @Validated ReserveParam reserveParam) {
-        PayInfo payInfo=consumerService.reserveRoom(reserveParam.getRoomId(),
-                                                    reserveParam.getStartTime(),
-                                                    reserveParam.getEndTime());
+        PayInfo payInfo = consumerService.reserveRoom(reserveParam.getRoomId(),
+                reserveParam.getStartTime(),
+                reserveParam.getEndTime());
         return ApiResponse.success(payInfo);
     }
 
@@ -71,14 +77,14 @@ public class ConsumerController {
     @ApiOperation("收藏酒店")
     @PostMapping("/like-hotel")
     public ApiResponse likeHotel(@ApiParam(value = "酒店Id", required = true)
-                                 @NotNull @RequestParam Integer hotelId){
+                                 @NotNull @RequestParam Integer hotelId) {
         consumerService.like(hotelId);
         return ApiResponse.success();
     }
 
     @ApiOperation("移出收藏酒店")
     @PostMapping("/dislike-hotel")
-    public ApiResponse dislikeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId){
+    public ApiResponse dislikeHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam Integer hotelId) {
         consumerService.dislike(hotelId);
         return ApiResponse.success();
     }
@@ -97,11 +103,28 @@ public class ConsumerController {
 
     @ApiOperation("用户多条件筛选某个酒店的订单")
     @GetMapping("/hotel/get-selected-orders")
-    public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "是否有评论", required = false) @RequestParam(required = false)  Boolean isComment,
+    public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "是否有评论", required = false) @RequestParam(required = false) Boolean isComment,
                                                       @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
                                                       @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
 
-        return ApiResponse.success(consumerService.selectCustomerOrders(isComment,startTime, endTime,status));
+        return ApiResponse.success(consumerService.selectCustomerOrders(isComment, startTime, endTime, status));
+    }
+
+    @ApiOperation("用户获取与商家的所有聊天记录")
+    @GetMapping("/hotel/get-chat-history")
+    public ApiResponse<List<ChatHistory>> getChatHistories(@RequestParam String user1, @RequestParam String user2, @RequestParam Integer hotelId) {
+        QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("from_name", user1);
+        queryWrapper.eq("to_name", user2);
+        queryWrapper.eq("hotel_id", hotelId);
+        List<ChatHistory> chatHistories = chatHistoryDao.selectList(queryWrapper);
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("from_name", user2);
+        queryWrapper.eq("to_name", user1);
+        queryWrapper.eq("hotel_id", hotelId);
+        chatHistories.addAll(chatHistoryDao.selectList(queryWrapper));
+        chatHistories.sort(Comparator.comparing(ChatHistory::getChatTime));
+        return ApiResponse.success(chatHistories);
     }
 }

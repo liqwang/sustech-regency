@@ -2,10 +2,13 @@ package com.sustech.regency.component;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.sustech.regency.db.dao.ChatHistoryDao;
+import com.sustech.regency.db.po.ChatHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -19,6 +22,13 @@ public class WebSocketServer {
     private static final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
 
     private static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
+
+    private static ChatHistoryDao chatHistoryDao;
+
+    @Resource
+    public void setChatHistoryDao(ChatHistoryDao chatHistoryDao) {
+        WebSocketServer.chatHistoryDao = chatHistoryDao;
+    }
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
@@ -39,13 +49,17 @@ public class WebSocketServer {
         String toUsername = obj.getStr("dst");
         String text = obj.getStr("text");
         String time = obj.getStr("time");
+        Integer hotelId = Integer.parseInt(obj.getStr("hotelId"));
         Session toSession = sessionMap.get(toUsername);
         if (toSession != null) {
             JSONObject response = new JSONObject();
             response.set("src", username);
             response.set("text", text);
             response.set("time", time);
+            response.set("hotelId", hotelId);
             this.sendMessage(response.toString(), toSession);
+            ChatHistory chatHistory = new ChatHistory(username, toUsername, time, text, hotelId);
+            chatHistoryDao.insert(chatHistory);
             log.info("发送给用户username={}, 消息: {}", toUsername, response);
         } else {
             log.info("发送失败, 未找到用户username={}的session", toUsername);
