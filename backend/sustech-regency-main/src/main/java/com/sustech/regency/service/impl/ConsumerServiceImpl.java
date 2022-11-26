@@ -196,4 +196,41 @@ public class ConsumerServiceImpl implements ConsumerService {
         orderLambdaQueryWrapper.eq(Order::getPayerId,getUserId());
         return orderDao.selectList(orderLambdaQueryWrapper);
     }
+
+    @Override
+    public List<Order> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status) {
+        List<Order> orderList =  new ArrayList<>();
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+            orderLambdaQueryWrapper.eq(Order::getPayerId, getUserId());
+            List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
+            for (Order o : orders) {
+                boolean judge = true;
+
+                if (startTime!=null && EndTime!=null){
+                    if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
+                        judge =false;
+                    }
+                }
+
+                if (isComment!=null){
+                    if (o.getComment()==null){
+                        judge = false;
+                    }
+                }
+
+                if (status!=null){
+                    if(o.getStatus().ordinal()!=status){
+                        judge = false;
+                    }
+                }
+
+                if (judge){
+                    orderList.add(o);
+                }
+
+            }
+
+        return orderList;
+    }
 }

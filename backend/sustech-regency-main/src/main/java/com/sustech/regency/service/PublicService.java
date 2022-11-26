@@ -1,11 +1,13 @@
 package com.sustech.regency.service;
 
+import com.sustech.regency.db.po.Order;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PublicService {
@@ -40,6 +42,7 @@ public interface PublicService {
     Integer getRoomIdByHotelWithRoomNum(Integer hotelId, Integer roomNum);
 
     List<RoomType> getRoomTypesByHotel(Integer hotelId);
+
 
 
 }

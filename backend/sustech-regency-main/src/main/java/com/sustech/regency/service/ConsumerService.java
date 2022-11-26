@@ -32,4 +32,6 @@ public interface ConsumerService {
     List<HotelInfo> getHotelInfoFromLikes();
 
     List<Order> getOrders();
+
+    List<Order> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
 }

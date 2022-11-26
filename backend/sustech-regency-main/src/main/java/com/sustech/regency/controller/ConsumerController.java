@@ -5,6 +5,7 @@ import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.service.ConsumerService;
+import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Map;
 import java.util.List;
 
@@ -91,5 +93,15 @@ public class ConsumerController {
     @GetMapping("/get-orders")
     public ApiResponse<List<Order>> getOrders() {
         return ApiResponse.success(consumerService.getOrders());
+    }
+
+    @ApiOperation("用户多条件筛选某个酒店的订单")
+    @GetMapping("/hotel/get-selected-orders")
+    public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "是否有评论", required = false) @RequestParam(required = false)  Boolean isComment,
+                                                      @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
+                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                      @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
+
+        return ApiResponse.success(consumerService.selectCustomerOrders(isComment,startTime, endTime,status));
     }
 }
