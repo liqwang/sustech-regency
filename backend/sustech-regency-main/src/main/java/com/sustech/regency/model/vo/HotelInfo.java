@@ -27,4 +27,5 @@ public class HotelInfo {
 	private List<String> pictureUrls;
 	private Float minPrice;
 	private Integer commentNum;
+	private Integer likes_num;
 }

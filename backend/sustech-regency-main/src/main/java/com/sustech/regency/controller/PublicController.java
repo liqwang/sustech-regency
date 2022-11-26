@@ -161,7 +161,7 @@ public class PublicController {
         HotelInfo hotelInfo = publicService.getOneHotelByHotelId(hotelId);
         hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelId));
         hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelId));
-
+        hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelId));
         return ApiResponse.success(hotelInfo);
     }
 

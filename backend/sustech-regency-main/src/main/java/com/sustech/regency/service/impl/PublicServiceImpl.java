@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.db.po.Collection;
 import com.sustech.regency.model.vo.Comment;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
@@ -44,6 +45,9 @@ public class PublicServiceImpl implements PublicService {
 
     @Resource
     private RoomTypeExhibitionDao roomTypeExhibitionDao;
+
+    @Resource
+    private CollectionDao collectionDao;
 
     @Override
     public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
@@ -324,6 +328,14 @@ public class PublicServiceImpl implements PublicService {
 //                rooms) {
 //            if (!roomTypes.contains(r.getTypeId())) roomTypes.add(r.getTypeId());
 //        }
+    }
+
+    @Override
+    public Integer getLikesNumByHotelId(Integer hotelId) {
+        LambdaQueryWrapper<Collection> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Collection::getHotelId,hotelId);
+        List<Collection> list = collectionDao.selectList(wrapper);
+        return list.size();
     }
 
 }
