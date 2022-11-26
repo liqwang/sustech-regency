@@ -1,5 +1,7 @@
 package com.sustech.regency.controller;
 
+import com.sustech.regency.db.dao.UserDao;
+import com.sustech.regency.db.po.User;
 import com.sustech.regency.model.param.FindPasswordParam;
 import com.sustech.regency.model.param.LoginParam;
 import com.sustech.regency.model.param.RegisterParam;
@@ -9,6 +11,7 @@ import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +28,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private UserDao userDao;
+
     @ApiOperation("发送验证码到邮箱")
     @PostMapping("/send-verification-code")
     public ApiResponse sendVerificationCode(@ApiParam(required = true)
@@ -36,11 +42,11 @@ public class UserController {
     @ApiOperation(value = "注册")
     @PostMapping("/register")
     public ApiResponse<UserInfo> register(@Validated @RequestBody RegisterParam registerParam) {
-        UserInfo userInfo =userService.register(registerParam.getVerificationCode(),
-                                                registerParam.getEmail(),
-                                                registerParam.getUsername(),
-                                                registerParam.getPassword(),
-                                                registerParam.getRoleId());
+        UserInfo userInfo = userService.register(registerParam.getVerificationCode(),
+                registerParam.getEmail(),
+                registerParam.getUsername(),
+                registerParam.getPassword(),
+                registerParam.getRoleId());
         return ApiResponse.success(userInfo);
     }
 
@@ -66,5 +72,17 @@ public class UserController {
                                            @RequestParam MultipartFile picture) {
         String url = userService.uploadHeadShot(picture, getUserId());
         return ApiResponse.success(Map.of("url", url));
+    }
+
+    @ApiOperation(value = "用户改变头像")
+    @PostMapping("/change-headshot")
+    public ApiResponse<Map> changeHeadShot(@RequestParam String headshotId) {
+        if (StringUtils.isBlank(headshotId)) {
+            return ApiResponse.success(Map.of("user", ""));
+        }
+        User user = userDao.selectById(getUserId());
+        user.setHeadshotId(headshotId);
+        userDao.updateById(user);
+        return ApiResponse.success(Map.of("user", user));
     }
 }

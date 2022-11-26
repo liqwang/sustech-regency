@@ -142,17 +142,19 @@ const rules = reactive<FormRules>({
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
-    if (valid) {
+    // 有图片的时候再提交
+    if (valid && headshotUrl) {
       const arr = headshotUrl.split('/')
       const s = arr[arr.length - 1]
       const headshotId = s.substring(0, s.indexOf('.'))
       console.log(headshotId)
-      request.get(`/user/change-headshot?headshotId=${headshotId}`)
+      request.post(`/user/change-headshot?headshotId=${headshotId}`)
         .then(res => {
           if (res.data.code === 200) {
             let user = JSON.parse(localStorage.getItem('user') as string)
             user.headshotUrl = headshotUrl
             localStorage.setItem('user', JSON.stringify(user))
+            location.reload()
             ElNotification({
               title: "Success",
               message: h("i", { style: "color: teal" }, "修改个人信息成功"),

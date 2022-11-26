@@ -46,6 +46,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .authorizeRequests(
                         authorize -> authorize //注意：这里定义的顺序也有影响，**定义在前面的不会被后面的覆盖**
                                 .antMatchers("/user/upload-headshot").authenticated() //上传头像时需要token
+                                .antMatchers("/user/change-headshot").authenticated()
                                 .antMatchers("/user/**").anonymous()
                                 .antMatchers("/public/**").permitAll() //放行获取信息相关URL
                                 .antMatchers("/websocket/**").permitAll()
