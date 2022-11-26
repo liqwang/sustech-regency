@@ -3,6 +3,7 @@ package com.sustech.regency.service;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -34,4 +35,6 @@ public interface ConsumerService {
     List<Order> getOrders();
 
     List<Order> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
+
+    List<RoomInfo> getRoomInfosByCustomerChoice(Integer hotelId,Date startTime, Date EndTime,Integer minPrice, Integer maxPrice,Integer roomTypeId);
 }
