@@ -198,11 +198,11 @@ public class MerchantServiceImpl implements MerchantService {
                     }
                 }
 
-//                if (status!=null){
-//                    if(o.getStatus()==status){
-//                        judge = false;
-//                    }
-//                }
+                if (status!=null){
+                    if(o.getStatus().ordinal()!=status){
+                        judge = false;
+                    }
+                }
 
                 if (judge){
                     orderList.add(o);
