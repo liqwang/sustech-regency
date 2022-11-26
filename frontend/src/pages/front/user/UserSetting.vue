@@ -31,12 +31,13 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { reactive, ref } from 'vue'
+import { reactive, ref, h } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 import type { UploadProps } from 'element-plus'
+import request from '../../../utils/request'
 
 interface UserInfo {
   avatarUrl: string
@@ -55,8 +56,11 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 ) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw!)
   console.log(imageUrl.value)
-  console.log(response)
+  console.log(response.data.url)
+  headshotUrl = response.data.url
 }
+
+let headshotUrl = $ref('')
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg') {
@@ -139,6 +143,22 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
+      const arr = headshotUrl.split('/')
+      const s = arr[arr.length - 1]
+      const headshotId = s.substring(0, s.indexOf('.'))
+      console.log(headshotId)
+      request.get(`/user/change-headshot?headshotId=${headshotId}`)
+        .then(res => {
+          if (res.data.code === 200) {
+            let user = JSON.parse(localStorage.getItem('user') as string)
+            user.headshotUrl = headshotUrl
+            localStorage.setItem('user', JSON.stringify(user))
+            ElNotification({
+              title: "Success",
+              message: h("i", { style: "color: teal" }, "修改个人信息成功"),
+            });
+          }
+        })
       console.log('submit!')
     } else {
       console.log('error submit!', fields)

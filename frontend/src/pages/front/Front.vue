@@ -10,7 +10,8 @@
             <el-col :span="8">
               <span class="info">省</span>
               <el-select v-model="province" placeholder="Select">
-                <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
+                <el-option v-for="province in provinces" :key="province" :value="province"
+                  @click="changeCity(province)" />
               </el-select>
             </el-col>
 
@@ -90,7 +91,7 @@
     <el-row>
       <div id="foot">
         <p style="color: #fff">
-          <span>广东省深圳市南山区学苑大道1088号　</span>
+          <span>广东省深圳市南山区学苑大道1088号</span>
           <span>电话： +86-755-88010888 &nbsp;</span>
           <span>邮编： 518055 </span>
         </p>
@@ -111,12 +112,14 @@
   font-size: 22px;
   font-weight: 600;
 }
+
 .rate {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
 }
+
 .comment {
   display: flex;
   flex-direction: row;
@@ -125,6 +128,7 @@
   font-size: 14px;
   color: rgb(66, 66, 66);
 }
+
 .price {
   display: flex;
   flex-direction: row;
@@ -140,11 +144,13 @@
   margin-right: 10px;
   height: auto;
 }
+
 .info {
   margin-left: 1vw;
   margin-right: 1vw;
   color: rgb(205, 204, 204);
 }
+
 #head {
   width: 100%;
   height: 8vh;
@@ -155,18 +161,22 @@
   align-items: center;
   background-color: #2a598a;
 }
+
 #area {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
 #bgi {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
 }
+
 #main {
   width: 100%;
   height: 74vh;
 }
+
 #foot {
   width: 100%;
   height: 9vh;
@@ -184,7 +194,7 @@
 </style>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import UserIcon from '../../components/UserIcon.vue'
 import request from '../../utils/request'
 import { Search } from '@element-plus/icons-vue'
@@ -236,7 +246,7 @@ const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
 const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
 let hotels: Hotel[] = []
-let hotelInfos = reactive<HotelInfo[]>([])
+const hotelInfos = $ref<HotelInfo[]>([])
 
 let province = $ref('')
 let city = $ref('')
@@ -250,7 +260,7 @@ const urls = [
   'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large'
 ]
 const listLoading = $ref(false)
-const search = () => {}
+const search = () => { }
 
 let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
@@ -284,7 +294,9 @@ const getHotels = (provinceName: string, cityName: string, regionName: string) =
   })
 }
 
-getHotels('', '', '')
+onMounted(() => {
+  getHotels('', '', '')
+})
 
 const changeCity = (province: string) => {
   console.log('myprovince: ' + province)
