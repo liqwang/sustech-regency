@@ -1,7 +1,6 @@
 <template>
   <el-scrollbar>
-    <h5 class="mb-2">Sustech Rengency</h5>
-    <el-menu default-active="/user/order" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
+    <el-menu default-active="/user/order" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router style="border-radius: 15px">
       <el-menu-item index="/user/order">
         <el-icon>
           <Message />
@@ -26,7 +25,7 @@
 
 <script lang="ts" setup>
 import { HomeFilled, Star, Setting, Message } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }

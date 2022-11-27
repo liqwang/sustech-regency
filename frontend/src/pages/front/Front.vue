@@ -3,7 +3,7 @@
     <el-row>
       <div id="head">
         <!-- 酒店名字 -->
-        <span style="margin-left: 1vw; font-size: 27px; font-weight: 600; color: #fff">SUSTech Regency</span>
+        <span style="margin-left: 2vw; font-size: 27px; font-weight: 600; color: #fff">SUSTech Regency</span>
         <!-- 区域选择 -->
         <div style="width: 60vw; height: 100%; background-color: " id="area">
           <el-row justify="space-evenly">
@@ -30,7 +30,7 @@
           </el-row>
         </div>
         <!-- 用户头像 -->
-        <div style="height: 100%; align-self: flex-end; display: inline-flex; align-items: center">
+        <div style="height: 100%; align-self: flex-end; display: inline-flex; align-items: center; margin-right: 2rem">
           <UserIcon />
         </div>
       </div>

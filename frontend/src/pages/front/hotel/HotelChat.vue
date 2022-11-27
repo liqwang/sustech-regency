@@ -1,7 +1,7 @@
 <template>
   <div id="bigg">
     <el-row>
-      <div v-if="user.isConsumer" style="width: 100%">
+      <div v-if="username != to" style="width: 100%">
         <el-row>
           <el-col :span="24">
             <el-card class="box-card" style="border-radius: 15px" shadow="never">
@@ -41,7 +41,7 @@
           </el-col>
         </el-row>
       </div>
-      <div v-if="!user.isConsumer && user.isMerchant" style="width: 100%">
+      <div v-if="username == to" style="width: 100%">
         <el-row>
           <el-col :span="4">
             <el-card class="box-card" style="border-radius: 15px" shadow="never">
@@ -243,7 +243,8 @@ if (user.isConsumer && !user.isMerchant) {
   })
 }
 
-const username = JSON.parse(localStorage.getItem('user') as string).name
+let username = $ref('')
+username = JSON.parse(localStorage.getItem('user') as string).name
 // const socketUrl = `ws://localhost:8080/websocket/${username}`
 const socketUrl = `ws://quanquancho.com:8080/websocket/${username}`
 const socket = new WebSocket(socketUrl)
