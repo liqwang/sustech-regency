@@ -11,6 +11,7 @@ import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.service.RoomService;
 import com.sustech.regency.util.FileUtil;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -176,7 +177,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status) {
+    public List<Order> selectCustomerOrders(Integer hotelId,Integer roomId,Boolean isComment, Date startTime, Date EndTime, Integer status) {
         List<Order> orderList =  new ArrayList<>();
         List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
         for (Room room :
@@ -191,7 +192,11 @@ public class MerchantServiceImpl implements MerchantService {
                         judge =false;
                     }
                 }
-
+                if(roomId!=null){
+                    if(!Objects.equals(o.getRoomId(), roomId)){
+                        judge = false;
+                    }
+                }
                 if (isComment!=null){
                     if (o.getComment()==null){
                         judge = false;

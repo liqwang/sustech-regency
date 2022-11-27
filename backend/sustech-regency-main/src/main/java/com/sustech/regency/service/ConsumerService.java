@@ -13,9 +13,9 @@ public interface ConsumerService {
     /**
      * @return 文件上传成功后的获取URL
      */
-    String uploadCommentMedia(MultipartFile media, Integer orderId);
+    String uploadCommentMedia(MultipartFile media, Long orderId);
 
-    void deleteCommentMedia(String mediaId, Integer orderId);
+    void deleteCommentMedia(String mediaId, Long orderId);
 
     void cancelOrder(Long orderId);
 

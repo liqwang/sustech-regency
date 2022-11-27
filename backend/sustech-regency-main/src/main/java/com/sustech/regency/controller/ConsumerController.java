@@ -42,7 +42,7 @@ public class ConsumerController {
                                                @RequestParam MultipartFile media,
 
                                                @ApiParam(value = "订单id", required = true)
-                                               @NotNull @RequestParam Integer orderId) {
+                                               @NotNull @RequestParam Long orderId) {
         String url = consumerService.uploadCommentMedia(media, orderId);
         return ApiResponse.success(Map.of("url", url));
     }
@@ -53,7 +53,7 @@ public class ConsumerController {
                                           @NotNull @RequestParam String mediaId,
 
                                           @ApiParam(value = "订单id", required = true)
-                                          @NotNull @RequestParam Integer orderId) {
+                                          @NotNull @RequestParam Long orderId) {
         consumerService.deleteCommentMedia(mediaId, orderId);
         return ApiResponse.success();
     }
