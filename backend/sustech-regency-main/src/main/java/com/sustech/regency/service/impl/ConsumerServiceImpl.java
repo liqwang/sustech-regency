@@ -278,4 +278,11 @@ public class ConsumerServiceImpl implements ConsumerService {
         return selectedRooms;
     }
 
+    @Override
+    public void uploadComment(Long orderId, String comment) {
+        Order order = orderDao.selectById(orderId);
+        order.setComment(comment);
+        orderDao.updateById(order);
+    }
+
 }

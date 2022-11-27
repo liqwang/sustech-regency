@@ -38,4 +38,8 @@ public interface ConsumerService {
     List<Order> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
 
     List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId);
+
+    void uploadComment(Long orderId, String comment);
+
+
 }

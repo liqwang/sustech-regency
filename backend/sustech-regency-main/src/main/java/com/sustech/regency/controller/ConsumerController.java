@@ -45,6 +45,7 @@ public class ConsumerController {
                                                @ApiParam(value = "订单id", required = true)
                                                @NotNull @RequestParam Long orderId) {
         String url = consumerService.uploadCommentMedia(media, orderId);
+
         return ApiResponse.success(Map.of("url", url));
     }
 
@@ -142,5 +143,11 @@ public class ConsumerController {
         return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId,startTime,endTime,minPrice,maxPrice,roomTypeId));
     }
 
-
+    @ApiOperation("用户上传评论")
+    @PostMapping("/upload-comment")
+    public ApiResponse uploadComment(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
+                                     @ApiParam(value = "评论") @RequestParam(required = false)  String comment) {
+        consumerService.uploadComment(orderId,comment);
+        return ApiResponse.success();
+    }
 }
