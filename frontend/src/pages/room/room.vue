@@ -11,7 +11,7 @@
       <el-container>
         <el-aside width="200px" style="background-color: antiquewhite; height: 100vh">
           <el-menu active-text-color="#ffd04b" background-color="antiquewhite" default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
-            <el-menu-item index="/merchant/room">
+            <el-menu-item index="/merchant/room/detail">
               <template #title>
                 <el-icon><location /></el-icon>
                 <span>Information</span>

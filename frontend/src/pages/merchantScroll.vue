@@ -7,6 +7,7 @@
           <el-button @click="edit" type="primary" :icon="Edit">Modify hotel</el-button>
           <el-button @click="show_floor = true" type="warning" :icon="Location" id="floor">Floor Graph</el-button>
           <el-button type="danger" @click="on_sale = true" :icon="Bell">On sale!!!</el-button>
+          <el-button @click="to_chat" :icon="ChatLineRound"  color="#626aef">Chat</el-button>
         </template>
         <el-descriptions-item>
           <template #label>
@@ -131,11 +132,7 @@
             <br />
           </el-button-group>
           <el-button type="success" @click="show_floor = false; which_floor = ''"> cancel</el-button>
-
-          <div v-show="v1" style="width: 100%; height: 100%">
-            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-            <img src="../images/floor1.png" usemap="#floor_1" />
-            <map name="floor_1">
+          <map name="floor_1">
               <area shape="rect" coords="185,120,240,260" @click="click_room('101')">
               <area shape="rect" coords="256,120,311,260" @click="click_room('102')">
               <area shape="rect" coords="327,120,382,260" @click="click_room('103')">
@@ -150,12 +147,6 @@
               <area shape="rect" coords="327,315,382,430" @click="click_room('111')">
               <area shape="rect" coords="398,315,453,430" @click="click_room('112')">
             </map>
-          </div>
-
-
-          <div v-show="v2" style="width: 100%; height: 100%">
-            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-            <img src="../images/floor_3_2.png" usemap="#floor_2" />
             <map name="floor_2">
               <area shape="rect" coords="35,50,100,180" @click="click_room('201')">
               <area shape="rect" coords="100,50,165,180" @click="click_room('202')">
@@ -170,12 +161,6 @@
               <!-- <area shape="rect" coords="327,315,382,430" @click="click_room('211')"> -->
               <!-- <area shape="rect" coords="398,315,453,430" @click="click_room('212')"> -->
             </map>
-          </div>
-
-
-          <div v-show="v3" style="width: 100%; height: 100%">
-            <!-- <el-image v-show="v1" style="width: 100%; height: 10vh" src='../images/floor2.png' /> -->
-            <img src="../images/floor_2_3.png" usemap="#floor_3" />
             <map name="floor_3">
               <area shape="rect" coords="415,100,485,225" @click="click_room('301')">
               <area shape="rect" coords="485,100,555,225" @click="click_room('302')">
@@ -187,7 +172,37 @@
               <area shape="rect" coords="200,300,270,435" @click="click_room('307')">
               <area shape="rect" coords="270,300,340,435" @click="click_room('308')">
             </map>
+          <div v-show="v1&&v1_1" style="width: 100%; height: 100%">
+            <img :src="f1_url" usemap="#floor_1" />
           </div>
+          <div v-show="v1&&v1_2" style="width: 100%; height: 100%">
+            <img :src="f1_url" usemap="#floor_3" />
+          </div>
+          <div v-show="v1&&v1_3" style="width: 100%; height: 100%">
+            <img :src="f1_url" usemap="#floor_2" />
+          </div>
+
+          <div v-show="v2&&v2_1" style="width: 100%; height: 100%">
+            <img :src="f2_url" usemap="#floor_1" />          
+          </div>
+          <div v-show="v2&&v2_2" style="width: 100%; height: 100%">
+            <img :src="f2_url" usemap="#floor_3" />          
+          </div>
+          <div v-show="v2&&v2_3" style="width: 100%; height: 100%">
+            <img :src="f2_url" usemap="#floor_2" />          
+          </div>
+
+
+          <div v-show="v3&&v3_1" style="width: 100%; height: 100%">
+            <img :src="f3_url" usemap="#floor_1" />
+          </div>
+          <div v-show="v3&&v3_2" style="width: 100%; height: 100%">
+            <img :src="f3_url" usemap="#floor_3" />
+          </div>
+          <div v-show="v3&&v3_3" style="width: 100%; height: 100%">
+            <img :src="f3_url" usemap="#floor_2" />
+          </div>
+
           <!-- <div id="chart" style="width:80%;height:60%"></div> -->
         </div>
         <div v-show="which_floor != ''">
@@ -292,7 +307,7 @@
 
 </template>
 <script lang="ts" setup>
-import { Delete, Edit, Search, Share, Upload,Location,Bell } from '@element-plus/icons-vue'
+import { Delete, Edit, Search, Share, Upload,Location,Bell,ChatLineRound } from '@element-plus/icons-vue'
 import { onMounted, onUpdated, onBeforeUpdate, onBeforeMount, ref, reactive, watch, h, Ref } from 'vue';
 import request from '../utils/request';
 import { ElNotification, ElMessage } from 'element-plus';
@@ -311,10 +326,21 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers';
+import f3_2 from '../images/floor_3_2.png'
+import f3_1 from '../images/floor_3_1.png'
+import f2_3 from '../images/floor_2_3.png'
+import f2_1 from '../images/floor_2_1.png'
+import f1_1 from '../images/floor1.png'
+import f1_2 from '../images/floor2.png'
+import f1_3 from '../images/floor3.png'
+import f3_3 from '../images/floor_3_3.png'
 
 
 import type { UploadProps, UploadInstance } from 'element-plus'
 import router from '../router';
+const f2_url =ref()
+const f3_url = ref()
+const f1_url = ref()
 
 const room_type = ref()
 const on_sale = ref(false)
@@ -340,6 +366,10 @@ const confirm_sale = () => {
   } else {
     ElMessage('Please complete the infomation')
   }
+}
+const to_chat=()=>{
+  let path = `hotel/${id_par.HotelId}/chat`
+  router.push(path)
 }
 const cancle_sale = () => {
   on_sale.value = false
@@ -479,16 +509,18 @@ const room = ref<Room>()
 
 const click_room = (room_id: string) => {
   which_floor.value = room_id
+  var roomid =''
+  request.get(`/public/get-roomId-byHotelWithRoomNUm?hotelId=${id_par.HotelId}&roomId=${room_id}`).then((res)=>{
+    roomid = res.data.data
+    console.log(roomid)
+  localStorage.setItem('roomId', roomid)
+    localStorage.setItem('roomId2' ,room_id)// 房间号
+  })
+
   router.push({
     path: 'merchant/room',
   })
-  console.log(room_id)
-  localStorage.setItem('roomId', room_id)
   localStorage.setItem('hotelId', id_par.HotelId)
-  // let url = '/public/get-roomInfo-by-roomId?roomId=1'
-  // request.get(url).then((response) => {
-  //   room.value = response.data.data
-  //   console.log(room.value)
 
   // })
 }
@@ -581,6 +613,78 @@ watch(
   id_par,
   (new_val, old_val) => {
     if (id_par.HotelId != 'kong') {
+      if (id_par.HotelId == '1'){
+        f1_url.value = f1_1
+        f2_url.value = f3_2
+        f3_url.value = f2_3
+        v1_1.value=true
+        v1_2.value =false
+        v1_3.value =false
+        v2_3.value =true
+        v2_1.value =false
+        v2_2.value =false
+        v3_3.value =false
+        v3_2.value =true
+        v3_1.value =false
+      }
+      if (id_par.HotelId == '2'){
+        f1_url.value = f1_1
+        f2_url.value = f3_2
+        f3_url.value = f3_3
+        v1_1.value=true
+        v1_2.value =false
+        v1_3.value =false
+        v2_3.value =true
+        v2_1.value =false
+        v2_2.value =false
+        v3_3.value =true
+        v3_2.value =false
+        v3_1.value =false
+      }
+      if (id_par.HotelId == '3'){
+        f1_url.value = f2_1
+        f2_url.value = f1_2
+        f3_url.value = f2_3
+        v1_1.value=false
+        v1_2.value =true
+        v1_3.value =false
+        v2_3.value =false
+        v2_1.value =true
+        v2_2.value =false
+        v3_3.value =false
+        v3_2.value =true
+        v3_1.value =false
+      }
+      if (id_par.HotelId == '4'){
+        f1_url.value = f2_1
+        f2_url.value = f3_2
+        f3_url.value = f1_3
+        v1_1.value= false
+        v1_2.value =true
+        v1_3.value =false
+        v2_3.value =true
+        v2_1.value =false
+        v2_2.value =false
+        v3_3.value =false
+        v3_2.value =false
+        v3_1.value =true
+      }
+      if (id_par.HotelId == '5'){
+        f1_url.value = f3_1
+        f2_url.value = f3_2
+        f3_url.value = f1_3
+        v1_1.value= false
+        v1_2.value =false
+        v1_3.value =true
+        v2_3.value =true
+        v2_1.value =false
+        v2_2.value =false
+        v3_3.value =false
+        v3_2.value = false
+        v3_1.value =true
+      }
+
+
       upload_media_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-media?hotelId=' + id_par.HotelId
       upload_cover_url.value = 'http://quanquancho.com:8080/merchant/hotel/upload-cover?hotelId=' + id_par.HotelId
       request.get('public/get-hotelInfo-byId?hotelId=' + id_par.HotelId).then(function (response) {
@@ -644,6 +748,17 @@ const change_chart=(index:number)=>{
 var v1 = ref(false);
 var v2 = ref(false);
 var v3 = ref(false);
+var v1_1 = ref(false)
+var v2_1 = ref(false)
+var v3_1 = ref(false)
+var v1_2 = ref(false)
+var v3_2 = ref(false)
+var v2_2 = ref(false)
+var v1_3 = ref(false)
+var v2_3 = ref(false)
+var v3_3 = ref(false)
+
+
 
 const show_input = ref(false);
 const update = () => {

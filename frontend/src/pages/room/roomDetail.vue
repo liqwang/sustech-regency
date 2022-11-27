@@ -106,15 +106,18 @@ discount:0.0,
 available:'',
 });
 const room = ref<Room>()
-const url = '/public/get-roomInfo-by-roomId?roomId=1'
+const rid =localStorage.getItem('roomId')
+const url = '/public/get-roomInfo-by-roomId?roomId='+rid
+console.log(url)
+
 request.get(url).then((response) => {
 room.value = response.data.data
 console.log(room.value)})
-const x1 = localStorage.getItem('roomId')
 const x2 = localStorage.getItem('hotelId')
 const hotel_id = ref(x2)
-const room_id = ref(x1)
-console.log(x2)
+
+const room_id = ref(localStorage.getItem('roomId2'))
+console.log(room_id)
 const show_modify = ref(false)
 const modify = ()=>{
   console.log(room.value?.isAvailable)
@@ -124,13 +127,14 @@ const modify = ()=>{
 show_modify.value= true
 }
 const update=()=>{
-  const url=`/room/room/updateOne?roomId=1&price=${room_edit.price}&discount=${room_edit.discount}&isAvailable=${room_edit.available}`
-request.post(url).then((response)=>{
+  const url=`/room/room/updateOne?roomId=${rid}&price=${room_edit.price}&discount=${room_edit.discount}&isAvailable=${room_edit.available}`
+  request.post(url).then((response)=>{
   if(response.data.code==200){
     console.log('success')
     show_modify.value=false
   }
 })
 }
+
 </script>
 <style lang="scss" scoped></style>

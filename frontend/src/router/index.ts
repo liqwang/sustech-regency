@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
     component: room,
     meta: { requiresAuth: true },
     children: [
-      { path: '', name: 'detail', component: roomDetail },
+      { path: 'detail', name: 'detail', component: roomDetail },
       { path: 'picture', name: 'img', component: roomImg },
       { path: 'order', name: 'orders', component: roomOrder }
     ]

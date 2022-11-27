@@ -54,10 +54,14 @@ message: string
 }
 const room = ref<Room>()
 var type = ''
+var type_id = 0
+
 const imageUrl = ref('')
 const mediaUrl = ref('')
+const rid = localStorage.getItem('roomId')
 const media_urls = ref([])
-const url = '/public/get-roomInfo-by-roomId?roomId=1'
+const url = '/public/get-roomInfo-by-roomId?roomId='+rid
+
 var url_upload = 'http://quanquancho.com:8080/admin/room-type/upload-cover?roomTypeId='+ (type=="标准间"?'1':'2')
 var url_upload_media = 'http://quanquancho.com:8080/admin/room-type/upload-media?roomTypeId='+ (type=="标准间"?'1':'2')
 const upload_url = ref('')
@@ -65,12 +69,23 @@ const upload_url_media = ref('')
 request.get(url).then((response) => {
 room.value = response.data.data
 type = response.data.data.roomTypeName
-console.log(type)
+if(type=='标准间'){
+  type_id = 1}
+else if(type=='双人间'){type_id = 2}
+else if(type=='大床房'){type_id = 3}
+else if(type=='高级双床房'){type_id = 4}
+else if(type=='豪华亲子房'){type_id = 5}
+else if(type=='超享庭院大床房'){type_id = 6}
+else if(type=='一室一厅城景套房'){type_id = 7}
+else if(type=='精致房'){type_id = 8}
+else if(type=='浪漫温馨情侣房'){type_id = 9}
+else if(type=='电竞开黑四人间'){type_id = 10}
+
 media_urls.value = response.data.data.pictureUrls
 
 imageUrl.value = response.data.data.coverUrl
-url_upload = 'http://quanquancho.com:8080/admin/room-type/upload-cover?roomTypeId='+ (type=="标准间"?'1':'2')
-url_upload_media = 'http://quanquancho.com:8080/admin/room-type/upload-media?roomTypeId='+ (type=="标准间"?'1':'2')
+url_upload = 'http://quanquancho.com:8080/admin/room-type/upload-cover?roomTypeId='+ type_id 
+url_upload_media = 'http://quanquancho.com:8080/admin/room-type/upload-media?roomTypeId='+ type_id
 upload_url.value=url_upload
 upload_url_media.value = url_upload_media
 console.log(upload_url.value)

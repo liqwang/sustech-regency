@@ -73,8 +73,9 @@ type order={
 			"status": ""
 		}
     const orders = ref<order[]>([])
+    const rid = localStorage.getItem('roomId')
 const change_result =()=>{
-  let url = `/merchant/hotel/get-selected-orders?hotelId=${localStorage.getItem('hotelId')}&roomId=1`//${localStorage.getItem('roomId')}
+  let url = `/merchant/hotel/get-selected-orders?hotelId=${localStorage.getItem('hotelId')}&roomId=${rid}`//${localStorage.getItem('roomId')}
   console.log(days.value.length)
   for (let i=0;i<checkList.value.length;i++){
     if(checkList.value[i]=='has comment')
