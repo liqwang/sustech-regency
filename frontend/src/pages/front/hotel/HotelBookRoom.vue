@@ -299,7 +299,7 @@ import { number } from 'echarts/core'
 import { ElNotification } from 'element-plus'
 
 const router = useRouter()
-const hotelId = $ref(router.currentRoute.value.params['hotelId'])
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
 const Timer = ref('')
 let now = $ref('')
