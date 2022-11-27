@@ -60,15 +60,14 @@ public class PublicServiceImpl implements PublicService {
         if (Strings.isNotEmpty(province)) wrapper.eq(Province::getName, province);
         if (Strings.isNotEmpty(city)) wrapper.eq(City::getName, city);
         if (Strings.isNotEmpty(region)) wrapper.eq(Region::getName, region);
-        if (Strings.isNotEmpty(hotelName)) wrapper.eq(Hotel::getName, hotelName);
+        if (Strings.isNotEmpty(hotelName)) wrapper.like(Hotel::getName, hotelName);
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
                 .innerJoin(File.class, File::getId, Hotel::getCoverId);
         List<HotelInfo> hotelInfos = hotelDao.selectJoinList(HotelInfo.class, wrapper);
 
-        for (HotelInfo a :
-                hotelInfos) {
+        for (HotelInfo a : hotelInfos) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, a.getCoverUrl());
             File file = fileDao.selectOne(fileLambdaQueryWrapper);
@@ -83,20 +82,19 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId) {
+    public List<Room> getRoomsByHotel(Integer hotelId, Integer roomTypeId) {
         LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Room::getHotelId, hotelId);
         List<Room> rooms = roomDao.selectList(wrapper);
         List<Room> roomList = new ArrayList<>();
-        if (roomTypeId!=null){
-            for (Room r :
-                    rooms) {
+        if (roomTypeId != null) {
+            for (Room r : rooms) {
                 if (r.getTypeId().equals(roomTypeId)) {
                     roomList.add(r);
                 }
             }
         }
-        if (roomTypeId==null){
+        if (roomTypeId == null) {
             return rooms;
         }
         return roomList;
@@ -194,8 +192,7 @@ public class PublicServiceImpl implements PublicService {
         wrapper.eq(Room::getHotelId, hotelId);
         List<Room> roomList = roomDao.selectList(wrapper);
         int cnt = 0;
-        for (Room r :
-                roomList) {
+        for (Room r : roomList) {
             int room_id = r.getId();
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
@@ -220,7 +217,7 @@ public class PublicServiceImpl implements PublicService {
         wrapper.eq(Room::getId, room.getId());
         RoomInfo roomInfo = roomDao.selectJoinOne(RoomInfo.class, wrapper);
         LambdaQueryWrapper<RoomType> roomTypeLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roomTypeLambdaQueryWrapper.eq(RoomType::getId,roomInfo.getTypeId());
+        roomTypeLambdaQueryWrapper.eq(RoomType::getId, roomInfo.getTypeId());
         RoomType type = roomTypeDao.selectOne(roomTypeLambdaQueryWrapper);
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
         fileLambdaQueryWrapper.eq(File::getId, type.getCoverId());
@@ -235,7 +232,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<RoomType> getRoomTypesByHotelId(Integer hotelId) {
-        List<Room> rooms = getRoomsByHotel(hotelId,null);
+        List<Room> rooms = getRoomsByHotel(hotelId, null);
         List<Integer> typeIds = new ArrayList<>();
         for (Room room : rooms) {
             if (!typeIds.contains(room.getTypeId())) typeIds.add(room.getTypeId());
@@ -284,7 +281,7 @@ public class PublicServiceImpl implements PublicService {
         wrapper.innerJoin(Region.class, Region::getId, Hotel::getRegionId)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
-                .innerJoin(File.class,File::getId,Hotel::getCoverId);
+                .innerJoin(File.class, File::getId, Hotel::getCoverId);
         HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class, wrapper);
 
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -303,23 +300,22 @@ public class PublicServiceImpl implements PublicService {
         LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
         roomLambdaQueryWrapper.eq(Room::getRoomNum, roomNum);
         List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
-        for (Room r :
-                rooms) {
+        for (Room r : rooms) {
             if (Objects.equals(r.getHotelId(), hotelId)) {
                 return r.getId();
             }
         }
-        asserts(true,"Room does not exist!");
+        asserts(true, "Room does not exist!");
         return null;
     }
 
     @Override
     public List<RoomType> getRoomTypesByHotel(Integer hotelId) {
         LambdaQueryWrapper<Room> roomLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roomLambdaQueryWrapper.eq(Room::getHotelId,hotelId);
+        roomLambdaQueryWrapper.eq(Room::getHotelId, hotelId);
         List<Room> rooms = roomDao.selectList(roomLambdaQueryWrapper);
         return rooms.stream().map(Room::getTypeId)
-                .map(typeId->roomTypeDao.selectById(typeId))
+                .map(typeId -> roomTypeDao.selectById(typeId))
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -333,7 +329,7 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public Integer getLikesNumByHotelId(Integer hotelId) {
         LambdaQueryWrapper<Collection> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Collection::getHotelId,hotelId);
+        wrapper.eq(Collection::getHotelId, hotelId);
         List<Collection> list = collectionDao.selectList(wrapper);
         return list.size();
     }

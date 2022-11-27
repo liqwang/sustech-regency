@@ -12,11 +12,11 @@ public interface PublicService {
     //通过省市区的到酒店信息
     List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName);
 
-    List<Room> getRoomsByHotel(Integer hotelId,Integer roomTypeId);
+    List<Room> getRoomsByHotel(Integer hotelId, Integer roomTypeId);
 
     List<String> getHotelPictureUrls(Integer hotelId);
 
-    List<String> getHotelVideoUrls(Integer roomlId);
+    List<String> getHotelVideoUrls(Integer roomId);
 
     List<String> getRoomTypePictureUrls(Integer hotelId);
 
@@ -42,7 +42,4 @@ public interface PublicService {
     List<RoomType> getRoomTypesByHotel(Integer hotelId);
 
     Integer getLikesNumByHotelId(Integer hotelId);
-
-
-
 }
