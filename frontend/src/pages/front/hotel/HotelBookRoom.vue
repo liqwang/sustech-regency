@@ -313,7 +313,7 @@ let base = $ref('')
 
 const types = ['', '标准间', '双人间', '大床房', '高级双床房', '豪华亲子房', '超享庭院大床房', '一室一厅城景套房', '精致房', '浪漫温馨情侣房', '电竞开黑四人间']
 
-const options = []
+const options: any[] = []
 for (let index = 1; index < types.length; index++) {
   options.push({
     value: index,
