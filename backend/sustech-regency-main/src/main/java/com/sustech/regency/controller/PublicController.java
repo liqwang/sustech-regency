@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -109,7 +110,15 @@ public class PublicController {
                                                   @ApiParam(value = "城市名字") @RequestParam(required = false) String CityName,
                                                   @ApiParam(value = "区的名字") @RequestParam(required = false) String RegionName,
                                                   @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName) {
-        return ApiResponse.success(publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName));
+
+        List<HotelInfo> hotels = publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName);
+        for (HotelInfo hotelInfo:
+             hotels) {
+            hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
+            hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
+            hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
+        }
+        return ApiResponse.success(hotels);
     }
 
     @ApiOperation("根据酒店ID获取对应所有的房间")

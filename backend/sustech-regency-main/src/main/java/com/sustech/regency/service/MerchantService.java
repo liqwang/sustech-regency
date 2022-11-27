@@ -42,7 +42,7 @@ public interface MerchantService {
 
     List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime,Integer roomType);
 
-    List<Order> selectCustomerOrders(Integer hotelId,Boolean isComment, Date startTime, Date EndTime, Integer status);
+    List<Order> selectCustomerOrders(Integer hotelId,Integer roomId,Boolean isComment, Date startTime, Date EndTime, Integer status);
 
     void notifySale(Integer hotelId, Integer roomType,Float saleRate);
 

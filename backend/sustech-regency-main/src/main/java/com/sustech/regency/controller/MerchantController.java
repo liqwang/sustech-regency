@@ -124,12 +124,13 @@ public class MerchantController {
     @ApiOperation("商家按条件筛选某个酒店的订单")
     @GetMapping("/hotel/get-selected-orders")
     public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                      @ApiParam(value = "房间ID", required = false) @RequestParam(required = false) Integer roomId,
                                                       @ApiParam(value = "是否有评论", required = false) @RequestParam(required = false)  Boolean isComment,
                                                       @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam  Date startTime,
                                                       @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
                                                       @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
 
-        return ApiResponse.success(merchantService.selectCustomerOrders(hotelId,isComment,startTime, endTime,status));
+        return ApiResponse.success(merchantService.selectCustomerOrders(hotelId,roomId,isComment,startTime, endTime,status));
     }
 
     @ApiOperation("商家对整个酒店或酒店某房型打折")
