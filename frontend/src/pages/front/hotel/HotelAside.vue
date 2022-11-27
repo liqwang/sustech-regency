@@ -60,6 +60,7 @@ interface HotelInfo {
   minPrice: number
   commentNum: number
   likes_num: number
+  description: string
 }
 
 const hotelInfo = $ref<HotelInfo>()

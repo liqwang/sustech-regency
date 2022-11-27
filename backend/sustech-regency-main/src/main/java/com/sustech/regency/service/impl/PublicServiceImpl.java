@@ -274,7 +274,7 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public HotelInfo getOneHotelByHotelId(Integer hotelId) {
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getStars)
+        wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getStars, Hotel::getDescription)
                 .selectAs(Province::getName, HotelInfo::getProvinceName)
                 .selectAs(City::getName, HotelInfo::getCityName)
                 .selectAs(Region::getName, HotelInfo::getRegionName)

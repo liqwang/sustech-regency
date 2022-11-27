@@ -40,7 +40,7 @@ public class MerchantServiceImpl implements MerchantService {
         return hotelDao.selectJoinList(
                 HotelInfo.class,
                 new MPJLambdaWrapper<HotelInfo>()
-                        .select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress)
+                        .select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getDescription)
                         .selectAs(Province::getName, HotelInfo::getProvinceName)
                         .selectAs(City::getName, HotelInfo::getCityName)
                         .selectAs(Region::getName, HotelInfo::getRegionName)
@@ -153,13 +153,12 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime,Integer roomType) {
+    public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime, Integer roomType) {
         Float[] money = new Float[differentDays(startTime, EndTime)];
-        List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
-        for (Room room :
-                rooms) {
-            if (roomType!=null){
-                if(!Objects.equals(room.getTypeId(), roomType)){
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId, null);
+        for (Room room : rooms) {
+            if (roomType != null) {
+                if (!Objects.equals(room.getTypeId(), roomType)) {
                     continue;
                 }
             }
@@ -177,9 +176,9 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<Order> selectCustomerOrders(Integer hotelId,Integer roomId,Boolean isComment, Date startTime, Date EndTime, Integer status) {
-        List<Order> orderList =  new ArrayList<>();
-        List<Room> rooms = publicService.getRoomsByHotel(hotelId,null);
+    public List<Order> selectCustomerOrders(Integer hotelId, Integer roomId, Boolean isComment, Date startTime, Date EndTime, Integer status) {
+        List<Order> orderList = new ArrayList<>();
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId, null);
         for (Room room :
                 rooms) {
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -187,39 +186,37 @@ public class MerchantServiceImpl implements MerchantService {
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
                 boolean judge = true;
-                if (startTime!=null && EndTime!=null){
+                if (startTime != null && EndTime != null) {
                     if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
-                        judge =false;
-                    }
-                }
-                if(roomId!=null){
-                    if(!Objects.equals(o.getRoomId(), roomId)){
                         judge = false;
                     }
                 }
-                if (isComment!=null){
-                    if (o.getComment()==null){
+                if (roomId != null) {
+                    if (!Objects.equals(o.getRoomId(), roomId)) {
+                        judge = false;
+                    }
+                }
+                if (isComment != null) {
+                    if (o.getComment() == null) {
                         judge = false;
                     }
                 }
 
-                if (status!=null){
-                    if(o.getStatus().ordinal()!=status){
+                if (status != null) {
+                    if (o.getStatus().ordinal() != status) {
                         judge = false;
                     }
                 }
-                if (status!=null){
-                    if (status == 2){
-                        if (o.getStatus().ordinal()> status){
+                if (status != null) {
+                    if (status == 2) {
+                        if (o.getStatus().ordinal() > status) {
                             judge = true;
                         }
                     }
                 }
-
-                if (judge){
+                if (judge) {
                     orderList.add(o);
                 }
-
             }
         }
         return orderList;
@@ -228,9 +225,8 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void notifySale(Integer hotelId, Integer roomType, Float saleRate) {
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
-        for (Room room:
-             rooms) {
-            roomService.updateOneRoom(getUserId(),room.getId(),null,null,null,null,null,null,saleRate);
+        for (Room room : rooms) {
+            roomService.updateOneRoom(getUserId(), room.getId(), null, null, null, null, null, null, saleRate);
         }
     }
 
@@ -273,7 +269,6 @@ public class MerchantServiceImpl implements MerchantService {
                     timeDistance += 365;
                 }
             }
-
             return timeDistance + (day2 - day1);
         } else {// 不同年
             System.out.println("判断day2 - day1 : " + (day2 - day1));

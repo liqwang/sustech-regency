@@ -28,4 +28,5 @@ public class HotelInfo {
 	private Float minPrice;
 	private Integer commentNum;
 	private Integer likes_num;
+	private String description;
 }

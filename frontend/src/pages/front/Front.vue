@@ -52,7 +52,7 @@
               <el-card class="box-card" shadow="hover" style="border-radius: 10px; margin-top: 10px; height: 33vh">
                 <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
                   <div>
-                    <el-image :src="url" />
+                    <el-image :src="hotelInfo.coverUrl" />
                   </div>
                   <el-row>
                     <el-col :span="12" :offset="0">
@@ -218,6 +218,7 @@ interface HotelInfo {
   minPrice: number
   commentNum: number
   likes_num: number
+  description: string
 }
 
 interface Province {
@@ -253,13 +254,6 @@ let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
 let regions = $ref<string[]>([])
 
-const url = 'https://z1.muscache.cn/im/pictures/24e8ce37-6b7a-41f7-99b1-e21319705bb0.jpg?aki_policy=large'
-
-const urls = [
-  'https://z1.muscache.cn/im/pictures/642803/e0a0ddc9_original.jpg?aki_policy=large',
-  'https://z1.muscache.cn/im/pictures/miso/Hosting-45337054/original/d0e063e3-f760-4160-8f56-ec1dcc7d7392.jpeg?aki_policy=large',
-  'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large'
-]
 let listLoading = $ref(false)
 
 const load = () => {
