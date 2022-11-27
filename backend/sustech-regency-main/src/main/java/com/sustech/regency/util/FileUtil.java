@@ -164,7 +164,7 @@ public class FileUtil {
                               Integer displayId, MPJBaseMapper<Display> displayDao) {
         Display display = displayDao.selectById(displayId);
         asserts(display != null, "该id不存在");
-        exhibition.setDisplayId(displayId);
+        exhibition.setDisplayId(Long.valueOf(displayId));
         return uploadDisplayMedia(media, exhibitionDao, exhibition);
     }
 

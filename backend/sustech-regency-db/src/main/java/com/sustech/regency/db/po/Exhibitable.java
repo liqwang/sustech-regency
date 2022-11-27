@@ -11,6 +11,6 @@ public interface Exhibitable<Display> {
 	void setMediaId(String mediaId);
 	String getMediaId();
 
-	void setDisplayId(Integer displayId);
-	Integer getDisplayId();
+	void setDisplayId(Long displayId);
+	Long getDisplayId();
 }
