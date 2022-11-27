@@ -1,51 +1,119 @@
 <template>
   <div id="bigg">
     <el-row>
-      <el-col :span="0"> </el-col>
-      <el-col :span="24">
-        <div id="meaningless"></div>
-        <!-- main就是整个聊天窗口 -->
-        <div id="main">
-          <!-- 三段式 -->
-          <!-- head：显示当前聊天双方 -->
-          <div id="head">
-            <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
-            <p style="color: gray">连接状态: {{ status }}</p>
-          </div>
-          <!-- body：显示历史来往消息 -->
-          <div id="body">
-            <el-scrollbar height="62vh">
-              <div v-for="item in histories" class="scrollbar-demo-item">
-                <!-- 发送者 -->
-                <span class="src">{{ item.src }}: </span>
-                <!-- 时间 -->
-                <span class="time">{{ item.time }}</span>
-                <!-- 发送的信息 -->
-                <p class="text">{{ item.text }}</p>
+      <div v-if="user.isConsumer" style="width: 100%">
+        <el-row>
+          <el-col :span="24">
+            <el-card class="box-card" style="border-radius: 15px" shadow="never">
+              <!-- 三段式 -->
+              <!-- head：显示当前聊天双方 -->
+              <el-card shadow="always" class="box-card" id="head">
+                <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
+                <p style="color: gray">连接状态: {{ status }}</p>
+              </el-card>
+              <!-- body：显示历史来往消息 -->
+              <div id="body">
+                <el-scrollbar>
+                  <el-card shadow="hover" class="" v-for="item in histories" style="border-radius: 1rem; margin: 1rem">
+                    <div class="scrollbar-demo-item">
+                      <!-- 发送者 -->
+                      <span class="src">{{ item.src }}: </span>
+                      <!-- 时间 -->
+                      <span class="time">{{ item.time }}</span>
+                      <!-- 发送的信息 -->
+                      <p class="text">{{ item.text }}</p>
+                    </div>
+                  </el-card>
+                </el-scrollbar>
               </div>
-            </el-scrollbar>
-          </div>
-          <!-- foot：显示当前文本域以及发送按钮 -->
-          <div id="foot">
-            <!-- 用一行来展示文本域 -->
-            <el-row>
-              <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
-                placeholder="请输入聊天信息" />
-            </el-row>
-            <!-- 用一行来展示发送按钮，放在最右边 -->
-            <el-row justify="end">
-              <el-button type="primary" @click="send"> send </el-button>
-            </el-row>
-          </div>
-        </div>
-        <div id="meaningless"></div>
-      </el-col>
-      <el-col :span="0"> </el-col>
+              <!-- foot：显示当前文本域以及发送按钮 -->
+              <el-card shadow="hover" class="box-card" id="foot">
+                <!-- 用一行来展示文本域 -->
+                <el-row>
+                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入聊天信息" />
+                </el-row>
+                <!-- 用一行来展示发送按钮，放在最右边 -->
+                <el-row justify="end">
+                  <el-button type="primary" @click="send"> send </el-button>
+                </el-row>
+              </el-card>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+      <div v-if="!user.isConsumer && user.isMerchant" style="width: 100%">
+        <el-row>
+          <el-col :span="4">
+            <el-card class="box-card" style="border-radius: 15px" shadow="never">
+              <el-card shadow="always" class="box-card" id="head">
+                <p id="from_and_to">消息列表</p>
+              </el-card>
+              <el-scrollbar id="list">
+                <!-- TODO:消息列表 -->
+                <el-card shadow="hover" class="" v-for="i in users" style="border-radius: 1rem; margin: 1rem">{{ i }}</el-card>
+              </el-scrollbar>
+            </el-card>
+          </el-col>
+          <el-col :span="20">
+            <el-card class="box-card" style="border-radius: 15px" shadow="never">
+              <!-- 三段式 -->
+              <!-- head：显示当前聊天双方 -->
+              <el-card shadow="always" class="box-card" id="head">
+                <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
+                <p style="color: gray">连接状态: {{ status }}</p>
+              </el-card>
+              <!-- body：显示历史来往消息 -->
+              <div id="body">
+                <el-scrollbar>
+                  <el-card shadow="hover" class="" v-for="item in histories" style="border-radius: 1rem; margin: 1rem">
+                    <div class="scrollbar-demo-item">
+                      <!-- 发送者 -->
+                      <span class="src">{{ item.src }}: </span>
+                      <!-- 时间 -->
+                      <span class="time">{{ item.time }}</span>
+                      <!-- 发送的信息 -->
+                      <p class="text">{{ item.text }}</p>
+                    </div>
+                  </el-card>
+                </el-scrollbar>
+              </div>
+              <!-- foot：显示当前文本域以及发送按钮 -->
+              <el-card shadow="hover" class="box-card" id="foot">
+                <!-- 用一行来展示文本域 -->
+                <el-row>
+                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入聊天信息" />
+                </el-row>
+                <!-- 用一行来展示发送按钮，放在最右边 -->
+                <el-row justify="end">
+                  <el-button type="primary" @click="send"> send </el-button>
+                </el-row>
+              </el-card>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
     </el-row>
   </div>
 </template>
 
 <style scoped>
+#list {
+  height: 73vh;
+}
+
+#left {
+  display: inline-block;
+  height: 50vh;
+  width: 30%;
+  background-color: black;
+}
+#right {
+  display: inline-block;
+  height: 50vh;
+  width: 70%;
+  background-color: red;
+}
+
 /* 这个是背景 */
 #bigg {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
@@ -53,42 +121,43 @@
 }
 
 #main {
-  border: black solid 1px;
+  /* border: black solid 1px; */
 }
 
 #head {
   text-align: center;
   line-height: 4vh;
-  border: black solid 1px;
+  background-color: rgb(236, 246, 255, 0.4);
+  /* border: black solid 1px; */
 }
 
 #body {
-  height: 62.5vh;
-  border: black solid 1px;
+  height: 45vh;
+  /* border: black solid 1px; */
 }
 
 #foot {
-  border: black solid 1px;
+  /* border: black solid 1px; */
+  background-color: rgb(241, 248, 255, 0.3);
+}
+.box-card {
+  border-radius: 15px;
 }
 
 /* 修改默认输入字号 */
-.textarea>>>.el-textarea__inner {
+.textarea >>> .el-textarea__inner {
   font-family: 'Microsoft' !important;
   font-size: 18px !important;
   font-weight: 400;
-  padding: 0.5rem;
+  padding: 0.3rem;
   opacity: 0.75;
+  background-color: rgb(241, 248, 255, 0.3);
 }
 
 /* 修改聊天区域的气泡 */
 .scrollbar-demo-item {
   display: block;
-  border-radius: 10px;
-
-  /* border: #3b64bc solid 1px; */
-  /* border-color: #3b64bc #3b64bc #3b64bc #bc3b4a; */
-  margin: 0.5rem;
-  padding: 0.3rem;
+  border-radius: 5px;
 }
 
 /* 填充聊天框上下的空白区域 */
@@ -97,28 +166,21 @@
 }
 
 /* 修改历史消息的样式 */
-.scrollbar-demo-item>>>.time {
+.scrollbar-demo-item >>> .time {
   font-family: 'Microsoft' !important;
   font-size: 10px !important;
   color: gray;
 }
 
-.scrollbar-demo-item>>>.src {
+.scrollbar-demo-item >>> .src {
   font-family: 'Microsoft' !important;
   font-size: 17px !important;
   color: green;
 }
 
-.scrollbar-demo-item>>>.text {
+.scrollbar-demo-item >>> .text {
   font-family: 'Microsoft' !important;
   font-size: 16px !important;
-  color: black;
-  border-radius: 8px;
-  border: #3b64bc solid 1px;
-  border-color: #3b64bc #3b64bc #3b64bc #bc3b4a;
-  margin: 3px;
-  padding: 3px;
-  background-color: #c5d8ff;
 }
 
 #from_and_to {
@@ -140,7 +202,7 @@ interface Message {
   src: string
   dst: string
   text: string
-  time: string,
+  time: string
   hotelId: number
 }
 
@@ -154,21 +216,31 @@ const user = JSON.parse(localStorage.getItem('user') as string)
 const router = useRouter()
 const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
-request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
+request.get(`/public/merchant-username?hotelId=${hotelId}`).then((res) => {
   to = res.data.data
 })
 
 // histories 存储所有历史信息
 let histories = reactive<Message[]>([])
+let users: string[] = $ref([])
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
+users.push('yf')
 
 // TODO: 判断当前用户是消费者还是商家
 // 如果是消费者
 if (user.isConsumer && !user.isMerchant) {
-  request.get(`/consumer/hotel/get-chat-history?user1=${user.name}&user2=${to}&hotelId=${hotelId}`)
-    .then(res => {
-      histories = res.data
-      console.log(histories)
-    })
+  request.get(`/consumer/hotel/get-chat-history?user1=${user.name}&user2=${to}&hotelId=${hotelId}`).then((res) => {
+    histories = res.data
+    console.log(histories)
+  })
 }
 
 const username = JSON.parse(localStorage.getItem('user') as string).name

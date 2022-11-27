@@ -3,7 +3,7 @@
   <el-row justfy="center">
     <el-col :span="0" :offset="0"></el-col>
     <el-col :span="24" :offset="0">
-      <el-card class="box-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+      <el-card shadow="always" class="box-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
         <div>
           <h1 class="H">{{ Timer }}</h1>
         </div>
@@ -17,7 +17,7 @@
   <el-row>
     <el-col :span="0" :offset="0"></el-col>
     <el-col :span="24" :offset="0">
-      <el-card class="box-card">
+      <el-card class="box-card" shadow="never">
         <el-form :model="form" label-width="0">
           <!-- 一个item是一行的意思 -->
           <el-form-item>
@@ -55,12 +55,9 @@
               ><el-select v-model="form.type" class="m-2" placeholder="房型选择"> <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" /> </el-select
             ></el-col>
             <el-col :span="1" :offset="0"></el-col>
-            <el-col :span="2" class="text-center">
-              <span class="text-gray-500">入住人数</span>
-            </el-col>
+            <el-col :span="2" class="text-center"> </el-col>
             <el-col :span="2" :offset="0">
               <el-col :span="2" :offset="0"></el-col>
-              <el-input-number v-model="form.hc" :min="1" :max="4" />
             </el-col>
             <el-col :span="4" :offset="0"> </el-col>
             <el-col :span="2" style="display: flex; flex-direction: row; justify-content: center"> <el-button @click="clear" style="width: 100%">清空</el-button></el-col>
@@ -75,10 +72,10 @@
   <!-- 空行间隔 -->
   <div class="null"></div>
   <!-- 展示区域 -->
-  <el-card class="box-card">
+  <el-card class="box-card" shadow="never">
     <el-row :gutter="20">
       <el-col :span="12" :offset="0" v-for="i in rooms">
-        <el-card class="box-card" @click="update(i.id)">
+        <el-card class="box-card" @click="update(i.id)" shadow="hover">
           <div style="display: inline-flex; flex-direction: row; align-items: center">
             <div class="roomnum">{{ i.num }}</div>
             <div class="roomtype">房间类型：{{ i.type }}</div>
@@ -354,12 +351,15 @@ const clear = () => {
   form.end = ''
   form.min = ''
   form.max = ''
-  form.hc = 1
   form.type = ''
 }
 
 const onSubmit = () => {
   console.log(form)
+  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&&?startTime=${form.start}&&?endTime=${form.end}&&?minPrice=${form.min}&&?maxPrice=${form.max}&&?roomTypeId=${form.type}`).then((res) => {
+    console.log(res)
+    // clear()
+  })
 }
 interface temproom {
   id: number
@@ -372,7 +372,7 @@ let rooms: temproom[] = $ref()
 const getRooms = () => {
   rooms = []
   request.get(`/public/get-rooms-by-hotel?hotelId=${hotelId}`).then((res) => {
-    console.log(res.data.data)
+    //console.log(res.data.data)
     for (const key in res.data.data) {
       const element = res.data.data[key]
       let i: number = element.typeId
