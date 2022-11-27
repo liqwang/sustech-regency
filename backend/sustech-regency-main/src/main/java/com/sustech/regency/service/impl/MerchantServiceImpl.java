@@ -208,6 +208,13 @@ public class MerchantServiceImpl implements MerchantService {
                         judge = false;
                     }
                 }
+                if (status!=null){
+                    if (status == 2){
+                        if (o.getStatus().ordinal()> status){
+                            judge = true;
+                        }
+                    }
+                }
 
                 if (judge){
                     orderList.add(o);

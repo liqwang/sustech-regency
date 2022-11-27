@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -238,20 +239,22 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public List<RoomInfo> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId) {
+    public List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId) {
         asserts((startTime==null&&EndTime==null)||(startTime!=null&&EndTime!=null), "StartTime and EndTime need to be chosen at the same time");
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomTypeId);
+        ArrayList<Room> selectedRooms = new ArrayList<>();
         for (Room room :
                 rooms) {
+            boolean judge = true;
             if(minPrice!=null){
                 if (!(room.getPrice() >= minPrice)) {
-                    rooms.remove(room);
+                    judge = false;
                 }
             }
 
             if(maxPrice!=null){
                 if (!(room.getPrice() <= maxPrice)) {
-                    rooms.remove(room);
+                    judge = false;
                 }
             }
 
@@ -261,19 +264,25 @@ public class ConsumerServiceImpl implements ConsumerService {
             for (Order o : orders) {
                 if (startTime!=null && EndTime!=null){
                     if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
-                        rooms.remove(room);
-                        break;
+                        judge = false;
                     }
                 }
             }
+            if (judge){
+                selectedRooms.add(room);
+            }
+
         }
 
-        List<RoomInfo> roomInfoList = new ArrayList<>();
-        for (Room room :
-                rooms) {
-            roomInfoList.add(publicService.getRoomInfoByRoomId(room.getId()));
-        }
-        return roomInfoList;
+
+        return selectedRooms;
+    }
+
+    @Override
+    public void uploadComment(Long orderId, String comment) {
+        Order order = orderDao.selectById(orderId);
+        order.setComment(comment);
+        orderDao.updateById(order);
     }
 
 }

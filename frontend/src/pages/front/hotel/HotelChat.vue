@@ -1,7 +1,7 @@
 <template>
   <div id="bigg">
     <el-row>
-      <div v-if="username != to" style="width: 100%">
+      <div v-if="username != hotel_owner" style="width: 100%">
         <el-row>
           <el-col :span="24">
             <el-card class="box-card" style="border-radius: 15px" shadow="never">
@@ -40,20 +40,20 @@
           </el-col>
         </el-row>
       </div>
-      <div v-if="username == to" style="width: 100%">
+      <div v-if="username == hotel_owner" style="width: 100%">
         <el-row>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-card class="box-card" style="border-radius: 15px" shadow="never">
               <el-card shadow="always" class="box-card" id="head">
-                <p id="from_and_to">消息列表</p>
+                <p id="from_and_to" style="font-size: 16px">消息列表</p>
               </el-card>
               <el-scrollbar id="list">
                 <!-- TODO:消息列表 -->
-                <el-card shadow="hover" class="" v-for="i in users" style="border-radius: 1rem; margin: 1rem">{{ i }}</el-card>
+                <el-card shadow="hover" class="" v-for="i in users" style="border-radius: 1rem" @click="choose_user(i)">{{ i }}</el-card>
               </el-scrollbar>
             </el-card>
           </el-col>
-          <el-col :span="20">
+          <el-col :span="21">
             <el-card class="box-card" style="border-radius: 15px" shadow="never">
               <!-- 三段式 -->
               <!-- head：显示当前聊天双方 -->
@@ -124,7 +124,7 @@
 
 #head {
   text-align: center;
-  line-height: 4vh;
+  line-height: 3vh;
   background-color: rgb(236, 246, 255, 0.4);
   /* border: black solid 1px; */
 }
@@ -214,23 +214,26 @@ const user = JSON.parse(localStorage.getItem('user') as string)
 const router = useRouter()
 const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
+let hotel_owner = $ref('')
+
 request.get(`/public/merchant-username?hotelId=${hotelId}`).then((res) => {
-  to = res.data.data
+  hotel_owner = res.data.data
+  if (username == hotel_owner) {
+    to = ''
+  } else {
+    to = hotel_owner
+  }
 })
 
 // histories 存储所有历史信息
 let histories = reactive<Message[]>([])
 let users: string[] = $ref([])
+users.push('user1')
 users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
-users.push('yf')
+users.push('zmm')
+users.push('wlq')
+users.push('cyg')
+users.push('hhn')
 
 // TODO: 判断当前用户是消费者还是商家
 // 如果是消费者
@@ -279,5 +282,9 @@ const send = () => {
     histories.push(message)
     text = ''
   }
+}
+
+const choose_user = (user: string) => {
+  to = user
 }
 </script>

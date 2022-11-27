@@ -8,9 +8,9 @@
         <div style="width: 60vw; height: 100%; background-color: " id="area">
           <el-row justify="space-evenly">
             <el-col :span="4">
+              <span class="info">省</span>
               <el-select v-model="province" placeholder="省">
-                <el-option v-for="province in provinces" :key="province" :value="province"
-                  @click="changeCity(province)" />
+                <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
               </el-select>
             </el-col>
 
@@ -21,21 +21,20 @@
             </el-col>
 
             <el-col :span="4">
+              <span class="info">区</span>
               <el-select v-model="region" placeholder="区">
                 <el-option v-for="region in regions" :key="region" :value="region" />
               </el-select>
             </el-col>
 
             <el-col :span="4">
+              <span class="info">酒店名称</span>
               <el-input v-model="hotelName" placeholder="酒店名称">
               </el-input>
             </el-col>
 
             <el-col :span="4">
-              <el-button type="primary" style="width: 100px; margin-left: 10px;" :icon="Search" @click="search"
-                :disabled="listLoading">
-                查询
-              </el-button>
+              <el-button type="primary" style="width: 100px; margin-left: 10px" :icon="Search" @click="search" :disabled="listLoading"> 查询 </el-button>
             </el-col>
           </el-row>
         </div>
@@ -48,44 +47,56 @@
 
     <el-row>
       <div id="main">
-        <el-row style="height: 100%">
-          <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 20px">
-            <el-card class="box-card" shadow="hover" style="border-radius: 10px">
-              <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
-                <div>
-                  <el-image :src="url" />
-                </div>
-                <el-row>
-                  <el-col :span="12" :offset="0">
-                    <div class="name" s>{{ hotelInfo.name }}</div>
-                  </el-col>
-                  <el-col :span="12" :offset="0">
-                    <div class="rate">
-                      <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
-                    </div>
-                  </el-col>
-                  <el-col :span="12" :offset="0" class="comment">
-                    <div class="comment">
-                      <div>共{{ hotelInfo.commentNum }}条评论</div>
-                    </div>
-                  </el-col>
-                  <el-col :span="12" :offset="0" class="price">
-                    ¥<span class="">{{ hotelInfo.minPrice }}</span>起
-                  </el-col>
-                </el-row>
-              </router-link>
-            </el-card>
-          </el-col>
-        </el-row>
+        <el-scrollbar>
+          <el-row style="height: 100%" justify="space-evenly">
+            <el-col :span="5" v-for="hotelInfo in hotelInfos">
+              <el-card class="box-card" shadow="hover" style="border-radius: 10px; margin-top: 10px; height: 33vh">
+                <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
+                  <div>
+                    <el-image :src="url" />
+                  </div>
+                  <el-row>
+                    <el-col :span="12" :offset="0">
+                      <div class="name" s>{{ hotelInfo.name }}</div>
+                    </el-col>
+                    <el-col :span="12" :offset="0">
+                      <div class="rate">
+                        <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
+                      </div>
+                    </el-col>
+                    <el-col :span="12" :offset="0" class="comment">
+                      <div class="comment">
+                        <div>共{{ hotelInfo.commentNum }}条评论</div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12" :offset="0" class="price">
+                      ¥<span class="">{{ hotelInfo.minPrice }}</span
+                      >起
+                    </el-col>
+                  </el-row>
+                </router-link>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-scrollbar>
       </div>
     </el-row>
 
     <el-row justify="center">
       <div id="pages">
-        <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
-          layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
-          @current-change="handleCurrentChange" style="margin-top: 15px" />
+        <el-pagination
+          v-model:currentPage="currentPage4"
+          v-model:page-size="pageSize4"
+          :page-sizes="[100, 200, 300, 400]"
+          :small="small"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="400"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          style="margin-top: 15px"
+        />
       </div>
     </el-row>
 
@@ -264,8 +275,9 @@ let listLoading = $ref(false)
 
 const load = () => {
   listLoading = true
-  request.get(`/public/get-hotels-by-location?CityName=${city}&&ProvinceName=${province}&&RegionName=${region}&&HotelName=${hotelName}`)
-    .then(res => {
+  request
+    .get(`/public/get-hotels-by-location?CityName=${city}&&ProvinceName=${province}&&RegionName=${region}&&HotelName=${hotelName}`)
+    .then((res) => {
       console.log(res.data.data)
       hotelInfos = res.data.data
     })
