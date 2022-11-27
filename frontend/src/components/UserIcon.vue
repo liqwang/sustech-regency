@@ -14,6 +14,10 @@
     </span>
     <template #dropdown>
       <el-dropdown-menu>
+        <el-dropdown-item @click="toFrontPage">首页</el-dropdown-item>
+        <span v-if="isMerchant">
+          <el-dropdown-item @click="toMerchantPage">管理端</el-dropdown-item>
+        </span>
         <span v-if="!token">
           <el-dropdown-item @click="signup">注册</el-dropdown-item>
           <el-dropdown-item @click="login">登录</el-dropdown-item>
@@ -39,6 +43,7 @@ const username = user ? JSON.parse(localStorage.getItem('user') as string).name 
 const userId = user ? JSON.parse(localStorage.getItem('user') as string).id : null
 
 const avatarUrl = user ? JSON.parse(localStorage.getItem('user') as string).headshotUrl : ''
+const isMerchant = user ? JSON.parse(localStorage.getItem('user') as string).isMerchant : false
 
 const login = () => {
   router.push('/login')
@@ -64,6 +69,20 @@ const toUserPage = () => {
 const toChangePasswordPage = () => {
   let userRouteUrl = router.resolve({
     path: '/changepassword'
+  })
+  window.open(userRouteUrl.href, '_blank')
+}
+
+const toFrontPage = () => {
+  let userRouteUrl = router.resolve({
+    path: '/'
+  })
+  window.open(userRouteUrl.href, '_blank')
+}
+
+const toMerchantPage = () => {
+  let userRouteUrl = router.resolve({
+    path: '/merchant'
   })
   window.open(userRouteUrl.href, '_blank')
 }

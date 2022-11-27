@@ -4,8 +4,8 @@
       <el-container>
         <el-header id="head">
           <el-col :span="12" :offset="0">
-            <a href="/" id="back">SUSTech Regency </a>
-            <div id="cur-hotel" style="display: inline">. 当前酒店:{{ hotelId }}</div>
+            <a href="/" id="back" target="_blank">SUSTech Regency </a>
+            <div id="cur-hotel" style="display: inline"> 当前酒店:{{ hotelId }}</div>
           </el-col>
 
           <el-col :span="12" :offset="0" id="user">
@@ -43,12 +43,14 @@
   padding-left: 20px;
   padding-right: 20px;
 }
+
 #head {
   height: 8vh;
   display: inline-flex;
   flex-direction: row;
   align-items: center;
 }
+
 #back {
   order: 0;
   display: inline-flex;
@@ -56,6 +58,7 @@
   font-size: 1.5rem;
   font-weight: 550;
 }
+
 #user {
   order: 1;
   display: inline-flex;
@@ -65,14 +68,17 @@
   height: 100%;
   right: 20px;
 }
+
 #body {
   height: 92vh;
   width: 100vw;
 }
+
 #aside {
   width: 100%;
   height: 100%;
 }
+
 .layout-container-demo .el-header {
   position: relative;
   background-color: var(--el-color-primary-light-7);
