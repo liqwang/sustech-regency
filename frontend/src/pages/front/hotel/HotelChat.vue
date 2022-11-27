@@ -9,7 +9,6 @@
               <!-- head：显示当前聊天双方 -->
               <el-card shadow="always" class="box-card" id="head">
                 <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
-                <p style="color: gray">连接状态: {{ status }}</p>
               </el-card>
               <!-- body：显示历史来往消息 -->
               <div id="body">
@@ -60,7 +59,6 @@
               <!-- head：显示当前聊天双方 -->
               <el-card shadow="always" class="box-card" id="head">
                 <p id="from_and_to">{{ from }} 和 {{ to }} 的聊天</p>
-                <p style="color: gray">连接状态: {{ status }}</p>
               </el-card>
               <!-- body：显示历史来往消息 -->
               <div id="body">

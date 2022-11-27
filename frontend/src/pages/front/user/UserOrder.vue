@@ -47,7 +47,7 @@
     <el-form>
       <el-row>
         <el-col :span="4">
-          商品评分
+          酒店评分
         </el-col>
         <el-col :span="8">
           <el-rate v-model="stars" text-color="#ff9900" show-score score-template="{value}分/5分" />
@@ -56,18 +56,46 @@
       <br>
       <el-row>
         <el-col :span="4">
-          商品评分
+          评论
         </el-col>
         <el-col :span="20">
           <el-input class="textarea" v-model="commentText" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
             placeholder="请输入对订单的评价" />
         </el-col>
       </el-row>
+      <br>
+      <el-row>
+        <el-col :span="4">
+          上传图片/视频
+        </el-col>
+        <!-- <el-upload v-model:file-list="fileList" action="http://quanquancho.com:8080/consumer/comment/upload-media"
+          list-type="picture">
+          <el-icon>
+            <Plus />
+          </el-icon>
+        </el-upload> -->
+        <el-upload ref="uploadRef" class="upload-demo" :action="postUrl" :auto-upload="false"
+          :headers="{ 'token': token }">
+          <template #trigger>
+            <el-button type="primary">上传图片/视频</el-button>
+          </template>
+
+          <!-- <el-button class="ml-3" type="success" @click="submitUpload">
+            upload to server
+          </el-button> -->
+
+          <template #tip>
+            <div class="el-upload__tip">
+              jpg/png/jpeg/mp4 files with a size less than 500kb
+            </div>
+          </template>
+        </el-upload>
+      </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">
+        <el-button type="primary" @click="submitUpload">
           提交
         </el-button>
       </span>
@@ -78,11 +106,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
+import { Plus } from '@element-plus/icons-vue'
+import type { UploadProps, UploadUserFile } from 'element-plus'
+import type { UploadInstance } from 'element-plus'
+
+const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
 interface OrderComment {
   star: number
   text: string
 }
+
+// TODO:
+let postUrl = $ref('')
+// let postUrl = $ref(`http://quanquancho.com:8080/consumer/comment/upload-media?orderId=${}`)
 
 let commentText = $ref('')
 let stars = $ref(0)
@@ -104,6 +141,60 @@ const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log('key: ', key)
   console.log('keyPath: ', keyPath)
+}
+
+const fileList = ref<UploadUserFile[]>([
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+  },
+  {
+    name: 'plant-1.png',
+    url: '/images/plant-1.png',
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+  },
+  {
+    name: 'plant-2.png',
+    url: '/images/plant-2.png',
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+  },
+  {
+    name: 'figure-1.png',
+    url: '/images/figure-1.png',
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+  },
+  {
+    name: 'figure-2.png',
+    url: '/images/figure-2.png',
+  },
+])
+
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
+}
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!
+  dialogVisible.value = true
+}
+
+const uploadRef = ref<UploadInstance>()
+
+const submitUpload = () => {
+  dialogVisible.value = false
+  uploadRef.value!.submit()
 }
 
 </script>
