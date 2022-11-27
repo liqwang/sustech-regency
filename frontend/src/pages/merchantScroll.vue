@@ -91,14 +91,36 @@
           </div>
         </template>
       </el-upload>
+      <el-select @change="change_chart" v-model="room_type" class="m-2" placeholder="Select Room Type">
+        <el-option label="取消筛选" value="0"></el-option>
+    
+        <el-option
+      label="标准间"
+      value="1"
+    />
+    <el-option label="双人间" value="2"></el-option>
 
-      <el-button-group>
+    <el-option label="大床房" value="3"></el-option>
+
+    <el-option label="高级双床房" value="4"></el-option>
+    
+    <el-option label="豪华亲子房双人间" value="5"></el-option>
+    <el-option label="超享庭院大床房" value="6"></el-option>
+
+    <el-option label="一室一厅城景套房" value="7"></el-option>
+    <el-option label="精致房" value="2"></el-option>
+    <el-option label="浪漫温馨情侣房" value="8"></el-option>
+    <el-option label="电竞开黑四人间" value="9"></el-option>
+
+  </el-select>
+
+      <!-- <el-button-group>
         <el-button type="primary" @click="change_chart(1)" color="#626aef" plain>标准间</el-button>
         <el-button type="primary" @click="change_chart(2)" color="#626aef" plain >
           双人间
         </el-button>
         <el-button type="primary" @click="change_chart(0)" color="#626aef" plain>无筛选</el-button>
-      </el-button-group>
+      </el-button-group> -->
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
         <div v-show="which_floor == ''">
@@ -294,6 +316,7 @@ import {
 import type { UploadProps, UploadInstance } from 'element-plus'
 import router from '../router';
 
+const room_type = ref()
 const on_sale = ref(false)
 const sale_type = ref(0)
 const sale_discount = ref(1)
