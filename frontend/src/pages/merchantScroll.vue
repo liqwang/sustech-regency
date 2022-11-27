@@ -97,6 +97,7 @@
         <el-button type="primary" @click="change_chart(2)" color="#626aef" plain >
           双人间
         </el-button>
+        <el-button type="primary" @click="change_chart(0)" color="#626aef" plain>无筛选</el-button>
       </el-button-group>
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
@@ -578,10 +579,16 @@ watch(
 );
 const change_chart=(index:number)=>{
   let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
+            + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId+'&roomTypeId='+index
+  if (index == 0){
+    url =  '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
             + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId
+
+  }
           request.get(url).then(function (response) {
             if (response.data.code == 200) {
               chart_data.value = []
+              console.log(response.data.data)
               for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i] == null) {
                   chart_data.value.push(0)

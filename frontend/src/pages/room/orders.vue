@@ -1,7 +1,7 @@
 <template>
   <div class="demo-date-picker">
     <div class="block">
-      <el-checkbox-group v-model="checkList" >
+      <el-checkbox-group v-model="checkList" @change="check_change" >
     <el-checkbox label="has comment" border />
     <el-checkbox label="has paid" border/>
   </el-checkbox-group><br>
@@ -18,50 +18,28 @@
     </div>
   <div class="demo-collapse">
     <el-collapse v-model="activeNames" @change="handleChange" accordion>
-      <el-collapse-item title="The first order" name="1">
-        <div>
-          Consistent with real life: in line with the process and logic of real
-          life, and comply with languages and habits that the users are used to;
-        </div>
-        <div>
-          Consistent within interface: all elements should be consistent, such
-          as: design style, icons and texts, position of elements, etc.
-        </div>
+      <div v-for="i in order_list">
+      <el-collapse-item  :title="i" name="1">
+        <el-descriptions
+    class="margin-top"
+    title="this is an order"
+    :column="3"
+    size="small"
+    border
+  >
+
+    <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
+    <el-descriptions-item label="Price">100</el-descriptions-item>
+    <el-descriptions-item label="Start Time">Suzhou</el-descriptions-item>
+    <el-descriptions-item label="End Time">
+      <el-tag size="small">School</el-tag>
+    </el-descriptions-item>
+    <el-descriptions-item label="Address"
+      >No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
+    </el-descriptions-item>
+  </el-descriptions>
       </el-collapse-item>
-      <el-collapse-item title="The second order" name="2">
-        <div>
-          Operation feedback: enable the users to clearly perceive their
-          operations by style updates and interactive effects;
-        </div>
-        <div>
-          Visual feedback: reflect current state by updating or rearranging
-          elements of the page.
-        </div>
-      </el-collapse-item>
-      <el-collapse-item title="The third order" name="3">
-        <div>
-          Simplify the process: keep operating process simple and intuitive;
-        </div>
-        <div>
-          Definite and clear: enunciate your intentions clearly so that the
-          users can quickly understand and make decisions;
-        </div>
-        <div>
-          Easy to identify: the interface should be straightforward, which helps
-          the users to identify and frees them from memorizing and recalling.
-        </div>
-      </el-collapse-item>
-      <el-collapse-item title="The forth order" name="4">
-        <div>
-          Decision making: giving advices about operations is acceptable, but do
-          not make decisions for the users;
-        </div>
-        <div>
-          Controlled consequences: users should be granted the freedom to
-          operate, including canceling, aborting or terminating current
-          operation.
-        </div>
-      </el-collapse-item>
+</div>
     </el-collapse>
   </div>
 </template>
@@ -74,6 +52,14 @@ const value = ref(0)
 const handleChange = (val: string[]) => {
   console.log(val)
 }
+const check_change = (value:string[])=>{
+console.log(value)
+
+order_list.value = value
+}
+const order_list = ref([''])
+order_list.value=['123','4123']
+
 </script>
 <style lang="scss" scoped>.demo-date-picker {
   display: flex;
