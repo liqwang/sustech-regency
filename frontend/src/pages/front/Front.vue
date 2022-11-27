@@ -8,7 +8,6 @@
         <div style="width: 60vw; height: 100%; background-color: " id="area">
           <el-row justify="space-evenly">
             <el-col :span="4">
-              <span class="info">省</span>
               <el-select v-model="province" placeholder="省">
                 <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
               </el-select>
@@ -21,14 +20,12 @@
             </el-col>
 
             <el-col :span="4">
-              <span class="info">区</span>
               <el-select v-model="region" placeholder="区">
                 <el-option v-for="region in regions" :key="region" :value="region" />
               </el-select>
             </el-col>
 
             <el-col :span="4">
-              <span class="info">酒店名称</span>
               <el-input v-model="hotelName" placeholder="酒店名称">
               </el-input>
             </el-col>
