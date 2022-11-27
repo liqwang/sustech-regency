@@ -9,7 +9,8 @@
           <el-row justify="space-evenly">
             <el-col :span="4">
               <el-select v-model="province" placeholder="省">
-                <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
+                <el-option v-for="province in provinces" :key="province" :value="province"
+                  @click="changeCity(province)" />
               </el-select>
             </el-col>
 
@@ -31,7 +32,8 @@
             </el-col>
 
             <el-col :span="4">
-              <el-button type="primary" style="width: 100px; margin-left: 10px" :icon="Search" @click="search" :disabled="listLoading"> 查询 </el-button>
+              <el-button type="primary" style="width: 100px; margin-left: 10px" :icon="Search" @click="search"
+                :disabled="listLoading"> 查询 </el-button>
             </el-col>
           </el-row>
         </div>
@@ -67,8 +69,7 @@
                       </div>
                     </el-col>
                     <el-col :span="12" :offset="0" class="price">
-                      ¥<span class="">{{ hotelInfo.minPrice }}</span
-                      >起
+                      ¥<span class="">{{ hotelInfo.minPrice }}</span>起
                     </el-col>
                   </el-row>
                 </router-link>
@@ -81,19 +82,10 @@
 
     <el-row justify="center">
       <div id="pages">
-        <el-pagination
-          v-model:currentPage="currentPage4"
-          v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]"
-          :small="small"
-          :disabled="disabled"
-          :background="background"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          style="margin-top: 15px"
-        />
+        <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
+          :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
+          layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" style="margin-top: 15px" />
       </div>
     </el-row>
 

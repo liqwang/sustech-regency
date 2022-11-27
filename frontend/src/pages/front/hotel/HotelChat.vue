@@ -13,23 +13,26 @@
               <!-- body：显示历史来往消息 -->
               <div id="body">
                 <el-scrollbar>
-                  <el-card shadow="hover" class="" v-for="item in histories" style="border-radius: 1rem; margin: 1rem">
-                    <div class="scrollbar-demo-item">
-                      <!-- 发送者 -->
-                      <span class="src">{{ item.src }}: </span>
-                      <!-- 时间 -->
-                      <span class="time">{{ item.time }}</span>
-                      <!-- 发送的信息 -->
-                      <p class="text">{{ item.text }}</p>
-                    </div>
-                  </el-card>
+                  <div v-for="item in histories">
+                    <el-card shadow="hover" class="" style="border-radius: 1rem; margin: 1rem;">
+                      <div class="scrollbar-demo-item">
+                        <!-- 发送者 -->
+                        <span class="src">{{ item.fromName }}: </span>
+                        <!-- 时间 -->
+                        <span class="time">{{ item.chatTime }}</span>
+                        <!-- 发送的信息 -->
+                        <p class="text">{{ item.content }}</p>
+                      </div>
+                    </el-card>
+                  </div>
                 </el-scrollbar>
               </div>
               <!-- foot：显示当前文本域以及发送按钮 -->
               <el-card shadow="hover" class="box-card" id="foot">
                 <!-- 用一行来展示文本域 -->
                 <el-row>
-                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入聊天信息" />
+                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
+                    placeholder="请输入聊天信息" />
                 </el-row>
                 <!-- 用一行来展示发送按钮，放在最右边 -->
                 <el-row justify="end">
@@ -49,7 +52,8 @@
               </el-card>
               <el-scrollbar id="list">
                 <!-- TODO:消息列表 -->
-                <el-card shadow="hover" class="" v-for="i in users" style="border-radius: 1rem" @click="choose_user(i)">{{ i }}</el-card>
+                <el-card shadow="hover" class="" v-for="i in users" style="border-radius: 1rem" @click="choose_user(i)">
+                  {{ i }}</el-card>
               </el-scrollbar>
             </el-card>
           </el-col>
@@ -66,11 +70,11 @@
                   <el-card shadow="hover" class="" v-for="item in histories" style="border-radius: 1rem; margin: 1rem">
                     <div class="scrollbar-demo-item">
                       <!-- 发送者 -->
-                      <span class="src">{{ item.src }}: </span>
+                      <span class="src">{{ item.fromName }}: </span>
                       <!-- 时间 -->
-                      <span class="time">{{ item.time }}</span>
+                      <span class="time">{{ item.chatTime }}</span>
                       <!-- 发送的信息 -->
-                      <p class="text">{{ item.text }}</p>
+                      <p class="text">{{ item.content }}</p>
                     </div>
                   </el-card>
                 </el-scrollbar>
@@ -79,7 +83,8 @@
               <el-card shadow="hover" class="box-card" id="foot">
                 <!-- 用一行来展示文本域 -->
                 <el-row>
-                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" placeholder="请输入聊天信息" />
+                  <el-input class="textarea" v-model="text" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
+                    placeholder="请输入聊天信息" />
                 </el-row>
                 <!-- 用一行来展示发送按钮，放在最右边 -->
                 <el-row justify="end">
@@ -105,6 +110,7 @@
   width: 30%;
   background-color: black;
 }
+
 #right {
   display: inline-block;
   height: 50vh;
@@ -116,10 +122,6 @@
 #bigg {
   background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
   width: auto;
-}
-
-#main {
-  /* border: black solid 1px; */
 }
 
 #head {
@@ -138,12 +140,13 @@
   /* border: black solid 1px; */
   background-color: rgb(241, 248, 255, 0.3);
 }
+
 .box-card {
   border-radius: 15px;
 }
 
 /* 修改默认输入字号 */
-.textarea >>> .el-textarea__inner {
+.textarea>>>.el-textarea__inner {
   font-family: 'Microsoft' !important;
   font-size: 18px !important;
   font-weight: 400;
@@ -164,19 +167,19 @@
 }
 
 /* 修改历史消息的样式 */
-.scrollbar-demo-item >>> .time {
+.scrollbar-demo-item>>>.time {
   font-family: 'Microsoft' !important;
   font-size: 10px !important;
   color: gray;
 }
 
-.scrollbar-demo-item >>> .src {
+.scrollbar-demo-item>>>.src {
   font-family: 'Microsoft' !important;
   font-size: 17px !important;
   color: green;
 }
 
-.scrollbar-demo-item >>> .text {
+.scrollbar-demo-item>>>.text {
   font-family: 'Microsoft' !important;
   font-size: 16px !important;
 }
@@ -188,23 +191,18 @@
 </style>
 
 <script lang="ts" setup>
-import { ElMessage, ElNotification } from 'element-plus'
-import { ref, h, reactive, onMounted } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { toRaw } from 'vue'
 import request from '../../../utils/request'
-import { time } from 'echarts/core'
-import { da, el, fr } from 'element-plus/es/locale'
 import { useRouter } from 'vue-router'
 
 interface Message {
-  src: string
-  dst: string
-  text: string
-  time: string
+  fromName: string
+  toName: string
+  content: string
+  chatTime: string
   hotelId: number
 }
-
-let status = ref('')
 
 let from = $ref('')
 let to = $ref('')
@@ -216,33 +214,42 @@ const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
 let hotel_owner = $ref('')
 
-request.get(`/public/merchant-username?hotelId=${hotelId}`).then((res) => {
+// histories 存储所有历史信息
+let histories = $ref<Message[]>([])
+
+const loadHistory = () => {
+  request.get(`/consumer/hotel/get-chat-history?user1=${user.name}&user2=${to}&hotelId=${hotelId}`).then(res => {
+    histories = res.data.data
+    console.log("histories: ", histories)
+  })
+}
+
+request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
+  console.log(res.data.data)
   hotel_owner = res.data.data
   if (username == hotel_owner) {
     to = ''
   } else {
     to = hotel_owner
   }
+  loadHistory()
 })
 
-// histories 存储所有历史信息
-let histories = reactive<Message[]>([])
-let users: string[] = $ref([])
-users.push('user1')
-users.push('yf')
-users.push('zmm')
-users.push('wlq')
-users.push('cyg')
-users.push('hhn')
+let users = $ref<string[]>([])
 
-// TODO: 判断当前用户是消费者还是商家
-// 如果是消费者
-if (user.isConsumer && !user.isMerchant) {
-  request.get(`/consumer/hotel/get-chat-history?user1=${user.name}&user2=${to}&hotelId=${hotelId}`).then((res) => {
-    histories = res.data
-    console.log(histories)
-  })
+let merchantHotelIds: number[] = user ? user.merchantHotelIds : []
+
+if (user.isMerchant && merchantHotelIds.includes(hotelId)) {
+  request.get(`/merchant/chat-users?hotelId=${hotelId}`)
+    .then(res => {
+      users = res.data.data
+      console.log("users: ", users)
+    })
 }
+
+console.log('user.name: ', user.name)
+console.log('to: ', to)
+loadHistory()
 
 let username = $ref('')
 username = JSON.parse(localStorage.getItem('user') as string).name
@@ -259,8 +266,8 @@ socket.onopen = () => {
 socket.onmessage = (message) => {
   console.log(`收到数据: ${message.data}`)
   const data = JSON.parse(message.data) as Message
-  if (data.src === to && hotelId === data.hotelId) {
-    histories.push({ src: data.src, dst: data.dst, text: data.text, time: data.time, hotelId: hotelId })
+  if (data.fromName === to && hotelId === data.hotelId) {
+    histories.push({ fromName: data.fromName, toName: data.toName, content: data.content, chatTime: data.chatTime, hotelId: hotelId })
   }
 }
 
@@ -277,14 +284,15 @@ const send = () => {
     ElMessage.error('请输入要发送的信息!')
   } else {
     const time = new Date().toLocaleString()
-    const message: Message = { src: from, dst: to, text: text, time: time, hotelId: hotelId }
+    const message: Message = { fromName: from, toName: to, content: text, chatTime: time, hotelId: hotelId }
     socket.send(JSON.stringify(message))
     histories.push(message)
     text = ''
   }
 }
 
-const choose_user = (user: string) => {
-  to = user
+const choose_user = (userName: string) => {
+  to = userName
+  loadHistory()
 }
 </script>
