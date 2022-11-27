@@ -10,8 +10,7 @@
             <el-col :span="8">
               <span class="info">省</span>
               <el-select v-model="province" placeholder="Select">
-                <el-option v-for="province in provinces" :key="province" :value="province"
-                  @click="changeCity(province)" />
+                <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
               </el-select>
             </el-col>
 
@@ -40,7 +39,7 @@
     <el-row>
       <div id="main">
         <el-row style="height: 100%">
-          <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 25px">
+          <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 20px">
             <el-card class="box-card" shadow="hover" style="border-radius: 10px">
               <router-link :to="'/hotel/' + hotelInfo.id" target="_blank">
                 <div><el-image :src="url" /></div>
@@ -109,7 +108,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -260,7 +259,7 @@ const urls = [
   'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large'
 ]
 const listLoading = $ref(false)
-const search = () => { }
+const search = () => {}
 
 let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
