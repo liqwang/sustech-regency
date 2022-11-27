@@ -72,25 +72,27 @@
   <!-- 空行间隔 -->
   <div class="null"></div>
   <!-- 展示区域 -->
-  <el-card class="box-card" shadow="never">
-    <el-row :gutter="20">
-      <el-col :span="12" :offset="0" v-for="i in rooms">
-        <el-card class="box-card" @click="update(i.id)" shadow="hover">
-          <div style="display: inline-flex; flex-direction: row; align-items: center">
-            <div class="roomnum">{{ i.num }}</div>
-            <div class="roomtype">房间类型：{{ i.type }}</div>
-            <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
-            <div class="nowPrice">价格：{{ i.price }}元</div>
-            <div class="nowPrice" v-if="i.discount < 1">
-              <span>限时特价：</span>
-              <span id="kill">{{ (i.price * i.discount).toFixed(3) }}</span>
-              <span>元</span>
+  <el-card class="box-card" shadow="never" style="height: 52vh">
+    <el-scrollbar max-height="400px">
+      <el-row>
+        <el-col :span="12" :offset="0" v-for="i in rooms">
+          <el-card class="box-card" @click="update(i.id)" shadow="hover">
+            <div style="display: inline-flex; flex-direction: row; align-items: center">
+              <div class="roomnum">{{ i.num }}</div>
+              <div class="roomtype">房间类型：{{ i.type }}</div>
+              <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
+              <div class="nowPrice">价格：{{ i.price }}元</div>
+              <div class="nowPrice" v-if="i.discount < 1">
+                <span>限时特价：</span>
+                <span id="kill">{{ (i.price * i.discount).toFixed(3) }}</span>
+                <span>元</span>
+              </div>
             </div>
-          </div>
-        </el-card>
-        <!-- {{ i }} -->
-      </el-col>
-    </el-row>
+          </el-card>
+          <!-- {{ i }} -->
+        </el-col>
+      </el-row>
+    </el-scrollbar>
   </el-card>
 
   <!-- 按钮点开详情以及下订单 -->
@@ -309,16 +311,15 @@ let day = $ref('')
 let paypage = $ref(false)
 let base = $ref('')
 
-const options = [
-  {
-    value: '1',
-    label: '单人间'
-  },
-  {
-    value: '2',
-    label: '双人间'
-  }
-]
+const types = ['', '标准间', '双人间', '大床房', '高级双床房', '豪华亲子房', '超享庭院大床房', '一室一厅城景套房', '精致房', '浪漫温馨情侣房', '电竞开黑四人间']
+
+const options = []
+for (let index = 1; index < types.length; index++) {
+  options.push({
+    value: index,
+    label: types[index]
+  })
+}
 
 // do not use same name with ref
 const form = reactive({
@@ -329,7 +330,7 @@ const form = reactive({
   min: '',
   max: '',
   //房型
-  type: '1',
+  type: '',
   //同住人数
   hc: 1
 })
@@ -356,8 +357,22 @@ const clear = () => {
 
 const onSubmit = () => {
   console.log(form)
-  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&&?startTime=${form.start}&&?endTime=${form.end}&&?minPrice=${form.min}&&?maxPrice=${form.max}&&?roomTypeId=${form.type}`).then((res) => {
-    console.log(res)
+  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&?startTime=${form.start}&?endTime=${form.end}&?minPrice=${form.min}&?maxPrice=${form.max}&?roomTypeId=${form.type}`).then((res) => {
+    console.log('筛选')
+    console.log(res.data.data)
+    rooms = []
+    for (const key in res.data.data) {
+      const element = res.data.data[key]
+      let i: number = element.typeId
+      let T: string = types[i]
+      rooms.push({
+        id: element.id,
+        num: element.roomNum,
+        type: T,
+        discount: element.discount,
+        price: element.price
+      })
+    }
     // clear()
   })
 }
@@ -372,17 +387,12 @@ let rooms: temproom[] = $ref()
 const getRooms = () => {
   rooms = []
   request.get(`/public/get-rooms-by-hotel?hotelId=${hotelId}`).then((res) => {
-    //console.log(res.data.data)
+    console.log('全部房间')
+    console.log(res.data.data)
     for (const key in res.data.data) {
       const element = res.data.data[key]
       let i: number = element.typeId
-      let T: string = ''
-      if (i == 1) {
-        T = '单人间'
-      }
-      if (i == 2) {
-        T = '双人间'
-      }
+      let T: string = types[i]
       rooms.push({
         id: element.id,
         num: element.roomNum,
