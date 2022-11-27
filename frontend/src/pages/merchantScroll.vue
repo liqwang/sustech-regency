@@ -634,11 +634,11 @@ watch(
         v1_1.value=true
         v1_2.value =false
         v1_3.value =false
-        v2_3.value =true
+        v2_3.value =false
         v2_1.value =false
         v2_2.value =false
         v3_3.value =true
-        v3_2.value =false
+        v3_2.value =true
         v3_1.value =false
       }
       if (id_par.HotelId == '3'){
@@ -648,11 +648,11 @@ watch(
         v1_1.value=false
         v1_2.value =true
         v1_3.value =false
-        v2_3.value =false
+        v2_3.value =true
         v2_1.value =true
         v2_2.value =false
         v3_3.value =false
-        v3_2.value =true
+        v3_2.value =false
         v3_1.value =false
       }
       if (id_par.HotelId == '4'){
@@ -660,14 +660,14 @@ watch(
         f2_url.value = f3_2
         f3_url.value = f1_3
         v1_1.value= false
-        v1_2.value =true
-        v1_3.value =false
-        v2_3.value =true
-        v2_1.value =false
+        v1_2.value =false
+        v1_3.value =true
+        v2_3.value =false
+        v2_1.value =true
         v2_2.value =false
         v3_3.value =false
-        v3_2.value =false
-        v3_1.value =true
+        v3_2.value =true
+        v3_1.value =false
       }
       if (id_par.HotelId == '5'){
         f1_url.value = f3_1
@@ -676,11 +676,11 @@ watch(
         v1_1.value= false
         v1_2.value =false
         v1_3.value =true
-        v2_3.value =true
+        v2_3.value =false
         v2_1.value =false
         v2_2.value =false
         v3_3.value =false
-        v3_2.value = false
+        v3_2.value = true
         v3_1.value =true
       }
 
