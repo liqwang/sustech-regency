@@ -6,7 +6,7 @@
           <el-rate v-model="rate" disabled show-score text-color="#ff9900" score-template="{value}分/5分" />
           <br />
         </div>
-        <div>8888条评论</div>
+        <div>{{ commentNum }}条评论</div>
         <div style="margin: 30px 0">
           <div style="margin: 10px 0">
             <div style="border-bottom: 1px solid orangered; padding: 10px 0; font-size: 20px">评论</div>
@@ -19,7 +19,8 @@
           </div>
 
           <div>
-            <div v-for="item in commentList" :key="item.id" style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
+            <div v-for="item in commentList" :key="item.id"
+              style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
               <div style="width: 100px; text-align: center">
                 <el-image :src="item.headshotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
               </div>
@@ -51,6 +52,8 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { Timer } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router';
+import request from '../../../utils/request';
 
 interface Comment {
   id: number
@@ -62,9 +65,7 @@ interface Comment {
 
 let commentContent = $ref('')
 
-const rate = $ref(5.0)
-
-const saveComment = () => {}
+const saveComment = () => { }
 
 const comment: Comment = {
   id: 1,
@@ -74,7 +75,44 @@ const comment: Comment = {
   content: '南科大很棒！'
 }
 
+interface HotelInfo {
+  id: number
+  latitude: number
+  longitude: number
+  name: string
+  tel: string
+  address: string
+  provinceName: string
+  cityName: string
+  regionName: string
+  stars: number
+  coverUrl: string
+  videoUrls: string[]
+  pictureUrls: string[]
+  minPrice: number
+  commentNum: number
+  likes_num: number
+}
+
+const router = useRouter()
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
+
+let hotelInfo = $ref<HotelInfo>()
+let rate = $ref(hotelInfo ? hotelInfo.stars : 0.0)
+let commentNum = $ref(hotelInfo ? hotelInfo.commentNum : 0)
+let minPrice = $ref(hotelInfo ? hotelInfo.minPrice : 0)
+
+request.get(`/public/get-hotelInfo-byId?hotelId=${hotelId}`)
+  .then(res => {
+    hotelInfo = res.data.data as HotelInfo
+    console.log(hotelInfo)
+    rate = hotelInfo.stars
+    commentNum = hotelInfo.commentNum
+    minPrice = hotelInfo.minPrice
+  })
+
 const commentList = Array.from({ length: 20 }).fill(comment) as Comment[]
+console.log("router", router.currentRoute.value.fullPath)
 </script>
 
 <style scoped>

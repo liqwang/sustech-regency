@@ -1,6 +1,7 @@
 <template>
   <el-scrollbar>
-    <el-menu :default-active="'/hotel/' + hotelId + '/introduction'" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router style="border-radius: 15px">
+    <el-menu :default-active="router.currentRoute.value.fullPath" class="el-menu-vertical-demo" @open="handleOpen"
+      @close="handleClose" router style="border-radius: 15px">
       <el-menu-item :index="'/hotel/' + hotelId + '/introduction'">
         <el-icon>
           <HomeFilled />
@@ -40,6 +41,29 @@
 import { HomeFilled, House, MapLocation, Comment } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 
+const activePath = $ref()
+
+interface HotelInfo {
+  id: number
+  latitude: number
+  longitude: number
+  name: string
+  tel: string
+  address: string
+  provinceName: string
+  cityName: string
+  regionName: string
+  stars: number
+  coverUrl: string
+  videoUrls: string[]
+  pictureUrls: string[]
+  minPrice: number
+  commentNum: number
+  likes_num: number
+}
+
+const hotelInfo = $ref<HotelInfo>()
+
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
@@ -48,5 +72,5 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 
 const router = useRouter()
-const hotelId = router.currentRoute.value.params['hotelId']
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 </script>

@@ -6,6 +6,7 @@
           <el-col :span="12" :offset="0">
             <a href="/" id="back" target="_blank">SUSTech Regency </a>
             <div id="cur-hotel" style="display: inline"> 当前酒店:{{ hotelId }}</div>
+            <div id="cur-hotel" style="display: inline"> 当前酒店商家:{{ hotel_owner }}</div>
           </el-col>
 
           <el-col :span="12" :offset="0" id="user">
@@ -123,4 +124,10 @@ import request from '../../../utils/request'
 const route = useRoute()
 const router = useRouter()
 const hotelId = $ref(router.currentRoute.value.params['hotelId'])
+
+let hotel_owner = $ref('')
+request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
+  console.log(res.data.data)
+  hotel_owner = res.data.data
+})
 </script>

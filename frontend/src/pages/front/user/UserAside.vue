@@ -1,6 +1,7 @@
 <template>
   <el-scrollbar>
-    <el-menu default-active="/user/order" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router style="border-radius: 15px">
+    <el-menu :default-active="router.currentRoute.value.fullPath" class="el-menu-vertical-demo" @open="handleOpen"
+      @close="handleClose" router style="border-radius: 15px">
       <el-menu-item index="/user/order">
         <el-icon>
           <Message />

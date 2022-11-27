@@ -1,7 +1,13 @@
 package com.sustech.regency.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.yulichang.query.MPJQueryWrapper;
+import com.sustech.regency.db.dao.ChatHistoryDao;
+import com.sustech.regency.db.dao.UserDao;
+import com.sustech.regency.db.po.ChatHistory;
 import com.sustech.regency.db.po.Hotel;
 import com.sustech.regency.db.po.Order;
+import com.sustech.regency.db.po.User;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.web.annotation.DateParam;
@@ -9,7 +15,9 @@ import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -18,6 +26,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 
@@ -25,6 +35,12 @@ import static com.sustech.regency.util.VerificationUtil.getUserId;
 public class MerchantController {
     @Resource
     private MerchantService merchantService;
+
+    @Resource
+    private ChatHistoryDao chatHistoryDao;
+
+    @Resource
+    private UserDao userDao;
 
     @ApiOperation("商家创建一个新的酒店")
     @PostMapping("/hotel/add")
@@ -118,29 +134,48 @@ public class MerchantController {
                                                        @ApiParam(value = "开始时间", required = true) @RequestParam @DateParam @NotNull Date startTime,
                                                        @ApiParam(value = "结束时间", required = true) @RequestParam @DateParam @NotNull Date endTime,
                                                        @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
-        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime,roomTypeId));
+        return ApiResponse.success(merchantService.getHotelHistoricalBills(hotelId, startTime, endTime, roomTypeId));
     }
 
     @ApiOperation("商家按条件筛选某个酒店的订单")
     @GetMapping("/hotel/get-selected-orders")
     public ApiResponse<List<Order>> getSelectedOrders(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                       @ApiParam(value = "房间ID", required = false) @RequestParam(required = false) Integer roomId,
-                                                      @ApiParam(value = "是否有评论", required = false) @RequestParam(required = false)  Boolean isComment,
-                                                      @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam  Date startTime,
-                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                      @ApiParam(value = "是否有评论", required = false) @RequestParam(required = false) Boolean isComment,
+                                                      @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
+                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
                                                       @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
 
-        return ApiResponse.success(merchantService.selectCustomerOrders(hotelId,roomId,isComment,startTime, endTime,status));
+        return ApiResponse.success(merchantService.selectCustomerOrders(hotelId, roomId, isComment, startTime, endTime, status));
     }
 
     @ApiOperation("商家对整个酒店或酒店某房型打折")
     @GetMapping("/hotel/onsale")
-public ApiResponse notifySale(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
-                              @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId,
-                              @ApiParam(value = "折扣率", required = true) @RequestParam @NotNull Float discount) {
-        merchantService.notifySale(hotelId,roomTypeId,discount);
+    public ApiResponse notifySale(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                  @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId,
+                                  @ApiParam(value = "折扣率", required = true) @RequestParam @NotNull Float discount) {
+        merchantService.notifySale(hotelId, roomTypeId, discount);
         return ApiResponse.success();
-}
+    }
+
+    @ApiOperation("查询当前所有和商家聊天过的用户")
+    @GetMapping("/chat-users")
+    public ApiResponse<List<String>> getChatUsers(@RequestParam Integer hotelId) {
+        Integer merchantId = getUserId();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", merchantId);
+        String merchantName = userDao.selectOne(wrapper).getName();
+        QueryWrapper<ChatHistory> chatWrapper = new QueryWrapper<>();
+        chatWrapper.eq("from_name", merchantName);
+        chatWrapper.eq("hotel_id", hotelId);
+        Set<String> res = chatHistoryDao.selectList(chatWrapper).stream().map(ChatHistory::getToName).collect(Collectors.toSet());
+        chatWrapper = new QueryWrapper<>();
+        chatWrapper.eq("to_name", merchantName);
+        chatWrapper.eq("hotel_id", hotelId);
+        res.addAll(chatHistoryDao.selectList(chatWrapper).stream().map(ChatHistory::getFromName).collect(Collectors.toSet()));
+        List<String> users = res.stream().toList();
+        return ApiResponse.success(users);
+    }
 
 
 }
