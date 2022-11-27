@@ -46,16 +46,16 @@ public class WebSocketServer {
     public void onMessage(String message, Session session, @PathParam("username") String username) {
         log.info("服务端收到用户{}的消息: {}", username, message);
         JSONObject obj = JSONUtil.parseObj(message);
-        String toUsername = obj.getStr("dst");
-        String text = obj.getStr("text");
-        String time = obj.getStr("time");
+        String toUsername = obj.getStr("toName");
+        String text = obj.getStr("content");
+        String time = obj.getStr("chatTime");
         Integer hotelId = Integer.parseInt(obj.getStr("hotelId"));
         Session toSession = sessionMap.get(toUsername);
         if (toSession != null) {
             JSONObject response = new JSONObject();
-            response.set("src", username);
-            response.set("text", text);
-            response.set("time", time);
+            response.set("fromName", username);
+            response.set("content", text);
+            response.set("chatTime", time);
             response.set("hotelId", hotelId);
             this.sendMessage(response.toString(), toSession);
             ChatHistory chatHistory = new ChatHistory(username, toUsername, time, text, hotelId);
