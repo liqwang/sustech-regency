@@ -1,6 +1,7 @@
 package com.sustech.regency.service;
 
 import com.sustech.regency.db.po.Order;
+import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.model.vo.RoomInfo;
@@ -36,5 +37,5 @@ public interface ConsumerService {
 
     List<Order> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
 
-    List<RoomInfo> getRoomInfosByCustomerChoice(Integer hotelId,Date startTime, Date EndTime,Integer minPrice, Integer maxPrice,Integer roomTypeId);
+    List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId);
 }
