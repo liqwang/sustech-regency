@@ -104,13 +104,13 @@
 
     <el-option label="高级双床房" value="4"></el-option>
     
-    <el-option label="豪华亲子房双人间" value="5"></el-option>
+    <el-option label="豪华亲子房" value="5"></el-option>
     <el-option label="超享庭院大床房" value="6"></el-option>
 
     <el-option label="一室一厅城景套房" value="7"></el-option>
-    <el-option label="精致房" value="2"></el-option>
-    <el-option label="浪漫温馨情侣房" value="8"></el-option>
-    <el-option label="电竞开黑四人间" value="9"></el-option>
+    <el-option label="精致房" value="8"></el-option>
+    <el-option label="浪漫温馨情侣房" value="9"></el-option>
+    <el-option label="电竞开黑四人间" value="10"></el-option>
 
   </el-select>
 
