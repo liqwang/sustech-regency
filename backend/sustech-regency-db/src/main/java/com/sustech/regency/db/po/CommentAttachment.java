@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommentAttachment implements Exhibitable<Order>{
     private String fileId;
-    private Integer orderId;
+    private Long orderId;
 
     @Override
     public void setMediaId(String mediaId) {
@@ -27,12 +27,12 @@ public class CommentAttachment implements Exhibitable<Order>{
     }
 
     @Override
-    public void setDisplayId(Integer displayId) {
+    public void setDisplayId(Long displayId) {
         orderId=displayId;
     }
 
     @Override
-    public Integer getDisplayId() {
+    public Long getDisplayId() {
         return orderId;
     }
 }

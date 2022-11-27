@@ -46,7 +46,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private CollectionDao collectionDao;
 
     @Override
-    public String uploadCommentMedia(MultipartFile media, Integer orderId) {
+    public String uploadCommentMedia(MultipartFile media, Long orderId) {
         checkOrderAndOwner(orderId);
         return fileUtil.uploadDisplayMedia(media, commentAttachmentDao, new CommentAttachment(null, orderId));
     }
@@ -59,7 +59,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private PublicService publicService;
 
     @Override
-    public void deleteCommentMedia(String mediaId, Integer orderId) {
+    public void deleteCommentMedia(String mediaId, Long orderId) {
         checkOrderAndOwner(orderId);
         asserts(fileDao.selectById(mediaId) != null, "该文件不存在");
         CommentAttachment commentAttachment =
@@ -72,7 +72,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         fileUtil.deleteFile(mediaId);
     }
 
-    private void checkOrderAndOwner(Integer orderId) {
+    private void checkOrderAndOwner(Long orderId) {
         Order order = orderDao.selectById(orderId);
         asserts(order != null, "订单id不存在");
         asserts(order.getPayerId().equals(getUserId()), "该订单属于别人");

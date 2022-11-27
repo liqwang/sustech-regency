@@ -27,12 +27,12 @@ public class HotelExhibition implements Exhibitable<Hotel>{
 	}
 
 	@Override
-	public void setDisplayId(Integer displayId) {
-		hotelId=displayId;
+	public void setDisplayId(Long displayId) {
+		hotelId=Math.toIntExact(displayId);
 	}
 
 	@Override
-	public Integer getDisplayId() {
-		return hotelId;
+	public Long getDisplayId() {
+		return Long.valueOf(hotelId);
 	}
 }

@@ -126,9 +126,9 @@ public class FileUtil {
         //2.上传封面
         String uuid = getUUID();
         String url = uploadFile(picture, uuid);
-//        //3.更换封面
-//        display.setCoverId(uuid);
-//        displayDao.updateById(display);
+        //3.更换封面
+        display.setCoverId(uuid);
+        displayDao.updateById(display);
         return url;
     }
 
@@ -164,7 +164,7 @@ public class FileUtil {
                               Integer displayId, MPJBaseMapper<Display> displayDao) {
         Display display = displayDao.selectById(displayId);
         asserts(display != null, "该id不存在");
-        exhibition.setDisplayId(displayId);
+        exhibition.setDisplayId(Long.valueOf(displayId));
         return uploadDisplayMedia(media, exhibitionDao, exhibition);
     }
 
