@@ -7,25 +7,39 @@
         <!-- 区域选择 -->
         <div style="width: 60vw; height: 100%; background-color: " id="area">
           <el-row justify="space-evenly">
-            <el-col :span="8">
+            <el-col :span="4">
               <span class="info">省</span>
-              <el-select v-model="province" placeholder="Select">
-                <el-option v-for="province in provinces" :key="province" :value="province" @click="changeCity(province)" />
+              <el-select v-model="province" placeholder="省">
+                <el-option v-for="province in provinces" :key="province" :value="province"
+                  @click="changeCity(province)" />
               </el-select>
             </el-col>
 
-            <el-col :span="8">
+            <el-col :span="4">
               <span class="info">市</span>
-              <el-select v-model="city" placeholder="Select">
+              <el-select v-model="city" placeholder="市">
                 <el-option v-for="city in cities" :key="city" :value="city" @click="changeRegion(province, city)" />
               </el-select>
             </el-col>
 
-            <el-col :span="8">
+            <el-col :span="4">
               <span class="info">区</span>
-              <el-select v-model="region" placeholder="Select">
+              <el-select v-model="region" placeholder="区">
                 <el-option v-for="region in regions" :key="region" :value="region" />
               </el-select>
+            </el-col>
+
+            <el-col :span="4">
+              <span class="info">酒店名称</span>
+              <el-input v-model="hotelName" placeholder="酒店名称">
+              </el-input>
+            </el-col>
+
+            <el-col :span="4">
+              <el-button type="primary" style="width: 100px; margin-left: 10px;" :icon="Search" @click="search"
+                :disabled="listLoading">
+                查询
+              </el-button>
             </el-col>
           </el-row>
         </div>
@@ -42,7 +56,9 @@
           <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 20px">
             <el-card class="box-card" shadow="hover" style="border-radius: 10px">
               <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
-                <div><el-image :src="url" /></div>
+                <div>
+                  <el-image :src="url" />
+                </div>
                 <el-row>
                   <el-col :span="12" :offset="0">
                     <div class="name" s>{{ hotelInfo.name }}</div>
@@ -58,8 +74,7 @@
                     </div>
                   </el-col>
                   <el-col :span="12" :offset="0" class="price">
-                    ¥<span class="">{{ hotelInfo.minPrice }}</span
-                    >起
+                    ¥<span class="">{{ hotelInfo.minPrice }}</span>起
                   </el-col>
                 </el-row>
               </router-link>
@@ -71,19 +86,10 @@
 
     <el-row justify="center">
       <div id="pages">
-        <el-pagination
-          v-model:currentPage="currentPage4"
-          v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]"
-          :small="small"
-          :disabled="disabled"
-          :background="background"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          style="margin-top: 15px"
-        />
+        <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
+          :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
+          layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" style="margin-top: 15px" />
       </div>
     </el-row>
 
@@ -104,6 +110,7 @@
 #pages {
   height: 7vh;
 }
+
 .name {
   display: flex;
   flex-direction: row;
@@ -198,28 +205,23 @@ import UserIcon from '../../components/UserIcon.vue'
 import request from '../../utils/request'
 import { Search } from '@element-plus/icons-vue'
 
-interface Hotel {
-  address: string
-  cityName: string
-  coverUrl: string
+interface HotelInfo {
   id: number
   latitude: number
   longitude: number
   name: string
-  pictureUrls: string[]
+  tel: string
+  address: string
   provinceName: string
+  cityName: string
   regionName: string
   stars: number
-  tel: string
+  coverUrl: string
   videoUrls: string[]
-}
-
-interface HotelInfo {
-  id: number
-  name: string
-  stars: number
-  commentNum: number
+  pictureUrls: string[]
   minPrice: number
+  commentNum: number
+  likes_num: number
 }
 
 interface Province {
@@ -244,12 +246,16 @@ interface Region {
 const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
 const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
-let hotels: Hotel[] = []
-const hotelInfos = $ref<HotelInfo[]>([])
+let hotelInfos = $ref<HotelInfo[]>([])
 
 let province = $ref('')
 let city = $ref('')
 let region = $ref('')
+let hotelName = $ref('')
+
+let provinces = $ref<string[]>([])
+let cities = $ref<string[]>([])
+let regions = $ref<string[]>([])
 
 const url = 'https://z1.muscache.cn/im/pictures/24e8ce37-6b7a-41f7-99b1-e21319705bb0.jpg?aki_policy=large'
 
@@ -258,48 +264,61 @@ const urls = [
   'https://z1.muscache.cn/im/pictures/miso/Hosting-45337054/original/d0e063e3-f760-4160-8f56-ec1dcc7d7392.jpeg?aki_policy=large',
   'https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large'
 ]
-const listLoading = $ref(false)
-const search = () => {}
+let listLoading = $ref(false)
 
-let provinces = $ref<string[]>([])
-let cities = $ref<string[]>([])
-let regions = $ref<string[]>([])
+const load = () => {
+  listLoading = true
+  request.get(`/public/get-hotels-by-location?CityName=${city}&&ProvinceName=${province}&&RegionName=${region}&&HotelName=${hotelName}`)
+    .then(res => {
+      console.log(res.data.data)
+      hotelInfos = res.data.data
+    })
+    .finally(() => {
+      listLoading = false
+    })
+}
+
+load()
+
+const search = () => {
+  load()
+}
 
 request.get('/public/province/all').then((res) => {
   const provinceList = res.data.data as City[]
   provinces = provinceList.map((p) => p.name)
 })
 
-const getHotels = (provinceName: string, cityName: string, regionName: string) => {
-  request.get(`/public/get-hotels-by-location?CityName=${cityName}&&ProvinceName=${provinceName}&&RegionName=${regionName}`).then((res) => {
-    hotels = res.data.data
-    console.log('response data: ', hotels)
-    hotels.forEach(async (hotel) => {
-      let response = await request.get(`/public/get-comment_number-by-hotel?hotelId=${hotel.id}`)
-      const comment = response.data.data
-      response = await request.get(`/public/get-min_price-by-hotel?hotelId=${hotel.id}`)
-      const price = response.data.data
-      let hotelInfo: HotelInfo = {
-        id: hotel.id,
-        name: hotel.name,
-        stars: hotel.stars,
-        commentNum: comment,
-        minPrice: price
-      }
-      hotelInfos.push(hotelInfo)
-      console.log('hotelInfos', hotelInfos)
-    })
-    console.log(hotels)
-  })
-}
+// const getHotels = (provinceName: string, cityName: string, regionName: string) => {
+//   request.get(`/public/get-hotels-by-location?CityName=${cityName}&&ProvinceName=${provinceName}&&RegionName=${regionName}`).then((res) => {
+//     hotels = res.data.data
+//     console.log('response data: ', hotels)
+//     hotels.forEach(async (hotel) => {
+//       let response = await request.get(`/public/get-comment_number-by-hotel?hotelId=${hotel.id}`)
+//       const comment = response.data.data
+//       response = await request.get(`/public/get-min_price-by-hotel?hotelId=${hotel.id}`)
+//       const price = response.data.data
+//       let hotelInfo: HotelInfo = {
+//         id: hotel.id,
+//         name: hotel.name,
+//         stars: hotel.stars,
+//         commentNum: comment,
+//         minPrice: price
+//       }
+//       hotelInfos.push(hotelInfo)
+//       console.log('hotelInfos', hotelInfos)
+//     })
+//     console.log(hotels)
+//   })
+// }
 
 onMounted(() => {
-  getHotels('', '', '')
+  // getHotels('', '', '')
 })
 
 const changeCity = (province: string) => {
   console.log('myprovince: ' + province)
-  getHotels(province, '', '')
+  // getHotels(province, '', '')
   request.get(`/public/city/all?province=${province}`).then((res) => {
     const cityList = res.data.data as Province[]
     cities = cityList.map((c) => c.name)
@@ -310,7 +329,7 @@ const changeCity = (province: string) => {
 }
 
 const changeRegion = (province: string, city: string) => {
-  getHotels(province, city, '')
+  // getHotels(province, city, '')
   request.get(`/public/region/all?province=${province}&&city=${city}`).then((res) => {
     const regionList = res.data.data as Region[]
     regions = regionList.map((c) => c.name)

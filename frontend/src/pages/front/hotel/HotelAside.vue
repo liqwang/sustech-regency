@@ -30,7 +30,7 @@
         <el-icon>
           <Comment />
         </el-icon>
-        <span>联系我们</span>
+        <span>联系客服</span>
       </el-menu-item>
     </el-menu>
   </el-scrollbar>

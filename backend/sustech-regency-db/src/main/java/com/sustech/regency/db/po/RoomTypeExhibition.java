@@ -27,12 +27,12 @@ public class RoomTypeExhibition implements Exhibitable<RoomType> {
 	}
 
 	@Override
-	public void setDisplayId(Integer displayId) {
-		roomTypeId=displayId;
+	public void setDisplayId(Long displayId) {
+		roomTypeId=Math.toIntExact(displayId);
 	}
 
 	@Override
-	public Integer getDisplayId() {
-		return roomTypeId;
+	public Long getDisplayId() {
+		return Long.valueOf(roomTypeId);
 	}
 }

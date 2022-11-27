@@ -71,13 +71,13 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: 'maven'
       - name: Maven打包
         working-directory: backend
         run: |
           mvn clean
-          mvn package -Dmaven.test.skip=true
+          mvn -B package -Dmaven.test.skip=true
       - name: 上传Jar包到阿里云
         uses: appleboy/scp-action@master
         with:
