@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar>
-    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router style="border-radius: 15px">
-      <el-menu-item :index="'/hotel/' + hotelId">
+    <el-menu :default-active="'/hotel/' + hotelId + '/introduction'" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router style="border-radius: 15px">
+      <el-menu-item :index="'/hotel/' + hotelId + '/introduction'">
         <el-icon>
           <HomeFilled />
         </el-icon>

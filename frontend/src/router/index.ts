@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
     component: HotelPage,
     meta: { requiresAuth: false },
     children: [
-      { path: '', name: 'introduction', component: HotelIntroduction, meta: { requiresAuth: false } },
+      { path: 'introduction', name: 'introduction', component: HotelIntroduction, meta: { requiresAuth: false } },
       { path: 'bookroom', name: 'bookroom', component: HotelBookRoom, meta: { requiresAuth: false } },
       { path: 'floorplan', name: 'floorplan', component: HotelFloorPlan, meta: { requiresAuth: false } },
       { path: 'comment', name: 'comment', component: HotelComment, meta: { requiresAuth: false } },

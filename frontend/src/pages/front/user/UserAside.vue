@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar>
     <h5 class="mb-2">Sustech Rengency</h5>
-    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
+    <el-menu default-active="/user/order" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
       <el-menu-item index="/user/order">
         <el-icon>
           <Message />

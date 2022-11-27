@@ -41,7 +41,7 @@
         <el-row style="height: 100%">
           <el-col :span="5" v-for="hotelInfo in hotelInfos" style="margin: 20px">
             <el-card class="box-card" shadow="hover" style="border-radius: 10px">
-              <router-link :to="'/hotel/' + hotelInfo.id" target="_blank">
+              <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
                 <div><el-image :src="url" /></div>
                 <el-row>
                   <el-col :span="12" :offset="0">
@@ -90,7 +90,7 @@
     <el-row>
       <div id="foot">
         <p style="color: #fff">
-          <span>广东省深圳市南山区学苑大道1088号</span>
+          <span>广东省深圳市南山区学苑大道1088号 &nbsp;</span>
           <span>电话： +86-755-88010888 &nbsp;</span>
           <span>邮编： 518055 </span>
         </p>

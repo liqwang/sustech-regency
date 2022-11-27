@@ -56,7 +56,7 @@ const signup = () => {
 
 const toUserPage = () => {
   let userRouteUrl = router.resolve({
-    path: '/user'
+    path: '/user/order'
   })
   window.open(userRouteUrl.href, '_blank')
 }
