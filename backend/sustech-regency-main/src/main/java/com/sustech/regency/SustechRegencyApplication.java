@@ -3,8 +3,10 @@ package com.sustech.regency;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @MapperScan("com.sustech.regency.db.dao")
+@EnableScheduling
 @SpringBootApplication
 public class SustechRegencyApplication {
 	//Todo:秒杀设计https://mp.weixin.qq.com/s?__biz=Mzg3NzU5NTIwNg==&mid=2247493227&idx=1&sn=10e5064d7d224c69dce400e90cd44de6&chksm=cf223942f855b0541ada22a312e0d4ffbc99df463678247a0dede3ef16eb81e3344a4a54ceaf&token=1990771297&lang=zh_CN#rd

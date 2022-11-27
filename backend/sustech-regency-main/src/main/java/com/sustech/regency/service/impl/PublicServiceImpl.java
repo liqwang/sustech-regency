@@ -229,7 +229,6 @@ public class PublicServiceImpl implements PublicService {
         roomInfo.setVideoUrls(getRoomTypeVideoUrls(roomInfo.getId()));
 
 
-
         return roomInfo;
     }
 

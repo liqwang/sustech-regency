@@ -3,6 +3,7 @@ package com.sustech.regency.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sustech.regency.db.dao.ChatHistoryDao;
 import com.sustech.regency.db.po.ChatHistory;
+import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.param.ReserveParam;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
@@ -44,6 +45,7 @@ public class ConsumerController {
                                                @ApiParam(value = "订单id", required = true)
                                                @NotNull @RequestParam Long orderId) {
         String url = consumerService.uploadCommentMedia(media, orderId);
+
         return ApiResponse.success(Map.of("url", url));
     }
 
@@ -131,15 +133,21 @@ public class ConsumerController {
 
     @ApiOperation("用户预定酒店时多参数筛选房间")
     @GetMapping("/hotel/consumer-select-rooms")
-    public ApiResponse<List<RoomInfo>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
-                                                        @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                        @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
-                                                        @ApiParam(value = "最低价格", required = false) @RequestParam(required = false) Integer minPrice,
-                                                        @ApiParam(value = "最高价格", required = false) @RequestParam(required = false) Integer maxPrice,
-                                                        @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+    public ApiResponse<List<Room>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
+                                                    @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
+                                                    @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                    @ApiParam(value = "最低价格", required = false) @RequestParam(required = false) Integer minPrice,
+                                                    @ApiParam(value = "最高价格", required = false) @RequestParam(required = false) Integer maxPrice,
+                                                    @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
 
         return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId,startTime,endTime,minPrice,maxPrice,roomTypeId));
     }
 
-
+    @ApiOperation("用户上传评论")
+    @PostMapping("/upload-comment")
+    public ApiResponse uploadComment(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
+                                     @ApiParam(value = "评论") @RequestParam(required = false)  String comment) {
+        consumerService.uploadComment(orderId,comment);
+        return ApiResponse.success();
+    }
 }
