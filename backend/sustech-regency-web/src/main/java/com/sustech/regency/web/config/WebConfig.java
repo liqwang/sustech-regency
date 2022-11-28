@@ -21,7 +21,8 @@ import javax.annotation.Resource;
 @Configuration
 @EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
+
     @Resource
     JwtAuthenticationFilter jwtAuthenticationFilter;
     @Resource

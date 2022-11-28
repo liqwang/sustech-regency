@@ -41,5 +41,7 @@ public interface ConsumerService {
 
     void uploadComment(Long orderId, String comment);
 
+    void uploadCommentStar(Long orderId, Float star);
+
 
 }

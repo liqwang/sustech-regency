@@ -10,6 +10,7 @@ import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
+import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.vo.ApiResponse;
@@ -36,6 +37,9 @@ public class ConsumerController {
 
     @Resource
     private ChatHistoryDao chatHistoryDao;
+
+    @Resource
+    private PublicService publicService;
 
     @ApiOperation(value = "上传评论图片或视频", notes = "为指定的订单(orderId)上传评论图片(jpg,jpeg,png)或视频(mp4),返回文件上传成功后的获取url, 如https://quanquancho.com:8080/public/file/2022/09/30/2d02610787154be1af4816d5450b5ae8.jpg")
     @PostMapping("/comment/upload-media")
@@ -95,7 +99,15 @@ public class ConsumerController {
     @ApiOperation("用户查看自己收藏的酒店")
     @GetMapping("/get-likes")
     public ApiResponse<List<HotelInfo>> getLikes() {
-        return ApiResponse.success(consumerService.getHotelInfoFromLikes());
+        List<HotelInfo> hotels = consumerService.getHotelInfoFromLikes();
+        for (HotelInfo hotelInfo:
+                hotels) {
+            hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
+            hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
+            hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
+        }
+
+        return ApiResponse.success(hotels);
     }
 
     @ApiOperation("用户查看自己订单")
@@ -148,6 +160,13 @@ public class ConsumerController {
     public ApiResponse uploadComment(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
                                      @ApiParam(value = "评论") @RequestParam(required = false)  String comment) {
         consumerService.uploadComment(orderId,comment);
+        return ApiResponse.success();
+    }
+    @ApiOperation("用户上传评分星级")
+    @PostMapping("/upload-comment-star")
+    public ApiResponse uploadCommentStar(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
+                                     @ApiParam(value = "star") @RequestParam(required = false)  Float star) {
+        consumerService.uploadCommentStar(orderId,star);
         return ApiResponse.success();
     }
 }

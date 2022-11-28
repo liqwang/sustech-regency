@@ -296,4 +296,11 @@ public class ConsumerServiceImpl implements ConsumerService {
         orderDao.updateById(order);
     }
 
+    @Override
+    public void uploadCommentStar(Long orderId, Float star) {
+        Order order = orderDao.selectById(orderId);
+        order.setStars(star);
+        orderDao.updateById(order);
+    }
+
 }
