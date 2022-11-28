@@ -131,6 +131,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public void roomPayed(Long orderId, Date payTime) {
+        redis.deleteObject("order:"+orderId);
+        //这里即使Redis的key过期提前把表中状态改为TIMEOUT也不会有bug
         orderDao.updateById(new Order()
                                .setId(orderId)
                                .setStatus(PAYED)
