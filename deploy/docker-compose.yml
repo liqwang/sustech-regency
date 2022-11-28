@@ -12,15 +12,21 @@ services:
       - ./nginx/html:/etc/nginx/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/cert:/etc/nginx/cert
-    privileged: true #必须要有，打开nginx文件调用权限
+    privileged: true #容器内的root有真正的root权限，否则只是一个普通用户，没有.conf文件权限
 
+  # https://juejin.cn/post/7081931407630532616
   redis:
-    image: redis:latest
+    image: redis:7.0.5
     container_name: sustech-regency-redis
     environment:
       TZ: Asia/Shanghai
+    volumes:
+      - ./redis/data:/data #挂载数据目录
+      - ./redis/redis.conf:/etc/redis/redis.conf
     ports:
       - "6379:6379"
+    entrypoint: ["redis-server","/etc/redis/redis.conf"]
+    privileged: true #容器内的root有真正的root权限，否则只是一个普通用户，没有.conf文件权限
 
   main:
     image: openjdk:17

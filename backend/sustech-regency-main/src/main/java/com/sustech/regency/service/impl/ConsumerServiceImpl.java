@@ -7,15 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sustech.regency.component.OrderWebSocket;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.PayInfo;
-import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.util.AlipayUtil;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,16 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.sustech.regency.db.po.OrderStatus.PAYED;
-import static com.sustech.regency.db.po.OrderStatus.REFUNDED;
+import static com.sustech.regency.db.po.OrderStatus.*;
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
@@ -79,9 +77,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     /**
-     * Todo:先暴力加锁，后续要优化<p>
-     * Todo:实现订单超时未支付，RabbitMQ延时队列 or Redis的key过期，参考:<a href="https://juejin.cn/post/7023543229337305124">1</a>
-     * Todo:实现当前时间超过endTime自动转为NOT_COMMENTED状态
+     * Todo:高并发先暴力加锁，后续要优化<p>
      */
     @Resource
     private AlipayUtil alipayUtil;
@@ -89,7 +85,8 @@ public class ConsumerServiceImpl implements ConsumerService {
     private RoomTypeDao roomTypeDao;
     @Value("${alipay.pay-timeout}")
     private String payTimeout;
-
+    @Resource
+    private Redis redis;
     @Override
     public synchronized PayInfo reserveRoom(Integer roomId, Date startDate, Date endDate) {
         asserts(endDate.after(startDate), "退房日期要在入住日期之后");
@@ -127,16 +124,19 @@ public class ConsumerServiceImpl implements ConsumerService {
         @SuppressWarnings("ConstantConditions")
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String webSocketUrl = "ws://" + request.getServerName() + ":" + request.getServerPort() + "/websocket/order/" + order.getId();
+        redis.setObject("order:"+order.getId(),null,15, MINUTES); //订单15分钟后未支付会超时
         return new PayInfo().setBase64QrCode(base64QrCode)
-                .setWebSocketUrl(webSocketUrl);
+                            .setWebSocketUrl(webSocketUrl);
     }
 
     @Override
     public void roomPayed(Long orderId, Date payTime) {
+        redis.deleteObject("order:"+orderId);
+        //这里即使Redis的key过期提前把表中状态改为TIMEOUT也不会有bug
         orderDao.updateById(new Order()
-                .setId(orderId)
-                .setStatus(PAYED)
-                .setPayTime(payTime));
+                               .setId(orderId)
+                               .setStatus(PAYED)
+                               .setPayTime(payTime));
         OrderWebSocket.notifyFrontend(orderId);
     }
 
@@ -262,7 +262,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
-                if (startTime!=null && EndTime!=null){
+                if (startTime != null){
                     if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
                         judge = false;
                     }

@@ -9,7 +9,8 @@ spring:
   redis:
     timeout: 300ms #连接超时时间
     host: redis #docker-compose中定义的域名
-#    port: 6379
+    password: c6e9a5e5v2ae5va2aw1
+  #    port: 6379
 #    database: 0 #数据库编号
   datasource:
     url: jdbc:mysql://172.19.37.114:3306/sustech_regency?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
