@@ -14,7 +14,7 @@
     <el-row>
       <el-col :span="12">
         <div class="block text-center">
-          <el-carousel height="500px">
+          <el-carousel height="500px" v-if="pictureUrls.length>0">
             <el-carousel-item v-for="url in pictureUrls" :key="url">
               <h3 class="small justify-center" text="2xl">
                 <!-- <img :src="url" /> -->
