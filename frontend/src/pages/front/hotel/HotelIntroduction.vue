@@ -17,7 +17,8 @@
           <el-carousel height="500px">
             <el-carousel-item v-for="url in pictureUrls" :key="url">
               <h3 class="small justify-center" text="2xl">
-                <img :src="url" />
+                <!-- <img :src="url" /> -->
+                <el-image style="width: 100%; height: 500px" :src="url" fit="contain" />
               </h3>
             </el-carousel-item>
           </el-carousel>

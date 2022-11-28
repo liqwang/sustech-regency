@@ -52,7 +52,7 @@
               <el-card class="box-card" shadow="hover" style="border-radius: 10px; margin-top: 10px; height: 33vh">
                 <router-link :to="'/hotel/' + hotelInfo.id + '/introduction'" target="_blank">
                   <div>
-                    <el-image :src="hotelInfo.coverUrl" />
+                    <el-image :src="hotelInfo.coverUrl" style="width: 100%; height: 20vh" fit="contain" />
                   </div>
                   <el-row>
                     <el-col :span="12" :offset="0">
