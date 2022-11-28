@@ -5,7 +5,7 @@
       <el-col :span="1"> </el-col>
       <el-col :span="19"></el-col>
       <el-col :span="2">
-        <el-avatar :size="66" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+        <el-avatar :size="66" class="mr-3" :src="avatarUrl" />
       </el-col>
 
       <el-col :span="2"> </el-col>
@@ -59,6 +59,10 @@ import router from '../router';
 import MerchantDrawer from './merchantDrawer.vue';
 import MerchantScroll from './merchantScroll.vue'
 import MerchantMenu from './merchantMenu.vue';
+
+const user = JSON.parse(localStorage.getItem('user') as string)
+const avatarUrl = user?.headshotUrl
+
 const getCancel = (cancel: boolean) => {
   dialog.value = cancel;
 };

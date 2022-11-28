@@ -196,7 +196,6 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
 import UserIcon from '../../components/UserIcon.vue'
 import request from '../../utils/request'
 import { Search } from '@element-plus/icons-vue'
@@ -278,33 +277,6 @@ const search = () => {
 request.get('/public/province/all').then((res) => {
   const provinceList = res.data.data as City[]
   provinces = provinceList.map((p) => p.name)
-})
-
-// const getHotels = (provinceName: string, cityName: string, regionName: string) => {
-//   request.get(`/public/get-hotels-by-location?CityName=${cityName}&&ProvinceName=${provinceName}&&RegionName=${regionName}`).then((res) => {
-//     hotels = res.data.data
-//     console.log('response data: ', hotels)
-//     hotels.forEach(async (hotel) => {
-//       let response = await request.get(`/public/get-comment_number-by-hotel?hotelId=${hotel.id}`)
-//       const comment = response.data.data
-//       response = await request.get(`/public/get-min_price-by-hotel?hotelId=${hotel.id}`)
-//       const price = response.data.data
-//       let hotelInfo: HotelInfo = {
-//         id: hotel.id,
-//         name: hotel.name,
-//         stars: hotel.stars,
-//         commentNum: comment,
-//         minPrice: price
-//       }
-//       hotelInfos.push(hotelInfo)
-//       console.log('hotelInfos', hotelInfos)
-//     })
-//     console.log(hotels)
-//   })
-// }
-
-onMounted(() => {
-  // getHotels('', '', '')
 })
 
 const changeCity = (province: string) => {
