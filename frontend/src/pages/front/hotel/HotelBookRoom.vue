@@ -4,8 +4,7 @@
     <el-row justfy="center">
       <el-col :span="0" :offset="0"></el-col>
       <el-col :span="24" :offset="0">
-        <el-card shadow="always" class="box-card"
-          style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+        <el-card shadow="always" class="box-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
           <div>
             <h1 class="H">{{ Timer }}</h1>
           </div>
@@ -158,6 +157,22 @@
                 <el-col :span="3" :offset="0">
                   <div class="black"></div>
                 </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">房型</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.typeName }}</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
+
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+
                 <el-col :span="9" :offset="0">
                   <div class="black">目前状态</div>
                 </el-col>
@@ -431,10 +446,10 @@ const clear = () => {
 }
 
 const onSubmit = () => {
-  console.log(form)
+  //console.log(form)
   request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&?startTime=${form.start}&?endTime=${form.end}&?minPrice=${form.min}&?maxPrice=${form.max}&?roomTypeId=${form.type}`).then((res) => {
-    console.log('筛选')
-    console.log(res.data.data)
+    //console.log('筛选')
+    //console.log(res.data.data)
     rooms = []
     for (const key in res.data.data) {
       const element = res.data.data[key]
@@ -462,8 +477,8 @@ let rooms: temproom[] = $ref()
 const getRooms = () => {
   rooms = []
   request.get(`/public/get-rooms-by-hotel?hotelId=${hotelId}`).then((res) => {
-    console.log('全部房间')
-    console.log(res.data.data)
+    //console.log('全部房间')
+    //console.log(res.data.data)
     for (const key in res.data.data) {
       const element = res.data.data[key]
       let i: number = element.typeId
@@ -501,7 +516,7 @@ let pictures: string[] = $ref([])
 let info: room = reactive({
   cover: 'null',
   roomNum: 0,
-  typeName: '单人间',
+  typeName: '',
   isAvailable: false,
   floor: 10,
   haslivingroom: false,
@@ -515,6 +530,7 @@ let info: room = reactive({
 const update = (i: number) => {
   chooseid = i
   request.get(`/public/get-roomInfo-by-roomId?roomId=${chooseid}`).then((res) => {
+    console.log(res.data.data)
     pictures = []
     info.cover = res.data.data.coverUrl
     // info.cover = 'src/assets/1.jpeg'
@@ -528,6 +544,7 @@ const update = (i: number) => {
     info.discount = res.data.data.discount
     info.toiletNum = res.data.data.toiletNum
     info.pics = res.data.data.pictureUrls
+    info.typeName = res.data.data.roomTypeName
     // info.pics = ['src/assets/2.jpeg', 'src/assets/3.jpeg', 'src/assets/4.jpeg', 'src/assets/5.jpeg', 'src/assets/6.jpeg']
     for (const key in info.pics) {
       pictures.push(info.pics[key])
