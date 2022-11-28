@@ -47,9 +47,9 @@ public class ConsumerController {
                                                @RequestParam MultipartFile media,
 
                                                @ApiParam(value = "订单id", required = true)
-                                               @NotNull @RequestParam Long orderId) {
-        String url = consumerService.uploadCommentMedia(media, orderId);
-
+                                               @NotNull @RequestParam String orderId) {
+        Long id = Long.parseLong(orderId);
+        String url = consumerService.uploadCommentMedia(media, id);
         return ApiResponse.success(Map.of("url", url));
     }
 
@@ -100,7 +100,7 @@ public class ConsumerController {
     @GetMapping("/get-likes")
     public ApiResponse<List<HotelInfo>> getLikes() {
         List<HotelInfo> hotels = consumerService.getHotelInfoFromLikes();
-        for (HotelInfo hotelInfo:
+        for (HotelInfo hotelInfo :
                 hotels) {
             hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
             hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
@@ -147,26 +147,27 @@ public class ConsumerController {
     @GetMapping("/hotel/consumer-select-rooms")
     public ApiResponse<List<Room>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                     @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                    @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam  Date endTime,
+                                                    @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
                                                     @ApiParam(value = "最低价格", required = false) @RequestParam(required = false) Integer minPrice,
                                                     @ApiParam(value = "最高价格", required = false) @RequestParam(required = false) Integer maxPrice,
                                                     @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
 
-        return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId,startTime,endTime,minPrice,maxPrice,roomTypeId));
+        return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId, startTime, endTime, minPrice, maxPrice, roomTypeId));
     }
 
     @ApiOperation("用户上传评论")
     @PostMapping("/upload-comment")
     public ApiResponse uploadComment(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
-                                     @ApiParam(value = "评论") @RequestParam(required = false)  String comment) {
-        consumerService.uploadComment(orderId,comment);
+                                     @ApiParam(value = "评论") @RequestParam(required = false) String comment) {
+        consumerService.uploadComment(orderId, comment);
         return ApiResponse.success();
     }
+
     @ApiOperation("用户上传评分星级")
     @PostMapping("/upload-comment-star")
     public ApiResponse uploadCommentStar(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
-                                     @ApiParam(value = "star") @RequestParam(required = false)  Float star) {
-        consumerService.uploadCommentStar(orderId,star);
+                                         @ApiParam(value = "star") @RequestParam(required = false) Float star) {
+        consumerService.uploadCommentStar(orderId, star);
         return ApiResponse.success();
     }
 }
