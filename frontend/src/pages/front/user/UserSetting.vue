@@ -1,30 +1,26 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
-      :size="formSize" status-icon>
+    我的信息
+  </el-card>
+  <br>
+  <el-card class="box-card">
+    <el-form ref="ruleFormRef" :model="ruleForm" label-width="120px" class="demo-ruleForm" :size="formSize" status-icon>
+      <el-form-item label="用户名" prop="username" required>
+        <el-input v-model="ruleForm.username" disabled />
+      </el-form-item>
       <el-form-item label="用户头像" prop="avatar">
         <el-upload class="avatar-uploader" action="http://quanquancho.com:8080/user/upload-headshot" name="picture"
           :headers="{ 'token': token }" :show-file-list="false" :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload" :auto-upload="true">
+          :before-upload="beforeAvatarUpload" :auto-upload="false">
           <img v-if="imageUrl" :src="imageUrl" class="avatar" :alt="ruleForm.avatarUrl" />
           <el-icon v-else class="avatar-uploader-icon">
             <Plus />
           </el-icon>
         </el-upload>
       </el-form-item>
-      <br>
-      <el-form-item label="用户名" prop="username" required>
-        <el-input v-model="ruleForm.username" disabled />
-      </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input v-model="ruleForm.phone" />
-      </el-form-item>
-      <el-form-item label="身份证" prop="idNumber">
-        <el-input v-model="ruleForm.idNumber" />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(ruleFormRef)">保存</el-button>
-        <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+        <!-- <el-button @click="resetForm(ruleFormRef)">重置</el-button> -->
       </el-form-item>
     </el-form>
   </el-card>
@@ -82,61 +78,6 @@ const ruleForm = reactive<UserInfo>({
   username: user.name,
   phone: '',
   idNumber: ''
-})
-
-const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
-    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-  ],
-  region: [
-    {
-      required: true,
-      message: 'Please select Activity zone',
-      trigger: 'change',
-    },
-  ],
-  count: [
-    {
-      required: true,
-      message: 'Please select Activity count',
-      trigger: 'change',
-    },
-  ],
-  date1: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a date',
-      trigger: 'change',
-    },
-  ],
-  date2: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a time',
-      trigger: 'change',
-    },
-  ],
-  type: [
-    {
-      type: 'array',
-      required: true,
-      message: 'Please select at least one activity type',
-      trigger: 'change',
-    },
-  ],
-  resource: [
-    {
-      required: true,
-      message: 'Please select activity resource',
-      trigger: 'change',
-    },
-  ],
-  desc: [
-    { required: true, message: 'Please input activity form', trigger: 'blur' },
-  ],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {

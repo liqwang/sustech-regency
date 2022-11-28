@@ -80,10 +80,10 @@
             <Plus />
           </el-icon>
         </el-upload> -->
-        <el-upload v-model:file-list="fileList" list-type="picture-card" ref="uploadRef" class="upload-demo"
+        <el-upload v-model:file-list="fileList" ref="uploadRef" class="upload-demo"
           :action="'http://quanquancho.com:8080/consumer/comment/upload-media?orderId=' + orderId" :auto-upload="false"
           :headers="{ 'token': token }" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
-          name="media">
+          name="media" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
           <template #trigger>
             <el-button type="primary">上传图片/视频</el-button>
           </template>
