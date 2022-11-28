@@ -23,11 +23,15 @@ public class Redis {
 		redisTemplate.opsForValue().set(key,value);
 	}
 
+	public <T> void setObject(String key, T value, long ttl, TimeUnit timeUnit){
+		redisTemplate.opsForValue().set(key,value,ttl,timeUnit);
+	}
+
 	/**
 	 * @param ttl 单位：秒
 	 */
 	public <T> void setObject(String key, T value, long ttl){
-		redisTemplate.opsForValue().set(key,value,ttl,TimeUnit.SECONDS);
+		setObject(key,value,ttl,TimeUnit.SECONDS);
 	}
 
 	/**
