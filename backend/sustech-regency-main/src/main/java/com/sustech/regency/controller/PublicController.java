@@ -56,7 +56,7 @@ public class PublicController {
         MPJLambdaWrapper<City> wrapper = new MPJLambdaWrapper<>();
         wrapper.selectAll(City.class)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
-                .eq(isNotEmpty(province),Province::getName, province);
+                .eq(isNotEmpty(province), Province::getName, province);
         return ApiResponse.success(cityDao.selectJoinList(City.class, wrapper));
     }
 
@@ -71,8 +71,8 @@ public class PublicController {
         wrapper.selectAll(Region.class)
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
-                .eq(isNotEmpty(province),Province::getName, province)
-                .eq(isNotEmpty(city),City::getName, city);
+                .eq(isNotEmpty(province), Province::getName, province)
+                .eq(isNotEmpty(city), City::getName, city);
         return ApiResponse.success(regionDao.selectJoinList(Region.class, wrapper));
     }
 
@@ -112,8 +112,7 @@ public class PublicController {
                                                   @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName) {
 
         List<HotelInfo> hotels = publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName);
-        for (HotelInfo hotelInfo:
-             hotels) {
+        for (HotelInfo hotelInfo : hotels) {
             hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
             hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
             hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
@@ -125,7 +124,7 @@ public class PublicController {
     @GetMapping("/get-rooms-by-hotel")
     public ApiResponse<List<Room>> getRoomsByHotel(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                    @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
-        return ApiResponse.success(publicService.getRoomsByHotel(hotelId,roomTypeId));
+        return ApiResponse.success(publicService.getRoomsByHotel(hotelId, roomTypeId));
     }
 
     @ApiOperation("根据酒店ID获取房间最低价格")
@@ -168,6 +167,9 @@ public class PublicController {
     @GetMapping("/get-hotelInfo-byId")
     public ApiResponse<HotelInfo> getHotelInfoByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         HotelInfo hotelInfo = publicService.getOneHotelByHotelId(hotelId);
+        if (hotelInfo == null) {
+            return ApiResponse.badRequest("No such hotel");
+        }
         hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelId));
         hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelId));
         hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelId));
@@ -178,7 +180,7 @@ public class PublicController {
     @GetMapping("/get-roomId-byHotelWithRoomNUm")
     public ApiResponse<Integer> getRoomIdByHotelIdWithRoomNum(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                                               @ApiParam(value = "房间号", required = true) @RequestParam @NotNull Integer roomId) {
-        return ApiResponse.success(publicService.getRoomIdByHotelWithRoomNum(hotelId,roomId));
+        return ApiResponse.success(publicService.getRoomIdByHotelWithRoomNum(hotelId, roomId));
     }
 
     @ApiOperation("根据酒店ID获得房间types")
@@ -189,6 +191,7 @@ public class PublicController {
 
     @Resource
     private ConsumerService consumerService;
+
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
      * <ul>
@@ -203,7 +206,7 @@ public class PublicController {
     @ApiOperation(value = "用户扫码支付后，支付宝的通知API", hidden = true)
     @PostMapping("/payed")
     public void payed(@RequestParam("gmt_create") @DateTimeParam Date payTime,
-                      @RequestParam("out_trade_no") Long orderId){
-        consumerService.roomPayed(orderId,payTime);
+                      @RequestParam("out_trade_no") Long orderId) {
+        consumerService.roomPayed(orderId, payTime);
     }
 }
