@@ -26,10 +26,10 @@
             </el-main>
           </el-container>
         </el-col>
-        <el-col :span="21" :offset="0" id="mian">
+        <el-col :span="21" :offset="0">
           <el-container>
             <el-main>
-              <router-view :key="route.path"></router-view>
+              <router-view v-if="hotelInfo" :key="route.path" :hotelInfo="hotelInfo"></router-view>
             </el-main>
           </el-container>
         </el-col>
@@ -114,16 +114,22 @@
 </style>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { Setting } from '@element-plus/icons-vue'
 import HotelAside from './HotelAside.vue'
 import UserIcon from '../../../components/UserIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
 import request from '../../../utils/request'
+import { HotelInfo } from '../../../type/type';
+
+let hotelInfo = $ref<HotelInfo>()
 
 const route = useRoute()
 const router = useRouter()
-const hotelId = $ref(router.currentRoute.value.params['hotelId'])
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
+
+request.get(`/public/get-hotelInfo-byId?hotelId=${hotelId}`)
+  .then(res => {
+    hotelInfo = res.data.data as HotelInfo
+  })
 
 let hotel_owner = $ref('')
 request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {

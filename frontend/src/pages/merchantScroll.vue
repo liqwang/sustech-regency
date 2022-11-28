@@ -430,8 +430,10 @@ const confirm_sale = () => {
   }
 }
 const to_chat=()=>{
-  let path = `hotel/${id_par.HotelId}/chat`
-  router.push(path)
+  let userRouteUrl = router.resolve({
+    path: `hotel/${id_par.HotelId}/chat`
+  })
+  window.open(userRouteUrl.href, '_blank')
 }
 const cancle_sale = () => {
   on_sale.value = false

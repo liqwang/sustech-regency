@@ -1,211 +1,277 @@
 <template>
-  <!-- 欢迎语 -->
-  <el-row justfy="center">
-    <el-col :span="0" :offset="0"></el-col>
-    <el-col :span="24" :offset="0">
-      <el-card shadow="always" class="box-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
-        <div>
-          <h1 class="H">{{ Timer }}</h1>
-        </div>
-      </el-card>
-    </el-col>
-    <el-col :span="0" :offset="0"></el-col>
-  </el-row>
-  <!-- 空行间隔 -->
-  <div class="null"></div>
-  <!-- 选择区域 -->
-  <el-row>
-    <el-col :span="0" :offset="0"></el-col>
-    <el-col :span="24" :offset="0">
-      <el-card class="box-card" shadow="never">
-        <el-form :model="form" label-width="0">
-          <!-- 一个item是一行的意思 -->
-          <el-form-item>
-            <el-col :span="2" class="text-center">
-              <span class="text-gray-500">行程安排</span>
-            </el-col>
-            <el-col :span="5">
-              <el-date-picker v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
-            </el-col>
-            <el-col :span="1" class="text-center">
-              <span class="text-gray-500">-</span>
-            </el-col>
-            <el-col :span="5">
-              <el-date-picker v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
-            </el-col>
-            <el-col :span="1"></el-col>
-            <el-col :span="2" class="text-center">
-              <span class="text-gray-500">价格区间</span>
-            </el-col>
-            <el-col :span="2">
-              <el-input v-model="form.min" placeholder="min" clearable />
-            </el-col>
-            <el-col :span="1" class="text-center">
-              <span class="text-gray-500">-</span>
-            </el-col>
-            <el-col :span="2">
-              <el-input v-model="form.max" placeholder="max" clearable />
-            </el-col>
-          </el-form-item>
-          <el-form-item>
-            <el-col :span="2" class="text-center">
-              <span class="text-gray-500">房型选择</span>
-            </el-col>
-            <el-col :span="4"
-              ><el-select v-model="form.type" class="m-2" placeholder="房型选择"> <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" /> </el-select
-            ></el-col>
-            <el-col :span="1" :offset="0"></el-col>
-            <el-col :span="2" class="text-center"> </el-col>
-            <el-col :span="2" :offset="0">
-              <el-col :span="2" :offset="0"></el-col>
-            </el-col>
-            <el-col :span="4" :offset="0"> </el-col>
-            <el-col :span="2" style="display: flex; flex-direction: row; justify-content: center"> <el-button @click="clear" style="width: 100%">清空</el-button></el-col>
-            <el-col :span="1" :offset="0"></el-col>
-            <el-col :span="2" style="display: flex; flex-direction: row; justify-content: center"> <el-button type="primary" @click="onSubmit" style="width: 100%">筛选</el-button></el-col>
-          </el-form-item>
-        </el-form>
-      </el-card>
-    </el-col>
-    <el-col :span="0" :offset="0"></el-col>
-  </el-row>
-  <!-- 空行间隔 -->
-  <div class="null"></div>
-  <!-- 展示区域 -->
-  <el-card class="box-card" shadow="never" style="height: 52vh">
-    <el-scrollbar max-height="400px">
-      <el-row>
-        <el-col :span="12" :offset="0" v-for="i in rooms">
-          <el-card class="box-card" @click="update(i.id)" shadow="hover">
-            <div style="display: inline-flex; flex-direction: row; align-items: center">
-              <div class="roomnum">{{ i.num }}</div>
-              <div class="roomtype">房间类型：{{ i.type }}</div>
-              <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
-              <div class="nowPrice">价格：{{ i.price }}元</div>
-              <div class="nowPrice" v-if="i.discount < 1">
-                <span>限时特价：</span>
-                <span id="kill">{{ (i.price * i.discount).toFixed(3) }}</span>
-                <span>元</span>
+  <div>
+    <!-- 欢迎语 -->
+    <el-row justfy="center">
+      <el-col :span="0" :offset="0"></el-col>
+      <el-col :span="24" :offset="0">
+        <el-card shadow="always" class="box-card"
+          style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+          <div>
+            <h1 class="H">{{ Timer }}</h1>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="0" :offset="0"></el-col>
+    </el-row>
+    <!-- 空行间隔 -->
+    <div class="null"></div>
+    <!-- 选择区域 -->
+    <el-row>
+      <el-col :span="0" :offset="0"></el-col>
+      <el-col :span="24" :offset="0">
+        <el-card class="box-card" shadow="never">
+          <el-form :model="form" label-width="0">
+            <!-- 一个item是一行的意思 -->
+            <el-form-item>
+              <el-col :span="2" class="text-center">
+                <span class="text-gray-500">行程安排</span>
+              </el-col>
+              <el-col :span="5">
+                <el-date-picker v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
+              </el-col>
+              <el-col :span="1" class="text-center">
+                <span class="text-gray-500">-</span>
+              </el-col>
+              <el-col :span="5">
+                <el-date-picker v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
+              </el-col>
+              <el-col :span="1"></el-col>
+              <el-col :span="2" class="text-center">
+                <span class="text-gray-500">价格区间</span>
+              </el-col>
+              <el-col :span="2">
+                <el-input v-model="form.min" placeholder="min" clearable />
+              </el-col>
+              <el-col :span="1" class="text-center">
+                <span class="text-gray-500">-</span>
+              </el-col>
+              <el-col :span="2">
+                <el-input v-model="form.max" placeholder="max" clearable />
+              </el-col>
+            </el-form-item>
+            <el-form-item>
+              <el-col :span="2" class="text-center">
+                <span class="text-gray-500">房型选择</span>
+              </el-col>
+              <el-col :span="4">
+                <el-select v-model="form.type" class="m-2" placeholder="房型选择">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-col>
+              <el-col :span="1" :offset="0"></el-col>
+              <el-col :span="2" class="text-center"> </el-col>
+              <el-col :span="2" :offset="0">
+                <el-col :span="2" :offset="0"></el-col>
+              </el-col>
+              <el-col :span="4" :offset="0"> </el-col>
+              <el-col :span="2" style="display: flex; flex-direction: row; justify-content: center">
+                <el-button @click="clear" style="width: 100%">清空</el-button>
+              </el-col>
+              <el-col :span="1" :offset="0"></el-col>
+              <el-col :span="2" style="display: flex; flex-direction: row; justify-content: center">
+                <el-button type="primary" @click="onSubmit" style="width: 100%">筛选</el-button>
+              </el-col>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+      <el-col :span="0" :offset="0"></el-col>
+    </el-row>
+    <!-- 空行间隔 -->
+    <div class="null"></div>
+    <!-- 展示区域 -->
+    <el-card class="box-card" shadow="never" style="height: 52vh">
+      <el-scrollbar max-height="400px">
+        <el-row>
+          <el-col :span="12" :offset="0" v-for="i in rooms">
+            <el-card class="box-card" @click="update(i.id)" shadow="hover">
+              <div style="display: inline-flex; flex-direction: row; align-items: center">
+                <div class="roomnum">{{ i.num }}</div>
+                <div class="roomtype">房间类型：{{ i.type }}</div>
+                <div class="disc" v-if="i.discount < 1">折扣：{{ String(i.discount).split('.')[1] }}折</div>
+                <div class="nowPrice">价格：{{ i.price }}元</div>
+                <div class="nowPrice" v-if="i.discount < 1">
+                  <span>限时特价：</span>
+                  <span id="kill">{{ (i.price * i.discount).toFixed(3) }}</span>
+                  <span>元</span>
+                </div>
               </div>
+            </el-card>
+            <!-- {{ i }} -->
+          </el-col>
+        </el-row>
+      </el-scrollbar>
+    </el-card>
+
+    <!-- 按钮点开详情以及下订单 -->
+    <el-dialog v-model="show" top="5vh" width="80%">
+      <div style="height: 75vh" id="room">
+        <!-- 在这里展示room的详细信息 -->
+        <el-row :gutter="20">
+          <el-col :span="24" :offset="0">
+            <div id="head">{{ info.roomNum }} 房间详情</div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="16" :offset="0">
+            <div id="left">
+              <el-carousel :interval="4000" height="62vh" v-if="pictures.length > 0">
+                <el-carousel-item v-for="i in pictures" :key="i">
+                  <img :src="i" alt="" />
+                </el-carousel-item>
+              </el-carousel>
             </div>
-          </el-card>
-          <!-- {{ i }} -->
-        </el-col>
-      </el-row>
-    </el-scrollbar>
-  </el-card>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <div id="right">
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">房间号</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.roomNum }}</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-  <!-- 按钮点开详情以及下订单 -->
-  <el-dialog v-model="show" top="5vh" width="80%">
-    <div style="height: 75vh" id="room">
-      <!-- 在这里展示room的详细信息 -->
-      <el-row :gutter="20">
-        <el-col :span="24" :offset="0">
-          <div id="head">{{ info.roomNum }} 房间详情</div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="16" :offset="0"
-          ><div id="left">
-            <el-carousel :interval="4000" height="62vh" v-if="pictures.length > 0">
-              <el-carousel-item v-for="i in pictures" :key="i">
-                <img :src="i" alt="" />
-              </el-carousel-item>
-            </el-carousel></div
-        ></el-col>
-        <el-col :span="8" :offset="0"
-          ><div id="right">
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">房间号</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ info.roomNum }}</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">楼层</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.floor }}层</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">楼层</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ info.floor }}层</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">目前状态</div>
+                </el-col>
+                <el-col :span="9" :offset="0" v-if="info.isAvailable">
+                  <div class="black">可预定</div>
+                </el-col>
+                <el-col :span="9" :offset="0" v-if="!info.isAvailable">
+                  <div class="black">可预定</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">目前状态</div></el-col>
-              <el-col :span="9" :offset="0" v-if="info.isAvailable"><div class="black">可预定</div></el-col>
-              <el-col :span="9" :offset="0" v-if="!info.isAvailable"><div class="black">可预定</div></el-col>
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">是否有客厅</div>
+                </el-col>
+                <el-col :span="9" :offset="0" v-if="info.haslivingroom">
+                  <div class="black">是</div>
+                </el-col>
+                <el-col :span="9" :offset="0" v-if="!info.haslivingroom">
+                  <div class="black">否</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">是否有客厅</div></el-col>
-              <el-col :span="9" :offset="0" v-if="info.haslivingroom"><div class="black">是</div></el-col>
-              <el-col :span="9" :offset="0" v-if="!info.haslivingroom"><div class="black">否</div></el-col>
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">厕所个数</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.toiletNum }}个</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">厕所个数</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ info.toiletNum }}个</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">价格</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.price }}元</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">价格</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ info.price }}元</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row" v-if="info.discount < 1">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">限时折扣</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ info.discount }}折</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row" v-if="info.discount < 1">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">限时折扣</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ info.discount }}折</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row" v-if="info.discount < 1">
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">限时特价</div>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <div class="black">{{ (info.price * info.discount).toFixed(3) }}元</div>
+                </el-col>
+                <el-col :span="3" :offset="0">
+                  <div class="black"></div>
+                </el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row" v-if="info.discount < 1">
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-              <el-col :span="9" :offset="0"><div class="black">限时特价</div></el-col>
-              <el-col :span="9" :offset="0"
-                ><div class="black">{{ (info.price * info.discount).toFixed(3) }}元</div></el-col
-              >
-              <el-col :span="3" :offset="0"><div class="black"></div></el-col>
-            </el-row>
+              <el-row :gutter="10" class="row">
+                <el-col :span="3" :offset="0"></el-col>
+                <el-col :span="9" :offset="0">
+                  <el-button type="primary" plain @click="booknow()">立即预定</el-button>
+                </el-col>
+                <el-col :span="9" :offset="0">
+                  <el-button type="info" plain @click="show = !show">返回酒店</el-button>
+                </el-col>
+                <el-col :span="3" :offset="0"></el-col>
+              </el-row>
 
-            <el-row :gutter="10" class="row">
-              <el-col :span="3" :offset="0"></el-col>
-              <el-col :span="9" :offset="0">
-                <el-button type="primary" plain @click="booknow()">立即预定</el-button>
-              </el-col>
-              <el-col :span="9" :offset="0">
-                <el-button type="info" plain @click="show = !show">返回酒店</el-button>
-              </el-col>
-              <el-col :span="3" :offset="0"></el-col>
-            </el-row>
+              <!-- {{ info }} -->
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
 
-            <!-- {{ info }} -->
-          </div></el-col
-        >
-      </el-row>
-    </div>
-  </el-dialog>
-
-  <el-dialog v-model="paypage" title="付款码" width="30%">
-    <el-image style="width: 100%; border-radius: 6px" :src="getBase64(base)"></el-image>
-  </el-dialog>
+    <el-dialog v-model="paypage" title="付款码" width="30%">
+      <el-image style="width: 100%; border-radius: 6px" :src="getBase64(base)"></el-image>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped>
@@ -213,23 +279,29 @@
   padding-top: 5px;
   padding-bottom: 3px;
 }
+
 .null {
   padding-bottom: 1rem;
 }
+
 .H {
   font-size: 2.5rem;
   font-weight: 550;
 }
+
 .HH {
   font-size: 1.5rem;
   font-weight: 350;
 }
+
 .box-card {
   border-radius: 15px;
 }
+
 #kill {
   color: red;
 }
+
 .black {
   font-weight: 500;
   font-size: 16px;
@@ -240,6 +312,7 @@
   height: 2rem;
   width: 100%;
 }
+
 .roomnum,
 .roomtype,
 .roomprice,
@@ -263,6 +336,7 @@
   display: block;
   /* background-color: aqua; */
 }
+
 #head {
   font-size: 2rem;
   font-weight: 750;
@@ -274,16 +348,19 @@
   height: 10vh;
   /* background-color: red; */
 }
+
 #left {
   height: 62vh;
   /* background-color: black; */
 }
+
 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-fit: cover;
 }
+
 #right {
   height: 62vh;
   /* background-color: greenyellow; */
@@ -291,11 +368,9 @@ img {
 </style>
 
 <script lang="ts" setup>
-import { da, fa } from 'element-plus/es/locale'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { reactive, ref, onMounted, h } from 'vue'
 import request from '../../../utils/request'
-import { number } from 'echarts/core'
 import { ElNotification } from 'element-plus'
 
 const router = useRouter()

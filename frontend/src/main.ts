@@ -7,6 +7,6 @@ import './styles/index.css'
 import 'element-plus/dist/index.css'
 
 createApp(App)
-  .use(ElementPlus, { size: "mini" })
+  .use(ElementPlus, { size: "default" })
   .use(router)
   .mount('#app')

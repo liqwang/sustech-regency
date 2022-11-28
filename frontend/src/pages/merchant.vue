@@ -43,7 +43,7 @@
 
   <el-row id="r3">
     <el-col :span="4" id="menu">
-      <merchant-menu  @select-hotel="load_hotel"></merchant-menu>
+      <merchant-menu @select-hotel="load_hotel"></merchant-menu>
     </el-col>
     <el-col :span="16">
       <merchant-scroll :HotelId="hotelId" />
@@ -83,7 +83,10 @@ const goback = () => {
 };
 
 const toUserPage = () => {
-  router.push('/');
+  let userRouteUrl = router.resolve({
+    path: '/'
+  })
+  window.open(userRouteUrl.href, '_blank')
 }
 
 const dialog = ref(false);
@@ -98,9 +101,11 @@ const username = ref(localStorage.getItem('user') == null ? '未登录' : JSON.p
   #r1 {
     display: none;
   }
-  #menu{
+
+  #menu {
     visibility: hidden;
   }
+
   #r2 {}
 
   #drop {

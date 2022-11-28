@@ -199,26 +199,7 @@
 import UserIcon from '../../components/UserIcon.vue'
 import request from '../../utils/request'
 import { Search } from '@element-plus/icons-vue'
-
-interface HotelInfo {
-  id: number
-  latitude: number
-  longitude: number
-  name: string
-  tel: string
-  address: string
-  provinceName: string
-  cityName: string
-  regionName: string
-  stars: number
-  coverUrl: string
-  videoUrls: string[]
-  pictureUrls: string[]
-  minPrice: number
-  commentNum: number
-  likes_num: number
-  description: string
-}
+import { HotelInfo } from '../../type/type';
 
 interface Province {
   id: number
@@ -238,9 +219,6 @@ interface Region {
   name: string
   cityId: number
 }
-
-const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
-const username = $ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).name : '')
 
 let hotelInfos = $ref<HotelInfo[]>([])
 

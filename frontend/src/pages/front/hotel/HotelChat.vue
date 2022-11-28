@@ -227,7 +227,7 @@ const loadHistory = () => {
 request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
   console.log(res.data.data)
   hotel_owner = res.data.data
-  if (username == hotel_owner) {
+  if (username === hotel_owner) {
     to = ''
   } else {
     to = hotel_owner
@@ -253,7 +253,7 @@ loadHistory()
 
 let username = $ref('')
 username = JSON.parse(localStorage.getItem('user') as string).name
-// const socketUrl = `ws://localhost:8080/websocket/${username}`
+// const socketUrl = `ws://127.0.0.1:8080/websocket/${username}`
 const socketUrl = `ws://quanquancho.com:8080/websocket/${username}`
 const socket = new WebSocket(socketUrl)
 

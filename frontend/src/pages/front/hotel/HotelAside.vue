@@ -39,31 +39,7 @@
 
 <script lang="ts" setup>
 import { HomeFilled, House, MapLocation, Comment } from '@element-plus/icons-vue'
-import { useRoute, useRouter } from 'vue-router'
-
-const activePath = $ref()
-
-interface HotelInfo {
-  id: number
-  latitude: number
-  longitude: number
-  name: string
-  tel: string
-  address: string
-  provinceName: string
-  cityName: string
-  regionName: string
-  stars: number
-  coverUrl: string
-  videoUrls: string[]
-  pictureUrls: string[]
-  minPrice: number
-  commentNum: number
-  likes_num: number
-  description: string
-}
-
-const hotelInfo = $ref<HotelInfo>()
+import { useRouter } from 'vue-router'
 
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
