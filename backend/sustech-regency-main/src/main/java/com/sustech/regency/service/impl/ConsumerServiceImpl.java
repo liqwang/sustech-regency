@@ -118,7 +118,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         AlipayTradePrecreateModel alipayInfo = new AlipayTradePrecreateModel();
         alipayInfo.setOutTradeNo(order.getId() + "");
         alipayInfo.setSubject(roomTypeDao.selectById(room.getTypeId()).getName() + days + "天"); //产品名称
-        alipayInfo.setTotalAmount(room.getPrice() * days * room.getDiscount() + ""); //金额
+        alipayInfo.setTotalAmount(getMoneyStr(room.getPrice()*days*room.getDiscount())); //金额
         alipayInfo.setTimeoutExpress(payTimeout); //支付超时时间
         String base64QrCode = alipayUtil.getPayQrCode(alipayInfo);
         @SuppressWarnings("ConstantConditions")
@@ -127,6 +127,17 @@ public class ConsumerServiceImpl implements ConsumerService {
         redis.setObject("order:"+order.getId(),null,15, MINUTES); //订单15分钟后未支付会超时
         return new PayInfo().setBase64QrCode(base64QrCode)
                             .setWebSocketUrl(webSocketUrl);
+    }
+
+    /**
+     * 将金额保留至小数点后两位
+     */
+    private static String getMoneyStr(double money){
+        String moneyStr = money + "";
+        int decimalPointIndex = moneyStr.lastIndexOf('.');
+        return moneyStr.length()==decimalPointIndex+2? //eg: 198.0
+                moneyStr:
+                moneyStr.substring(0,decimalPointIndex+3);
     }
 
     @Override
