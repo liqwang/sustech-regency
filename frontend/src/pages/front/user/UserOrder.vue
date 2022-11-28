@@ -28,13 +28,14 @@
           <!-- <el-image
             src="https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large" /> -->
           <el-col :span="6">
-            cyg
+            {{ username }}
           </el-col>
           <el-col :span="6">
             支付金额: ￥{{ order.fee }}
           </el-col>
           <el-col :span="6">
-            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment" @click="dialogFormVisible = true">
+            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
+              @click="dialogFormVisible = true, orderId = order.id">
               评价
             </el-button>
           </el-col>
@@ -79,8 +80,10 @@
             <Plus />
           </el-icon>
         </el-upload> -->
-        <el-upload ref="uploadRef" class="upload-demo" :action="postUrl" :auto-upload="false"
-          :headers="{ 'token': token }">
+        <el-upload ref="uploadRef" class="upload-demo"
+          :action="'http://quanquancho.com:8080/consumer/comment/upload-media?orderId=' + orderId" :auto-upload="false"
+          :headers="{ 'token': token }" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
+          name="media">
           <template #trigger>
             <el-button type="primary">上传图片/视频</el-button>
           </template>
@@ -111,11 +114,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import { ElMessage, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
 import request from '../../../utils/request';
 
 const token = localStorage.token ? JSON.parse(localStorage.token) : ''
+
+const user = JSON.parse(localStorage.getItem('user') as string)
+const username = $ref(user?.name)
 
 interface Order {
   id: string
@@ -141,10 +147,6 @@ request.get('/consumer/get-orders').then(res => {
 })
 
 let orderId = $ref('')
-
-// TODO:
-// let postUrl = $ref('')
-let postUrl = $ref(`http://quanquancho.com:8080/consumer/comment/upload-media?orderId=${orderId}`)
 
 let commentText = $ref('')
 let stars = $ref(0)
@@ -174,6 +176,30 @@ const fileList = ref<UploadUserFile[]>([
     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
   }
 ])
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== '') {
+    ElMessage.error('必须上传jpg格式的图片或mp4格式的视频!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('上传的图片或视频不能超过2MB!')
+    return false
+  }
+  return true
+}
+
+const imageUrl = ref('')
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  console.log(imageUrl.value)
+  console.log(response.data.url)
+}
+
+
 
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
