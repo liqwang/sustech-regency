@@ -162,4 +162,11 @@ public class ConsumerController {
         consumerService.uploadComment(orderId,comment);
         return ApiResponse.success();
     }
+    @ApiOperation("用户上传评分星级")
+    @PostMapping("/upload-comment-star")
+    public ApiResponse uploadCommentStar(@ApiParam(value = "订单Id", required = true) @RequestParam @NotNull Long orderId,
+                                     @ApiParam(value = "star") @RequestParam(required = false)  Float star) {
+        consumerService.uploadCommentStar(orderId,star);
+        return ApiResponse.success();
+    }
 }
