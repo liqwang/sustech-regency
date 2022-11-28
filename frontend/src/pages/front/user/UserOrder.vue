@@ -80,7 +80,7 @@
             <Plus />
           </el-icon>
         </el-upload> -->
-        <el-upload ref="uploadRef" class="upload-demo"
+        <el-upload v-model:file-list="fileList" list-type="picture-card" ref="uploadRef" class="upload-demo"
           :action="'http://quanquancho.com:8080/consumer/comment/upload-media?orderId=' + orderId" :auto-upload="false"
           :headers="{ 'token': token }" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
           name="media">
@@ -171,14 +171,14 @@ const handleSelect = (key: string, keyPath: string[]) => {
 }
 
 const fileList = ref<UploadUserFile[]>([
-  {
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  }
+  // {
+  //   name: 'food.jpeg',
+  //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+  // }
 ])
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== '') {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'video/mp4') {
     ElMessage.error('必须上传jpg格式的图片或mp4格式的视频!')
     return false
   } else if (rawFile.size / 1024 / 1024 > 2) {
