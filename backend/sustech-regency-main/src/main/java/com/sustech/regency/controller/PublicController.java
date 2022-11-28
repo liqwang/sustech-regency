@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class PublicController {
 
     @Resource
     private ProvinceDao provinceDao;
-
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
     public ApiResponse<List<Province>> getAllProvinces() {
@@ -49,7 +47,6 @@ public class PublicController {
 
     @Resource
     private CityDao cityDao;
-
     @ApiOperation("获取一个省的所有市")
     @GetMapping("/city/all")
     public ApiResponse<List<City>> getAllCities(@RequestParam(required = false) String province) {
