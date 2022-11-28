@@ -5,8 +5,18 @@
         <el-header id="head">
           <el-col :span="12" :offset="0">
             <a href="/" id="back" target="_blank">SUSTech Regency </a>
-            <div id="cur-hotel" style="display: inline"> 当前酒店:{{ hotelId }}</div>
+            <div id="cur-hotel" style="display: inline"> 当前酒店:{{ hotelInfo?.name }}</div>
             <div id="cur-hotel" style="display: inline"> 当前酒店商家:{{ hotel_owner }}</div>
+            <span v-if="collectStatus">
+              <el-button type="primary" style="width: 100px; margin-left: 10px" :icon="Star" @click="cancelCollect">
+                取消收藏
+              </el-button>
+            </span>
+            <span v-else>
+              <el-button style="width: 100px; margin-left: 10px" :icon="Star" @click="collect">
+                收藏
+              </el-button>
+            </span>
           </el-col>
 
           <el-col :span="12" :offset="0" id="user">
@@ -118,7 +128,10 @@ import HotelAside from './HotelAside.vue'
 import UserIcon from '../../../components/UserIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
 import request from '../../../utils/request'
-import { HotelInfo } from '../../../type/type';
+import { HotelInfo } from '../../../type/type'
+import { Star } from '@element-plus/icons-vue'
+import { ElMessage, ElNotification } from 'element-plus'
+import { h } from 'vue'
 
 let hotelInfo = $ref<HotelInfo>()
 
@@ -136,4 +149,40 @@ request.get(`/public/merchant-username?hotelId=${hotelId}`).then(res => {
   console.log(res.data.data)
   hotel_owner = res.data.data
 })
+
+let collectStatus = $ref(false)
+
+const collect = () => {
+  request.post(`/consumer/like-hotel?hotelId=${hotelId}`).then(res => {
+    if (res.data.code === 200) {
+      ElNotification({
+        title: "Success",
+        message: h("i", { style: "color: teal" }, "收藏成功"),
+      })
+      collectStatus = true
+    }
+  })
+}
+
+const cancelCollect = () => {
+  request.post(`/consumer/dislike-hotel?hotelId=${hotelId}`).then(res => {
+    if (res.data.code === 200) {
+      ElNotification({
+        title: "Success",
+        message: h("i", { style: "color: teal" }, "取消收藏成功"),
+      })
+      collectStatus = false
+    }
+  })
+}
+
+let collectHotels = $ref<number[]>([])
+
+request.get('/consumer/get-likes').then(res => {
+  const hotels = res.data.data as HotelInfo[]
+  collectHotels = hotels.map(hotel => hotel.id)
+  console.log('collectHotels: ', collectHotels)
+  collectStatus = collectHotels.includes(hotelId)
+})
+
 </script>

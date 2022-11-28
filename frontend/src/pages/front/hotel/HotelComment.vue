@@ -79,7 +79,7 @@ const props = defineProps<{
 >()
 
 const hotelInfo = $ref(props.hotelInfo)
-const stars = hotelInfo?.stars
+const stars = $ref(hotelInfo?.stars)
 
 
 const commentList = Array.from({ length: 20 }).fill(comment) as Comment[]

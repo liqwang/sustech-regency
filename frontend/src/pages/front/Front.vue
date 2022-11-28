@@ -92,9 +92,9 @@
     <el-row>
       <div id="foot">
         <p style="color: #fff">
-          <span>广东省深圳市南山区学苑大道1088号 &nbsp;</span>
-          <span>电话： +86-755-88010888 &nbsp;</span>
-          <span>邮编： 518055 </span>
+          <span style="margin-right: 15px;">广东省深圳市南山区学苑大道1088号 &nbsp;</span>
+          <span style="margin-right: 15px;">电话: +86-755-88010888 &nbsp;</span>
+          <span>邮编: 518055 </span>
         </p>
         <p style="color: #fff">© 2022 All Rights Reserved.</p>
       </div>

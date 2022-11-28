@@ -158,7 +158,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             ElNotification({
               title: "Success",
               message: h("i", { style: "color: teal" }, "修改个人信息成功"),
-            });
+            })
           }
         })
       console.log('submit!')

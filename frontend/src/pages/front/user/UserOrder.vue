@@ -5,22 +5,23 @@
   <br>
   <el-card>
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="1" @click="loadOrders(0)">全部订单</el-menu-item>
-      <el-menu-item index="2" @click="loadOrders(1)">待付款</el-menu-item>
-      <el-menu-item index="3" @click="loadOrders(2)">已超时</el-menu-item>
-      <el-menu-item index="4" @click="loadOrders(3)">已支付</el-menu-item>
-      <el-menu-item index="5" @click="loadOrders(4)">待评价</el-menu-item>
-      <el-menu-item index="6" @click="loadOrders(5)">已评价</el-menu-item>
-      <el-menu-item index="7" @click="loadOrders(6)">已退款</el-menu-item>
+      <el-menu-item index="0" @click="loadOrders(0)">全部订单</el-menu-item>
+      <el-menu-item index="1" @click="loadOrders(1)">待付款</el-menu-item>
+      <el-menu-item index="2" @click="loadOrders(2)">已超时</el-menu-item>
+      <el-menu-item index="3" @click="loadOrders(3)">已支付</el-menu-item>
+      <el-menu-item index="4" @click="loadOrders(4)">待评价</el-menu-item>
+      <el-menu-item index="5" @click="loadOrders(5)">已评价</el-menu-item>
+      <el-menu-item index="6" @click="loadOrders(6)">已退款</el-menu-item>
     </el-menu>
-    <div v-for="row in 3">
+    <div v-for="order in orders">
       <el-card class="m-5 h-100">
         <el-row>
           <el-col :span="6">
-            2022-01-01 00:00:00
+            <!-- 2022-01-01 00:00:00 -->
+            {{ order.createTime }}
           </el-col>
           <el-col :span="6">
-            订单号: 252139501544
+            订单号: {{ order.id }}
           </el-col>
         </el-row>
         <el-row>
@@ -30,7 +31,7 @@
             cyg
           </el-col>
           <el-col :span="6">
-            支付金额: ￥1000.00
+            支付金额: ￥{{ order.fee }}
           </el-col>
           <el-col :span="6">
             <el-button style="width: 100px; margin-left: 10px;" :icon="Comment" @click="dialogFormVisible = true">
@@ -45,6 +46,10 @@
 
   <el-dialog v-model="dialogFormVisible" title="订单评价">
     <el-form>
+      <el-row>
+        订单号: {{ orderId }}
+      </el-row>
+      <br>
       <el-row>
         <el-col :span="4">
           酒店评分
@@ -106,20 +111,40 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
-import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
+import request from '../../../utils/request';
 
 const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
-interface OrderComment {
-  star: number
-  text: string
+interface Order {
+  id: string
+  roomId: number
+  dateStart: string
+  dateEnd: string
+  payerId: number
+  fee: number
+  status: string
+  comment: string
+  commentTime: string
+  stars: number
+  payTime: string
+  createTime: string
+  refundTime: string
 }
 
+let orders = $ref<Order[]>([])
+
+request.get('/consumer/get-orders').then(res => {
+  orders = res.data.data
+  console.log(orders)
+})
+
+let orderId = $ref('')
+
 // TODO:
-let postUrl = $ref('')
-// let postUrl = $ref(`http://quanquancho.com:8080/consumer/comment/upload-media?orderId=${}`)
+// let postUrl = $ref('')
+let postUrl = $ref(`http://quanquancho.com:8080/consumer/comment/upload-media?orderId=${orderId}`)
 
 let commentText = $ref('')
 let stars = $ref(0)
@@ -136,7 +161,7 @@ const addComment = () => {
 
 }
 
-const activeIndex = ref('1')
+const activeIndex = ref('0')
 
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log('key: ', key)
@@ -147,35 +172,7 @@ const fileList = ref<UploadUserFile[]>([
   {
     name: 'food.jpeg',
     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-  {
-    name: 'plant-1.png',
-    url: '/images/plant-1.png',
-  },
-  {
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-  {
-    name: 'plant-2.png',
-    url: '/images/plant-2.png',
-  },
-  {
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-  {
-    name: 'figure-1.png',
-    url: '/images/figure-1.png',
-  },
-  {
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-  {
-    name: 'figure-2.png',
-    url: '/images/figure-2.png',
-  },
+  }
 ])
 
 const dialogImageUrl = ref('')
