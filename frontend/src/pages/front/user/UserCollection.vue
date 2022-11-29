@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { HotelInfo } from '../../../type/type'
+import { HotelInfo } from '../../../type/type.d'
 import request from '../../../utils/request'
 
 interface IPage {
@@ -67,7 +67,7 @@ let hotelInfos = $ref<HotelInfo[]>([])
 
 const load = () => {
   request.get(`/consumer/get-likes?pageNum=${pageNum}&pageSize=${pageSize}`).then(res => {
-    pages = res.data.data.records
+    pages = res.data.data
     hotelInfos = pages.records
     console.log('hotelInfos: ', hotelInfos)
     totalNum = parseInt(pages.total)
