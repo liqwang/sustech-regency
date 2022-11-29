@@ -1,6 +1,7 @@
 package com.sustech.regency.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.dao.ChatHistoryDao;
 import com.sustech.regency.db.po.ChatHistory;
 import com.sustech.regency.db.po.Room;
@@ -98,17 +99,28 @@ public class ConsumerController {
     }
 
     @ApiOperation("用户查看自己收藏的酒店")
-    @GetMapping("/get-likes")
+    @GetMapping("/get-likes-all")
     public ApiResponse<List<HotelInfo>> getLikes() {
         List<HotelInfo> hotels = consumerService.getHotelInfoFromLikes();
-        for (HotelInfo hotelInfo :
-                hotels) {
+        for (HotelInfo hotelInfo : hotels) {
             hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
             hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
             hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
         }
-
         return ApiResponse.success(hotels);
+    }
+
+    @ApiOperation("用户分页查看自己收藏的酒店")
+    @GetMapping("/get-likes")
+    public ApiResponse<IPage<HotelInfo>> getLikes(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        IPage<HotelInfo> hotelInfoFromLikes = consumerService.getHotelInfoFromLikes(pageNum, pageSize);
+        List<HotelInfo> hotels = hotelInfoFromLikes.getRecords();
+        for (HotelInfo hotelInfo : hotels) {
+            hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
+            hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
+            hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
+        }
+        return ApiResponse.success(hotelInfoFromLikes);
     }
 
     @ApiOperation("用户查看自己订单")
@@ -120,9 +132,9 @@ public class ConsumerController {
     @ApiOperation("用户多条件筛选某个酒店的订单")
     @GetMapping("/hotel/get-selected-orders")
     public ApiResponse<List<OrderInfo>> getSelectedOrders(@ApiParam(value = "是否有评论", required = false) @RequestParam(required = false) Boolean isComment,
-                                                      @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                      @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
-                                                      @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
+                                                          @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
+                                                          @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
+                                                          @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
 
         return ApiResponse.success(consumerService.selectCustomerOrders(isComment, startTime, endTime, status));
     }

@@ -2,6 +2,8 @@ package com.sustech.regency.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
@@ -50,7 +52,7 @@ public class PublicServiceImpl implements PublicService {
     private CollectionDao collectionDao;
 
     @Override
-    public List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName) {
+    public IPage<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName, Integer pageNum, Integer pageSize) {
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
         wrapper.select(Hotel::getId, Hotel::getLatitude, Hotel::getLongitude, Hotel::getName, Hotel::getTel, Hotel::getAddress, Hotel::getStars)
                 .selectAs(Province::getName, HotelInfo::getProvinceName)
@@ -65,8 +67,8 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(City.class, City::getId, Region::getCityId)
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
                 .innerJoin(File.class, File::getId, Hotel::getCoverId);
-        List<HotelInfo> hotelInfos = hotelDao.selectJoinList(HotelInfo.class, wrapper);
-
+        IPage<HotelInfo> hotelInfoIPage = hotelDao.selectJoinPage(new Page<>(pageNum, pageSize), HotelInfo.class, wrapper);
+        List<HotelInfo> hotelInfos = hotelInfoIPage.getRecords();
         for (HotelInfo a : hotelInfos) {
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, a.getCoverUrl());
@@ -76,9 +78,8 @@ public class PublicServiceImpl implements PublicService {
             }
             a.setPictureUrls(getHotelPictureUrls(a.getId()));
             a.setVideoUrls(getHotelVideoUrls(a.getId()));
-
         }
-        return hotelInfos;
+        return hotelInfoIPage;
     }
 
     @Override
@@ -301,6 +302,9 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
                 .innerJoin(File.class, File::getId, Hotel::getCoverId);
         HotelInfo hotelInfo = hotelDao.selectJoinOne(HotelInfo.class, wrapper);
+        if (hotelInfo == null) {
+            return null;
+        }
 
         LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
         fileLambdaQueryWrapper.eq(File::getId, hotelInfo.getCoverUrl());

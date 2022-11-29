@@ -1,6 +1,7 @@
 package com.sustech.regency.controller;
 
 import cn.hutool.core.io.FileUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.CityDao;
 import com.sustech.regency.db.dao.ProvinceDao;
@@ -38,6 +39,7 @@ public class PublicController {
 
     @Resource
     private ProvinceDao provinceDao;
+
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
     public ApiResponse<List<Province>> getAllProvinces() {
@@ -47,6 +49,7 @@ public class PublicController {
 
     @Resource
     private CityDao cityDao;
+
     @ApiOperation("获取一个省的所有市")
     @GetMapping("/city/all")
     public ApiResponse<List<City>> getAllCities(@RequestParam(required = false) String province) {
@@ -101,20 +104,22 @@ public class PublicController {
         }
     }
 
-    @ApiOperation("根据省市区酒店名字获得酒店信息")
+    @ApiOperation("根据省市区酒店名字分页查询获得酒店信息")
     @GetMapping("/get-hotels-by-location")
-    public ApiResponse<List<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
+    public ApiResponse<IPage<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
                                                   @ApiParam(value = "城市名字") @RequestParam(required = false) String CityName,
                                                   @ApiParam(value = "区的名字") @RequestParam(required = false) String RegionName,
-                                                  @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName) {
-
-        List<HotelInfo> hotels = publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName);
+                                                  @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName,
+                                                  @ApiParam(value = "页数") Integer pageNum,
+                                                  @ApiParam(value = "页面大小") Integer pageSize) {
+        IPage<HotelInfo> hotelsByLocation = publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName, pageNum, pageSize);
+        List<HotelInfo> hotels = hotelsByLocation.getRecords();
         for (HotelInfo hotelInfo : hotels) {
             hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
             hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
             hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
         }
-        return ApiResponse.success(hotels);
+        return ApiResponse.success(hotelsByLocation);
     }
 
     @ApiOperation("根据酒店ID获取对应所有的房间")
@@ -188,7 +193,6 @@ public class PublicController {
 
     @Resource
     private ConsumerService consumerService;
-
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
      * <ul>

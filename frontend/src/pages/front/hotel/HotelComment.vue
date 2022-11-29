@@ -19,21 +19,31 @@
           </div>
 
           <div>
-            <div v-for="item in commentList" :key="item.id"
-              style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
+            <div v-for="comment in commentList" style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
               <div style="width: 100px; text-align: center">
-                <el-image :src="item.headshotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
+                <el-image :src="comment.headshotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
+                <b>{{ comment.userName }}</b>
               </div>
-              <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px">
-                <b> {{ item.username }} </b>:
-                <span> {{ item.content }} </span>
+              <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px; margin-left: 20px;">
+                <el-rate v-model="comment.stars" disabled show-score text-color="#ff9900" score-template="{value}分/5分">
+                </el-rate>
+                <div> {{ comment.comment }} </div>
+
+                <div v-for="imageUrl in comment.pictureUrls">
+                  <el-image :src="imageUrl"></el-image>
+                </div>
+
+                <div v-for="videoUrl in comment.videoUrls">
+                  <video :src="videoUrl"></video>
+                </div>
+                <!-- <video src="https://quanquancho.com:8080/public/file/2022/11/29/379552bc34c84d97a58b4237b477e7ba.mp4"></video> -->
 
                 <div style="display: flex; line-height: 20px; margin-top: 5px">
                   <div style="width: 200px">
                     <el-icon>
                       <Timer />
                     </el-icon>
-                    <span style="margin-left: 5px">{{ item.time }}</span>
+                    <span style="margin-left: 5px">{{ comment.commentTime }}</span>
                   </div>
                   <!-- <div style="text-align: right; flex: 1;">
                     <el-button style="margin-left: 5px" type="text">回复</el-button>
@@ -56,19 +66,15 @@ import { HotelInfo } from '../../../type/type.d';
 import request from '../../../utils/request';
 
 interface Comment {
-  id: number
-  username: string
+  commentTime: string
+  comment: string
+  userName: string
+  hotelName: string
+  roomType: string
+  stars: number
+  videoUrls: string[]
+  pictureUrls: string[]
   headshotUrl: string
-  time: string
-  content: string
-}
-
-const comment: Comment = {
-  id: 1,
-  username: 'RockyCYG',
-  headshotUrl: 'https://quanquancho.com:8080/public/file/2022/10/30/ef284062fe96417ea17daf3bf1f92b42.jpg',
-  time: '2022-10-30',
-  content: '南科大很棒！'
 }
 
 const router = useRouter()
@@ -78,12 +84,19 @@ const props = defineProps<{
 }
 >()
 
+let commentList = $ref<Comment[]>([])
+
 const hotelInfo = $ref(props.hotelInfo)
 const stars = $ref(hotelInfo?.stars)
 
-
-const commentList = Array.from({ length: 20 }).fill(comment) as Comment[]
 console.log("router", router.currentRoute.value.fullPath)
+
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
+
+request.get(`/public/get-hotelComments?hotelId=${hotelId}`).then(res => {
+  commentList = res.data.data
+  console.log('commentList: ', commentList)
+})
 </script>
 
 <style scoped>

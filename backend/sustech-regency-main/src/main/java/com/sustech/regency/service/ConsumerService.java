@@ -1,5 +1,6 @@
 package com.sustech.regency.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.vo.HotelInfo;
@@ -26,7 +27,7 @@ public interface ConsumerService {
      */
     PayInfo reserveRoom(Integer roomId, Date startTime, Date endTime);
 
-    void roomPayed(Long orderId,Date payTime);
+    void roomPayed(Long orderId, Date payTime);
 
     void like(Integer hotelId);
 
@@ -34,9 +35,11 @@ public interface ConsumerService {
 
     List<HotelInfo> getHotelInfoFromLikes();
 
+    IPage<HotelInfo> getHotelInfoFromLikes(Integer pageNum, Integer pageSize);
+
     List<OrderInfo> getOrders();
 
-    List<OrderInfo> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
+    List<OrderInfo> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status);
 
     List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId);
 

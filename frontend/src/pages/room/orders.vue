@@ -81,7 +81,7 @@ const change_result =()=>{
     if(checkList.value[i]=='has comment')
     url += '&isComment=true'
     if(checkList.value[i]=='has paid')
-    url += '&status=5'
+    url += '&status=2'
   }
   if (days.value.length>1){
     url += '&startTime='
