@@ -26,13 +26,13 @@
                 <span class="text-gray-500">行程安排</span>
               </el-col>
               <el-col :span="5">
-                <el-date-picker v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
+                <el-date-picker value-format="YYYY-MM-DD" v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
               </el-col>
               <el-col :span="1" class="text-center">
                 <span class="text-gray-500">-</span>
               </el-col>
               <el-col :span="5">
-                <el-date-picker v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
+                <el-date-picker value-format="YYYY-MM-DD" v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
               </el-col>
               <el-col :span="1"></el-col>
               <el-col :span="2" class="text-center">
@@ -446,10 +446,9 @@ const clear = () => {
 }
 
 const onSubmit = () => {
-  //console.log(form)
+  console.log('前端表单', form)
   request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&startTime=${form.start}&endTime=${form.end}&minPrice=${form.min}&maxPrice=${form.max}&roomTypeId=${form.type}`).then((res) => {
-    //console.log('筛选')
-    //console.log(res.data.data)
+    console.log('返回数据', res.data.data)
     rooms = []
     for (const key in res.data.data) {
       const element = res.data.data[key]
@@ -580,7 +579,7 @@ const booknow = () => {
           startTime: form.start
         })
         .then((res) => {
-          // console.log(res)
+          //  console.log(res)
           if (res.data.code == '400') {
             ElNotification({
               title: 'Failed',
