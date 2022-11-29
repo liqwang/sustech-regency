@@ -236,7 +236,7 @@ let hotelName = $ref('')
 let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
 let regions = $ref<string[]>([])
-let totalNum = $ref(hotelInfos?.length)
+let totalNum = $ref(0)
 
 let listLoading = $ref(false)
 
@@ -274,7 +274,6 @@ request.get('/public/province/all').then((res) => {
 
 const changeCity = (province: string) => {
   console.log('myprovince: ' + province)
-  // getHotels(province, '', '')
   request.get(`/public/city/all?province=${province}`).then((res) => {
     const cityList = res.data.data as Province[]
     cities = cityList.map((c) => c.name)
@@ -285,7 +284,6 @@ const changeCity = (province: string) => {
 }
 
 const changeRegion = (province: string, city: string) => {
-  // getHotels(province, city, '')
   request.get(`/public/region/all?province=${province}&&city=${city}`).then((res) => {
     const regionList = res.data.data as Region[]
     regions = regionList.map((c) => c.name)

@@ -36,9 +36,9 @@
       </el-row>
       <el-row justify="center">
         <div id="pages">
-          <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
-            :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
-            layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
+          <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
+            :small="small" :disabled="disabled" :background="background"
+            layout="total, sizes, prev, pager, next, jumper" :total="totalNum" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" style="margin-top: 15px" />
         </div>
       </el-row>
@@ -50,18 +50,27 @@
 import { HotelInfo } from '../../../type/type'
 import request from '../../../utils/request'
 
-let hotelInfos = $ref<HotelInfo[]>([])
+interface IPage {
+  records: HotelInfo[]
+  total: string
+}
 
-request.get('/consumer/get-likes').then((res) => {
-  hotelInfos = res.data.data
-  console.log('hotelInfos: ', hotelInfos)
-})
-
-const currentPage4 = $ref(1)
-const pageSize4 = $ref(100)
+let pageNum = $ref(1)
+let pageSize = $ref(5)
+let totalNum = $ref(0)
 const small = $ref(false)
 const background = $ref(false)
 const disabled = $ref(false)
+
+let pages = $ref<IPage>()
+let hotelInfos = $ref<HotelInfo[]>([])
+
+request.get('/consumer/get-likes').then(res => {
+  pages = res.data.data.records
+  hotelInfos = pages.records
+  console.log('hotelInfos: ', hotelInfos)
+  totalNum = parseInt(pages.total)
+})
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)

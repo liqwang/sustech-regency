@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import com.alipay.api.domain.AlipayTradePrecreateModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sustech.regency.component.OrderWebSocket;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
@@ -89,6 +91,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private String payTimeout;
     @Resource
     private Redis redis;
+
     @Override
     public synchronized PayInfo reserveRoom(Integer roomId, Date startDate, Date endDate) {
         asserts(endDate.after(startDate), "退房日期要在入住日期之后");
@@ -120,36 +123,36 @@ public class ConsumerServiceImpl implements ConsumerService {
         AlipayTradePrecreateModel alipayInfo = new AlipayTradePrecreateModel();
         alipayInfo.setOutTradeNo(order.getId() + "");
         alipayInfo.setSubject(roomTypeDao.selectById(room.getTypeId()).getName() + days + "天"); //产品名称
-        alipayInfo.setTotalAmount(getMoneyStr(room.getPrice()*days*room.getDiscount())); //金额
+        alipayInfo.setTotalAmount(getMoneyStr(room.getPrice() * days * room.getDiscount())); //金额
         alipayInfo.setTimeoutExpress(payTimeout); //支付超时时间
         String base64QrCode = alipayUtil.getPayQrCode(alipayInfo);
         @SuppressWarnings("ConstantConditions")
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String webSocketUrl = "ws://" + request.getServerName() + ":" + request.getServerPort() + "/websocket/order/" + order.getId();
-        redis.setObject("order:"+order.getId(),null,15, MINUTES); //订单15分钟后未支付会超时
+        redis.setObject("order:" + order.getId(), null, 15, MINUTES); //订单15分钟后未支付会超时
         return new PayInfo().setBase64QrCode(base64QrCode)
-                            .setWebSocketUrl(webSocketUrl);
+                .setWebSocketUrl(webSocketUrl);
     }
 
     /**
      * 将金额保留至小数点后两位
      */
-    private static String getMoneyStr(double money){
+    private static String getMoneyStr(double money) {
         String moneyStr = money + "";
         int decimalPointIndex = moneyStr.lastIndexOf('.');
-        return moneyStr.length()==decimalPointIndex+2? //eg: 198.0
-                moneyStr:
-                moneyStr.substring(0,decimalPointIndex+3);
+        return moneyStr.length() == decimalPointIndex + 2 ? //eg: 198.0
+                moneyStr :
+                moneyStr.substring(0, decimalPointIndex + 3);
     }
 
     @Override
     public void roomPayed(Long orderId, Date payTime) {
-        redis.deleteObject("order:"+orderId);
+        redis.deleteObject("order:" + orderId);
         //这里即使Redis的key过期提前把表中状态改为TIMEOUT也不会有bug
         orderDao.updateById(new Order()
-                               .setId(orderId)
-                               .setStatus(PAYED)
-                               .setPayTime(payTime));
+                .setId(orderId)
+                .setStatus(PAYED)
+                .setPayTime(payTime));
         OrderWebSocket.notifyFrontend(orderId);
     }
 
@@ -193,18 +196,22 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public List<HotelInfo> getHotelInfoFromLikes() {
+    public IPage<HotelInfo> getHotelInfoFromLikes(Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         collectionLambdaQueryWrapper.eq(Collection::getUserId, getUserId());
-        List<Collection> collections = collectionDao.selectList(collectionLambdaQueryWrapper);
+//        List<Collection> collections = collectionDao.selectList(collectionLambdaQueryWrapper);
+        Page<Collection> collectionPage = collectionDao.selectPage(new Page<>(pageNum, pageSize), collectionLambdaQueryWrapper);
+        IPage<HotelInfo> hotelInfoIPage = new Page<>();
         List<HotelInfo> likes = new ArrayList<>();
-        for (Collection c :
-                collections) {
+        List<Collection> collections = collectionPage.getRecords();
+        for (Collection c : collections) {
             Integer hotel_id = c.getHotelId();
             HotelInfo hotel = publicService.getOneHotelByHotelId(hotel_id);
             likes.add(hotel);
         }
-        return likes;
+        hotelInfoIPage.setRecords(likes);
+        hotelInfoIPage.setTotal(collectionPage.getTotal());
+        return hotelInfoIPage;
     }
 
     @Override
@@ -213,8 +220,8 @@ public class ConsumerServiceImpl implements ConsumerService {
         orderLambdaQueryWrapper.eq(Order::getPayerId, getUserId());
         List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o:
-             orderList) {
+        for (Order o :
+                orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
             OrderInfo orderInfo = new OrderInfo();
@@ -228,7 +235,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public List<OrderInfo> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status) {
-        asserts((startTime==null&&EndTime==null)||(startTime!=null&&EndTime!=null), "StartTime and EndTime need to be chosen at the same time");
+        asserts((startTime == null && EndTime == null) || (startTime != null && EndTime != null), "StartTime and EndTime need to be chosen at the same time");
         List<Order> orderList = new ArrayList<>();
         LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -263,7 +270,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         }
 
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o:
+        for (Order o :
                 orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
@@ -278,19 +285,19 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId) {
-        asserts((startTime==null&&EndTime==null)||(startTime!=null&&EndTime!=null), "StartTime and EndTime need to be chosen at the same time");
+        asserts((startTime == null && EndTime == null) || (startTime != null && EndTime != null), "StartTime and EndTime need to be chosen at the same time");
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomTypeId);
         ArrayList<Room> selectedRooms = new ArrayList<>();
         for (Room room :
                 rooms) {
             boolean judge = true;
-            if(minPrice!=null){
+            if (minPrice != null) {
                 if (!(room.getPrice() >= minPrice)) {
                     judge = false;
                 }
             }
 
-            if(maxPrice!=null){
+            if (maxPrice != null) {
                 if (!(room.getPrice() <= maxPrice)) {
                     judge = false;
                 }
@@ -300,13 +307,13 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
-                if (startTime != null){
+                if (startTime != null) {
                     if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
                         judge = false;
                     }
                 }
             }
-            if (judge){
+            if (judge) {
                 selectedRooms.add(room);
             }
 

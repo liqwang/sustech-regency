@@ -1,5 +1,6 @@
 package com.sustech.regency.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.po.Order;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.model.vo.HotelInfo;
@@ -32,7 +33,7 @@ public interface ConsumerService {
 
     void dislike(Integer hotelId);
 
-    List<HotelInfo> getHotelInfoFromLikes();
+    IPage<HotelInfo> getHotelInfoFromLikes(Integer pageNum, Integer pageSize);
 
     List<OrderInfo> getOrders();
 
