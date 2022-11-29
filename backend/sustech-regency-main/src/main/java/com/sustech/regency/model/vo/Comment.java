@@ -23,4 +23,5 @@ public class Comment {
     private Float stars;
     private List<String> videoUrls;
     private List<String> pictureUrls;
+    private String headShotUrl;
 }
