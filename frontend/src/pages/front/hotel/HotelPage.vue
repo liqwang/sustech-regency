@@ -178,7 +178,7 @@ const cancelCollect = () => {
 
 let collectHotels = $ref<number[]>([])
 
-request.get('/consumer/get-likes').then(res => {
+request.get('/consumer/get-likes-all').then(res => {
   const hotels = res.data.data as HotelInfo[]
   collectHotels = hotels.map(hotel => hotel.id)
   console.log('collectHotels: ', collectHotels)
