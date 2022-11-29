@@ -65,18 +65,24 @@ const disabled = $ref(false)
 let pages = $ref<IPage>()
 let hotelInfos = $ref<HotelInfo[]>([])
 
-request.get('/consumer/get-likes').then(res => {
-  pages = res.data.data.records
-  hotelInfos = pages.records
-  console.log('hotelInfos: ', hotelInfos)
-  totalNum = parseInt(pages.total)
-})
+const load = () => {
+  request.get(`/consumer/get-likes?pageNum=${pageNum}&pageSize=${pageSize}`).then(res => {
+    pages = res.data.data.records
+    hotelInfos = pages.records
+    console.log('hotelInfos: ', hotelInfos)
+    totalNum = parseInt(pages.total)
+  })
+}
+
+load()
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)
+  load()
 }
 const handleCurrentChange = (val: number) => {
   console.log(`current page: ${val}`)
+  load()
 }
 </script>
 
