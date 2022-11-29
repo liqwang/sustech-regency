@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.db.po.Collection;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.MerchantService;
@@ -34,6 +35,9 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Resource
     private RoomService roomService;
+
+    @Resource
+    private CollectionDao collectionDao;
 
     @Override
     public List<HotelInfo> getAllHotelInfos(Integer merchantId) {
@@ -232,6 +236,17 @@ public class MerchantServiceImpl implements MerchantService {
         for (Room room : rooms) {
             roomService.updateOneRoom(getUserId(), room.getId(), null, null, null, null, null, null, saleRate);
         }
+//        发给所有收藏了该酒店的用户打折
+        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        collectionLambdaQueryWrapper.eq(Collection::getHotelId,hotelId);
+        List<Collection> collections = collectionDao.selectList(collectionLambdaQueryWrapper);
+        for (Collection collection:
+             collections) {
+            int userId = collection.getUserId();
+//            发邮件
+        }
+
+
     }
 
     /**

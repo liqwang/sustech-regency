@@ -268,7 +268,23 @@ public class PublicServiceImpl implements PublicService {
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
-        return orderDao.selectJoinList(Comment.class, wrapper);
+
+        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
+        for (Comment comment:
+             comments) {
+
+            String userName = comment.getUserName();
+            LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            userLambdaQueryWrapper.eq(User::getName,userName);
+            User user = userDao.selectOne(userLambdaQueryWrapper);
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, user.getHeadshotId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null) {
+                if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
+            }
+        }
+        return comments;
     }
 
     @Override
