@@ -20,6 +20,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.sustech.regency.db.po.OrderStatus.COMMENTED;
+import static com.sustech.regency.db.po.OrderStatus.NOT_COMMENTED;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
 @Service
@@ -264,16 +266,23 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(User::getName, Comment::getUserName)
                 .selectAs(Hotel::getName, Comment::getHotelName)
                 .selectAs(RoomType::getName, Comment::getRoomType);
-        wrapper.eq(Hotel::getId, hotelId);
+        wrapper.eq(Hotel::getId, hotelId)
+                .and(query->query.eq(Order::getStatus,NOT_COMMENTED)
+                                 .or() //未评论的变为默认好评
+                                 .eq(Order::getStatus,COMMENTED));
         wrapper.innerJoin(User.class, User::getId, Order::getPayerId)
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
-
-        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
-        for (Comment comment:
-             comments) {
-
+        List<Comment> comments =orderDao.selectJoinList(Comment.class, wrapper)
+                                        .stream()
+                                        .peek(comment -> {
+                                            if(comment.getComment()==null){
+                                                comment.setComment("系统默认好评");
+                                                comment.setStars(5.0f);
+                                            }
+                                        }).toList();
+        for (Comment comment:comments) {
             String userName = comment.getUserName();
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
             userLambdaQueryWrapper.eq(User::getName,userName);
