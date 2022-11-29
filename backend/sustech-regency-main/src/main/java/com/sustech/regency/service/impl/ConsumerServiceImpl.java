@@ -196,6 +196,20 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
+    public List<HotelInfo> getHotelInfoFromLikes() {
+        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        collectionLambdaQueryWrapper.eq(Collection::getUserId, getUserId());
+        List<Collection> collectionList = collectionDao.selectList(collectionLambdaQueryWrapper);
+        List<HotelInfo> likes = new ArrayList<>();
+        for (Collection c : collectionList) {
+            Integer hotel_id = c.getHotelId();
+            HotelInfo hotel = publicService.getOneHotelByHotelId(hotel_id);
+            likes.add(hotel);
+        }
+        return likes;
+    }
+
+    @Override
     public IPage<HotelInfo> getHotelInfoFromLikes(Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         collectionLambdaQueryWrapper.eq(Collection::getUserId, getUserId());

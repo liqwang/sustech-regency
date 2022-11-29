@@ -99,6 +99,18 @@ public class ConsumerController {
     }
 
     @ApiOperation("用户查看自己收藏的酒店")
+    @GetMapping("/get-likes-all")
+    public ApiResponse<List<HotelInfo>> getLikes() {
+        List<HotelInfo> hotels = consumerService.getHotelInfoFromLikes();
+        for (HotelInfo hotelInfo : hotels) {
+            hotelInfo.setMinPrice(publicService.getMinPriceOfHotel(hotelInfo.getId()));
+            hotelInfo.setCommentNum(publicService.getCommentsNumberByHotel(hotelInfo.getId()));
+            hotelInfo.setLikes_num(publicService.getLikesNumByHotelId(hotelInfo.getId()));
+        }
+        return ApiResponse.success(hotels);
+    }
+
+    @ApiOperation("用户分页查看自己收藏的酒店")
     @GetMapping("/get-likes")
     public ApiResponse<IPage<HotelInfo>> getLikes(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         IPage<HotelInfo> hotelInfoFromLikes = consumerService.getHotelInfoFromLikes(pageNum, pageSize);

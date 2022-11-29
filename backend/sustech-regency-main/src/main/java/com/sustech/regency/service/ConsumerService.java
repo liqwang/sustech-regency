@@ -27,17 +27,19 @@ public interface ConsumerService {
      */
     PayInfo reserveRoom(Integer roomId, Date startTime, Date endTime);
 
-    void roomPayed(Long orderId,Date payTime);
+    void roomPayed(Long orderId, Date payTime);
 
     void like(Integer hotelId);
 
     void dislike(Integer hotelId);
 
+    List<HotelInfo> getHotelInfoFromLikes();
+
     IPage<HotelInfo> getHotelInfoFromLikes(Integer pageNum, Integer pageSize);
 
     List<OrderInfo> getOrders();
 
-    List<OrderInfo> selectCustomerOrders( Boolean isComment, Date startTime, Date EndTime, Integer status);
+    List<OrderInfo> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status);
 
     List<Room> getRoomInfosByCustomerChoice(Integer hotelId, Date startTime, Date EndTime, Integer minPrice, Integer maxPrice, Integer roomTypeId);
 
