@@ -54,8 +54,11 @@
           <el-col :span="1">
             {{ orderInfo.roomInfo.floor }}层
           </el-col>
-          <el-col :span="1">
+          <el-col :span="2">
             {{ orderInfo.roomInfo.roomNum }}室
+          </el-col>
+          <el-col :span="3">
+            房型: {{ orderInfo.roomInfo.roomTypeName }}
           </el-col>
         </el-row>
         <el-row>

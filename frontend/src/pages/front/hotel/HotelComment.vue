@@ -21,7 +21,8 @@
           <div>
             <div v-for="comment in commentList" style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
               <div style="width: 100px; text-align: center">
-                <el-image :src="comment.headshotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
+                <el-image :src="comment.headShotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
+                <div></div>
                 <b>{{ comment.userName }}</b>
               </div>
               <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px; margin-left: 20px;">
@@ -74,7 +75,7 @@ interface Comment {
   stars: number
   videoUrls: string[]
   pictureUrls: string[]
-  headshotUrl: string
+  headShotUrl: string
 }
 
 const router = useRouter()

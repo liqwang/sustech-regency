@@ -193,7 +193,6 @@ public class PublicController {
 
     @Resource
     private ConsumerService consumerService;
-
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
      * <ul>

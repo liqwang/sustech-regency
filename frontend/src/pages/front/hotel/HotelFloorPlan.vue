@@ -715,7 +715,6 @@ const booknow = () => {
           startTime: form.start
         })
         .then((res) => {
-          // console.log(res)
           if (res.data.code == '400') {
             ElNotification({
               title: 'Failed',
@@ -723,10 +722,32 @@ const booknow = () => {
             })
             show = !show
           } else if (res.data.code == '200') {
-            // console.log(res.data.data)
             base = res.data.data.base64QrCode.replace(/[\r\n]/g, '')
-            // console.log(base)
             paypage = !paypage
+            const socketUrl = res.data.data.webSocketUrl
+            const socket = new WebSocket(socketUrl)
+            socket.onopen = () => {
+              console.log('websocket已打开')
+            }
+            socket.onmessage = (message) => {
+              console.log(`收到数据: ${message.data}`)
+              if (message.data == 'ok') {
+                ElNotification({
+                  title: 'Success',
+                  message: h('i', { style: 'color: teal' }, '预定成功')
+                })
+              }
+              show = !show
+              paypage = !paypage
+            }
+
+            socket.onclose = () => {
+              console.log('websocket已关闭')
+            }
+
+            socket.onerror = () => {
+              console.log('websocket发生了错误')
+            }
           }
         })
     }
