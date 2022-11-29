@@ -447,7 +447,7 @@ const clear = () => {
 
 const onSubmit = () => {
   //console.log(form)
-  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&?startTime=${form.start}&?endTime=${form.end}&?minPrice=${form.min}&?maxPrice=${form.max}&?roomTypeId=${form.type}`).then((res) => {
+  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&startTime=${form.start}&endTime=${form.end}&minPrice=${form.min}&maxPrice=${form.max}&roomTypeId=${form.type}`).then((res) => {
     //console.log('筛选')
     //console.log(res.data.data)
     rooms = []

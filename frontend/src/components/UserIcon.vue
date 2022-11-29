@@ -35,6 +35,8 @@
 
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
+import { ElNotification } from 'element-plus';
+import { h } from 'vue';
 import router from '../router'
 
 const token = $ref(localStorage.token ? JSON.parse(localStorage.token) : '')
@@ -46,17 +48,27 @@ const avatarUrl = user ? JSON.parse(localStorage.getItem('user') as string).head
 const isMerchant = user ? JSON.parse(localStorage.getItem('user') as string).isMerchant : false
 
 const login = () => {
-  router.push('/login')
+  let userRouteUrl = router.resolve({
+    path: '/login'
+  })
+  window.open(userRouteUrl.href, '_blank')
 }
 
 const logout = () => {
   localStorage.removeItem('token')
   localStorage.clear()
   router.push('/login')
+  ElNotification({
+    title: 'Success',
+    message: h('i', { style: 'color: green' }, '退出登录')
+  })
 }
 
 const signup = () => {
-  router.push('/signup')
+  let userRouteUrl = router.resolve({
+    path: '/signup'
+  })
+  window.open(userRouteUrl.href, '_blank')
 }
 
 const toUserPage = () => {

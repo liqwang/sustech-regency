@@ -82,10 +82,10 @@
 
     <el-row justify="center">
       <div id="pages">
-        <el-pagination v-model:currentPage="currentPage4" v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
-          layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
-          @current-change="handleCurrentChange" style="margin-top: 15px" />
+        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
+          :small="small" :disabled="disabled" :background="background" layout="total, sizes, prev, pager, next, jumper"
+          :total="totalNum" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          style="margin-top: 15px" />
       </div>
     </el-row>
 
@@ -220,7 +220,13 @@ interface Region {
   cityId: number
 }
 
-let hotelInfos = $ref<HotelInfo[]>([])
+interface IPage {
+  records: HotelInfo[]
+  total: string
+}
+
+let pages = $ref<IPage>()
+let hotelInfos = $ref<HotelInfo[]>()
 
 let province = $ref('')
 let city = $ref('')
@@ -230,16 +236,25 @@ let hotelName = $ref('')
 let provinces = $ref<string[]>([])
 let cities = $ref<string[]>([])
 let regions = $ref<string[]>([])
+let totalNum = $ref(hotelInfos?.length)
 
 let listLoading = $ref(false)
+
+const pageNum = $ref(1)
+const pageSize = $ref(5)
+const small = $ref(false)
+const background = $ref(false)
+const disabled = $ref(false)
 
 const load = () => {
   listLoading = true
   request
-    .get(`/public/get-hotels-by-location?CityName=${city}&&ProvinceName=${province}&&RegionName=${region}&&HotelName=${hotelName}`)
-    .then((res) => {
+    .get(`/public/get-hotels-by-location?CityName=${city}&ProvinceName=${province}&RegionName=${region}&HotelName=${hotelName}&pageNum=${pageNum}&pageSize=${pageSize}`)
+    .then(res => {
       console.log(res.data.data)
-      hotelInfos = res.data.data
+      pages = res.data.data
+      hotelInfos = pages.records
+      totalNum = parseInt(pages.total)
     })
     .finally(() => {
       listLoading = false
@@ -279,16 +294,12 @@ const changeRegion = (province: string, city: string) => {
   })
 }
 
-const currentPage4 = $ref(1)
-const pageSize4 = $ref(100)
-const small = $ref(false)
-const background = $ref(false)
-const disabled = $ref(false)
-
 const handleSizeChange = (val: number) => {
+  load()
   console.log(`${val} items per page`)
 }
 const handleCurrentChange = (val: number) => {
+  load()
   console.log(`current page: ${val}`)
 }
 </script>

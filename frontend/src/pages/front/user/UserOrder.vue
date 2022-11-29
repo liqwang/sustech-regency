@@ -13,31 +13,56 @@
       <el-menu-item index="5" @click="loadOrders(5)">已评价</el-menu-item>
       <el-menu-item index="6" @click="loadOrders(6)">已退款</el-menu-item>
     </el-menu>
-    <div v-for="order in orders">
+    <div v-for="orderInfo in orderInfos">
       <el-card class="m-5 h-100">
-        <el-row>
-          <el-col :span="6">
-            <!-- 2022-01-01 00:00:00 -->
-            {{ order.createTime }}
+        <el-row justify="space-evenly">
+          <el-col :span="4">
+            {{ orderInfo.order.createTime }}
           </el-col>
-          <el-col :span="6">
-            订单号: {{ order.id }}
+          <el-divider direction="vertical" />
+          <el-col :span="5">
+            订单号: {{ orderInfo.order.id }}
+          </el-col>
+          <el-divider direction="vertical" />
+          <el-col :span="2">
+            付款人: {{ username }}
+          </el-col>
+          <el-divider direction="vertical" />
+          <el-col :span="3">
+            金额: ￥{{ orderInfo.order.fee }}
+          </el-col>
+          <el-divider direction="vertical" />
+          <el-col :span="3">
+            订单状态: {{ map1.get(orderInfo.order.status) }}
+          </el-col>
+          <el-col :span="2">
+            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
+              @click="dialogFormVisible = true, orderId = orderInfo.order.id">
+              评价
+            </el-button>
           </el-col>
         </el-row>
         <el-row>
-          <!-- <el-image
-            src="https://z1.muscache.cn/im/pictures/c7e7c673-9673-4d08-be5a-ce7c2c7143dd.jpg?aki_policy=large" /> -->
-          <el-col :span="6">
-            {{ username }}
+          <el-col>
+            <router-link :to="'/hotel/' + orderInfo.hotelInfo.id + '/introduction'" target="_blank">{{
+                orderInfo.hotelInfo.name
+            }}
+            </router-link>
           </el-col>
-          <el-col :span="6">
-            支付金额: ￥{{ order.fee }}
+        </el-row>
+        <el-row>
+          <el-col :span="1">
+            {{ orderInfo.roomInfo.floor }}层
           </el-col>
-          <el-col :span="6">
-            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
-              @click="dialogFormVisible = true, orderId = order.id">
-              评价
-            </el-button>
+          <el-col :span="1">
+            {{ orderInfo.roomInfo.roomNum }}室
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4">
+            <router-link :to="'/hotel/' + orderInfo.hotelInfo.id + '/introduction'" target="_blank">
+              <el-image :src="orderInfo.roomInfo.coverUrl" style="width: 100%; height: 20vh" fit="contain"></el-image>
+            </router-link>
           </el-col>
         </el-row>
       </el-card>
@@ -117,33 +142,18 @@ import { Comment } from '@element-plus/icons-vue'
 import { ElMessage, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
 import request from '../../../utils/request';
+import { OrderInfo } from "../../../type/type";
 
 const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
 const user = JSON.parse(localStorage.getItem('user') as string)
 const username = $ref(user?.name)
 
-interface Order {
-  id: string
-  roomId: number
-  dateStart: string
-  dateEnd: string
-  payerId: number
-  fee: number
-  status: string
-  comment: string
-  commentTime: string
-  stars: number
-  payTime: string
-  createTime: string
-  refundTime: string
-}
-
-let orders = $ref<Order[]>([])
+let orderInfos = $ref<OrderInfo[]>([])
 
 request.get('/consumer/get-orders').then(res => {
-  orders = res.data.data
-  console.log(orders)
+  orderInfos = res.data.data
+  console.log(orderInfos)
 })
 
 let orderId = $ref('')
@@ -155,8 +165,17 @@ let orderStatus = $ref(0)
 
 let dialogFormVisible = $ref(false)
 
-const loadOrders = (type: number) => {
-
+const loadOrders = (status: number) => {
+  let orderUrl = ''
+  status--
+  if (status >= 0) {
+    orderUrl = `/consumer/hotel/get-selected-orders?status=${status}`
+  } else {
+    orderUrl = '/consumer/hotel/get-selected-orders'
+  }
+  request.get(orderUrl).then(res => {
+    orderInfos = res.data.data
+  })
 }
 
 const addComment = () => {
@@ -219,6 +238,17 @@ const submitUpload = () => {
   dialogVisible.value = false
   uploadRef.value!.submit()
 }
+
+let status = $ref(0)
+
+// const status = ['全部订单', '待付款', '已超时', '已支付', '待评价', '已评价', '已退款']
+const map1 = new Map<string, string>()
+map1.set('NOT_PAYED', '待付款')
+map1.set('TIMEOUT', '已超时')
+map1.set('PAYED', '已支付')
+map1.set('NOT_COMMENTED', '待评价')
+map1.set('COMMENTED', '已评价')
+map1.set('REFUNDED', '已退款')
 
 </script>
 

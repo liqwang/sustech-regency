@@ -1,5 +1,6 @@
 package com.sustech.regency.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.po.Room;
 import com.sustech.regency.db.po.RoomType;
 import com.sustech.regency.model.vo.Comment;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface PublicService {
     //通过省市区的到酒店信息
-    List<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName);
+    IPage<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName, Integer pageNum, Integer pageSize);
 
     List<Room> getRoomsByHotel(Integer hotelId, Integer roomTypeId);
 
