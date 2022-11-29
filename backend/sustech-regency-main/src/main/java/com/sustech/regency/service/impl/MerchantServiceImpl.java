@@ -186,6 +186,19 @@ public class MerchantServiceImpl implements MerchantService {
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
                 boolean judge = true;
+
+                if (status != null) {
+                    if (o.getStatus().ordinal() != status) {
+                        judge = false;
+                    }
+
+                    if (status == 2) {
+                        if (o.getStatus().ordinal() > status) {
+                            judge = true;
+                        }
+                    }
+                }
+
                 if (startTime != null && EndTime != null) {
                     if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
                         judge = false;
@@ -202,17 +215,7 @@ public class MerchantServiceImpl implements MerchantService {
                     }
                 }
 
-                if (status != null) {
-                    if (o.getStatus().ordinal() != status) {
-                        judge = false;
-                    }
 
-                    if (status == 2) {
-                        if (o.getStatus().ordinal() > status) {
-                            judge = true;
-                        }
-                    }
-                }
 
 
                 if (judge) {
