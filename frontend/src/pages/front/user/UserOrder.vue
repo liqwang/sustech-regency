@@ -84,7 +84,7 @@
           酒店评分
         </el-col>
         <el-col :span="8">
-          <el-rate v-model="stars" text-color="#ff9900" show-score score-template="{value}分/5分" />
+          <el-rate v-model="star" text-color="#ff9900" show-score score-template="{value}分/5分" />
         </el-col>
       </el-row>
       <br>
@@ -93,7 +93,7 @@
           评论
         </el-col>
         <el-col :span="20">
-          <el-input class="textarea" v-model="commentText" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
+          <el-input class="textarea" v-model="comment" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
             placeholder="请输入对订单的评价" />
         </el-col>
       </el-row>
@@ -140,9 +140,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
-import { ElMessage, UploadProps, UploadUserFile } from 'element-plus'
+import { ElMessage, ElNotification, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
 import request from '../../../utils/request';
 import { OrderInfo } from "../../../type/type";
@@ -161,8 +161,8 @@ request.get('/consumer/get-orders').then(res => {
 
 let orderId = $ref('')
 
-let commentText = $ref('')
-let stars = $ref(0)
+let comment = $ref('')
+let star = $ref(0)
 
 let orderStatus = $ref(0)
 
@@ -224,7 +224,6 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 
 
 const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles)
@@ -232,14 +231,19 @@ const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
 
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!
-  dialogVisible.value = true
+  dialogFormVisible = true
 }
 
 const uploadRef = ref<UploadInstance>()
 
 const submitUpload = () => {
-  dialogVisible.value = false
   uploadRef.value!.submit()
+  uploadRateAndComment()
+  dialogFormVisible = false
+  ElNotification({
+    title: "Success",
+    message: h("i", { style: "color: teal" }, "评论成功"),
+  })
 }
 
 let status = $ref(0)
@@ -252,6 +256,23 @@ map1.set('PAYED', '已支付')
 map1.set('NOT_COMMENTED', '待评价')
 map1.set('COMMENTED', '已评价')
 map1.set('REFUNDED', '已退款')
+
+const upload = () => {
+
+}
+
+const uploadRateAndComment = () => {
+  request.post(`/consumer/upload-comment-star?orderId=${orderId}&star=${star}`).then(res => {
+
+  })
+  request.post(`/consumer/upload-comment?orderId=${orderId}&comment=${comment}`).then(res => {
+
+  })
+}
+
+const deletePictureAndVideo = () => {
+
+}
 
 </script>
 
