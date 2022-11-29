@@ -66,6 +66,7 @@
                     </el-icon>
                   </template>
                 </el-input>
+                <span style="font-size: 1px;">包含大小写数字特殊字符,8-30位</span>
               </el-form-item>
             </div>
             <div class="input_area">
