@@ -228,6 +228,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public List<OrderInfo> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status) {
+        asserts((startTime==null&&EndTime==null)||(startTime!=null&&EndTime!=null), "StartTime and EndTime need to be chosen at the same time");
         List<Order> orderList = new ArrayList<>();
         LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -241,6 +242,7 @@ public class ConsumerServiceImpl implements ConsumerService {
                     judge = false;
                 }
             }
+
 
             if (isComment != null) {
                 if (o.getComment() == null) {
