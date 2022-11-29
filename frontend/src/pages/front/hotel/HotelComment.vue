@@ -22,10 +22,21 @@
             <div v-for="comment in commentList" style="border-bottom: 1px solid #ccc; padding: 10px 0; display: flex">
               <div style="width: 100px; text-align: center">
                 <el-image :src="comment.headshotUrl" style="width: 50px; height: 50px; border-radius: 50%"></el-image>
+                <b>{{ comment.userName }}</b>
               </div>
-              <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px">
-                <b> {{ comment.userName }} </b>:
-                <span> {{ comment.comment }} </span>
+              <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px; margin-left: 20px;">
+                <el-rate v-model="comment.stars" disabled show-score text-color="#ff9900" score-template="{value}分/5分">
+                </el-rate>
+                <div> {{ comment.comment }} </div>
+
+                <div v-for="imageUrl in comment.pictureUrls">
+                  <el-image :src="imageUrl"></el-image>
+                </div>
+
+                <div v-for="videoUrl in comment.videoUrls">
+                  <video :src="videoUrl"></video>
+                </div>
+                <!-- <video src="https://quanquancho.com:8080/public/file/2022/11/29/379552bc34c84d97a58b4237b477e7ba.mp4"></video> -->
 
                 <div style="display: flex; line-height: 20px; margin-top: 5px">
                   <div style="width: 200px">
@@ -64,18 +75,6 @@ interface Comment {
   videoUrls: string[]
   pictureUrls: string[]
   headshotUrl: string
-}
-
-const comment: Comment = {
-  commentTime: '2022-10-01',
-  comment: '很好！',
-  userName: 'RockyCYG',
-  hotelName: '南科大',
-  roomType: '标准间',
-  stars: 5,
-  videoUrls: [''],
-  pictureUrls: [''],
-  headshotUrl: 'https://quanquancho.com:8080/public/file/2022/10/30/ef284062fe96417ea17daf3bf1f92b42.jpg',
 }
 
 const router = useRouter()
