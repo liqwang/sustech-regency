@@ -9,7 +9,9 @@ import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.vo.HotelInfo;
+import com.sustech.regency.model.vo.OrderInfo;
 import com.sustech.regency.model.vo.PayInfo;
+import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.util.AlipayUtil;
 import com.sustech.regency.service.PublicService;
@@ -206,14 +208,26 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public List<Order> getOrders() {
+    public List<OrderInfo> getOrders() {
         LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
         orderLambdaQueryWrapper.eq(Order::getPayerId, getUserId());
-        return orderDao.selectList(orderLambdaQueryWrapper);
+        List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
+        List<OrderInfo> orderInfos = new ArrayList<>();
+        for (Order o:
+             orderList) {
+            RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
+            HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
+            OrderInfo orderInfo = new OrderInfo();
+            orderInfo.setOrder(o);
+            orderInfo.setRoomInfo(roomInfo);
+            orderInfo.setHotelInfo(hotelInfo);
+            orderInfos.add(orderInfo);
+        }
+        return orderInfos;
     }
 
     @Override
-    public List<Order> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status) {
+    public List<OrderInfo> selectCustomerOrders(Boolean isComment, Date startTime, Date EndTime, Integer status) {
         List<Order> orderList = new ArrayList<>();
         LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -246,7 +260,18 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         }
 
-        return orderList;
+        List<OrderInfo> orderInfos = new ArrayList<>();
+        for (Order o:
+                orderList) {
+            RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
+            HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
+            OrderInfo orderInfo = new OrderInfo();
+            orderInfo.setOrder(o);
+            orderInfo.setRoomInfo(roomInfo);
+            orderInfo.setHotelInfo(hotelInfo);
+            orderInfos.add(orderInfo);
+        }
+        return orderInfos;
     }
 
     @Override
