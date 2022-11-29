@@ -31,7 +31,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <!-- <el-dropdown-item command="addNew">Add a hotel</el-dropdown-item> -->
-                <el-dropdown-item command="edit">profile</el-dropdown-item>
+                <!-- <el-dropdown-item command="edit">profile</el-dropdown-item> -->
                 <el-dropdown-item @click="toUserPage">用户端</el-dropdown-item>
               </el-dropdown-menu>
             </template>

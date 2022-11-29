@@ -114,14 +114,22 @@
     <el-option label="电竞开黑四人间" value="10"></el-option>
 
   </el-select>
-
-      <!-- <el-button-group>
-        <el-button type="primary" @click="change_chart(1)" color="#626aef" plain>标准间</el-button>
-        <el-button type="primary" @click="change_chart(2)" color="#626aef" plain >
-          双人间
-        </el-button>
-        <el-button type="primary" @click="change_chart(0)" color="#626aef" plain>无筛选</el-button>
-      </el-button-group> -->
+  <div class="demo-date-picker">
+    <div class="block">
+<br>
+      <!-- <span class="demonstration">Select Days</span> -->
+      <el-date-picker
+        v-model="days"
+        type="daterange"
+        value-format="YYYY-MM-DD"
+        range-separator="To"
+        @change="change_chart(0)"
+        start-placeholder="Start date"
+        end-placeholder="End date"
+        size="default"
+      />
+    </div>
+    </div>
 
       <el-dialog v-model="show_floor" style="position:static;width: 800px;height: 600px;">
         <div v-show="which_floor == ''">
@@ -357,8 +365,27 @@
   <el-dialog title="Make a type of rooms be On-Sale!" v-model="on_sale">
     <el-input-number v-model="sale_discount" :step="0.05" :min="0.05" :max="1" />
     <br><br>
-    <el-radio v-model="sale_type" label=1>标准间</el-radio>
-    <el-radio v-model="sale_type" label=2>双人间</el-radio>
+    <el-select v-model="sale_type" class="m-2" placeholder="Select Room Type">
+        <!-- <el-option label="取消筛选" value="0"></el-option> -->
+        <el-option
+      label="标准间"
+      value="1"
+    />
+    <el-option label="双人间" value="2"></el-option>
+
+    <el-option label="大床房" value="3"></el-option>
+
+    <el-option label="高级双床房" value="4"></el-option>
+    
+    <el-option label="豪华亲子房" value="5"></el-option>
+    <el-option label="超享庭院大床房" value="6"></el-option>
+
+    <el-option label="一室一厅城景套房" value="7"></el-option>
+    <el-option label="精致房" value="8"></el-option>
+    <el-option label="浪漫温馨情侣房" value="9"></el-option>
+    <el-option label="电竞开黑四人间" value="10"></el-option>
+
+  </el-select>
     <br>
     <br>
     <br>
@@ -406,9 +433,10 @@ const f1_url = ref()
 
 const room_type = ref()
 const on_sale = ref(false)
-const sale_type = ref(0)
+const sale_type = ref()
 const sale_discount = ref(1)
 const confirm_sale = () => {
+  console.log(sale_type.value)
   if (sale_type.value > 0) {
     let url = `/room/room/updateRooms?discount=${sale_discount.value}&typeId=${sale_type.value}&hotelId=${id_par.HotelId}`
     request.post(url).then((res) => {
@@ -437,7 +465,7 @@ const to_chat=()=>{
 }
 const cancle_sale = () => {
   on_sale.value = false
-  sale_type.value = 0
+  // sale_type.value = 0
 }
 const token = ref('')
 token.value = localStorage.token ? JSON.parse(localStorage.token) : ''
@@ -540,9 +568,33 @@ type props = {
   HotelId: string;
 };
 
+const format = (time:Date) => {
+ let ymd = ''
+ let mouth = (time.getMonth() + 1) >= 10 ? (time.getMonth() + 1) : ('0' + (time.getMonth() + 1))
+ let day = time.getDate() >= 10 ? time.getDate() : ('0' + time.getDate())
+ ymd += time.getFullYear() + '-' // 获取年份。
+ ymd += mouth + '-' // 获取月份。
+ ymd += day // 获取日。
+ return ymd // 返回日期。
+}
 
-const test1 = () => {
-  alert('213')
+const getAllDate = (start:string, end:string) => {
+ let dateArr = []
+ let startArr = start.split('-')
+ let endArr = end.split('-')
+ let db = new Date()
+ db.setUTCFullYear(parseInt(startArr[0]), parseInt(startArr[1]) - 1, parseInt(startArr[2]))
+ let de = new Date()
+ de.setUTCFullYear(parseInt(endArr[0]),parseInt( endArr[1]) - 1, parseInt(endArr[2]))
+ let unixDb = db.getTime()
+ let unixDe = de.getTime()
+ let stamp
+ const oneDay = 24 * 60 * 60 * 1000;
+ for (stamp = unixDb; stamp <= unixDe;) {
+   dateArr.push(format(new Date((stamp))))
+   stamp = stamp + oneDay
+ }
+ return dateArr
 }
 var id_par = defineProps<props>();
 
@@ -768,13 +820,16 @@ watch(
     immediate: true
   }
 );
-const change_chart=(index:number)=>{
-  let url = '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
-            + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId+'&roomTypeId='+index
-  if (index == 0){
-    url =  '/merchant/hotel/get-HistoricalBills?startTime=' + format1 + day2string1 + '&endTime='
-            + format7 + (day2string7 + 1) + '&hotelId=' + id_par.HotelId
+const days = ref([''])
 
+const change_chart=(index:number)=>{
+  if (days.value.length>1 && room_type.value!=null ){
+  const arr_date = getAllDate(days.value[0],days.value[1]) 
+  let url = '/merchant/hotel/get-HistoricalBills?startTime=' +days.value[0] + '&endTime='
+            + days.value[1] + '&hotelId=' + id_par.HotelId+'&roomTypeId='+room_type.value
+  if (room_type.value == 0){
+    url =  '/merchant/hotel/get-HistoricalBills?startTime=' + days.value[0] + '&endTime='
+            + days.value[1]+ '&hotelId=' + id_par.HotelId
   }
           request.get(url).then(function (response) {
             if (response.data.code == 200) {
@@ -793,14 +848,16 @@ const change_chart=(index:number)=>{
               option = {
                 xAxis: {
                   type: 'category',
-                  data: [format1 + day2string1, format2 + day2string2, format3 + day2string3, format4 + day2string4, format5 + day2string5, format6 + day2string6, format7 + day2string7]
+                  data: arr_date
+                  // data: [format1 + day2string1, format2 + day2string2, format3 + day2string3, format4 + day2string4, format5 + day2string5, format6 + day2string6, format7 + day2string7]
                 },
                 yAxis: {
                   type: 'value'
                 },
                 series: [
                   {
-                    data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
+                    data: chart_data.value,
+                    // data: [chart_data.value[0], chart_data.value[1], chart_data.value[2], chart_data.value[3], chart_data.value[4], chart_data.value[5], chart_data.value[6]],
                     type: 'line'
                   }
                 ]
@@ -808,7 +865,7 @@ const change_chart=(index:number)=>{
               option && myChart.setOption(option)
             }
           })
-}
+}}
 var v1 = ref(false);
 var v2 = ref(false);
 var v3 = ref(false);
