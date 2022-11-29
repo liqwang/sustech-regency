@@ -256,7 +256,11 @@ public class PublicServiceImpl implements PublicService {
         wrapper.select(User::getName)
                 .eq(Hotel::getId, hotelId)
                 .leftJoin(Hotel.class, Hotel::getMerchantId, User::getId);
-        return userDao.selectJoinOne(User.class, wrapper).getName();
+        User user = userDao.selectJoinOne(User.class, wrapper);
+        if (user == null) {
+            return null;
+        }
+        return user.getName();
     }
 
     @Override
