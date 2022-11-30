@@ -284,6 +284,7 @@ public class PublicServiceImpl implements PublicService {
                     if (comment.getComment() == null) {
                         comment.setComment("系统默认好评");
                         comment.setStars(5.0f);
+                        comment.setCommentTime(new Date());
                     }
                 }).toList());
         for (Comment comment : comments) {
