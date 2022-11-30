@@ -35,12 +35,14 @@
           <el-col :span="3">
             订单状态: {{ map1.get(orderInfo.order.status) }}
           </el-col>
-          <el-col :span="2">
-            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
-              @click="dialogFormVisible = true, orderId = orderInfo.order.id">
-              评价
-            </el-button>
-          </el-col>
+          <div v-if="(status === 4)">
+            <el-col :span="2">
+              <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
+                @click="(dialogFormVisible = true, orderId = orderInfo.order.id, comment = orderInfo.order.comment, star = orderInfo.order.stars)">
+                评价
+              </el-button>
+            </el-col>
+          </div>
         </el-row>
         <el-row>
           <el-col>
@@ -108,7 +110,7 @@
             <Plus />
           </el-icon>
         </el-upload> -->
-        <el-upload v-model:file-list="fileList" ref="uploadRef" class="upload-demo"
+        <el-upload v-model:file-list="fileList" list-type="picture-card" ref="uploadRef" class="upload-demo"
           :action="'http://quanquancho.com:8080/consumer/comment/upload-media?orderId=' + orderId" :auto-upload="false"
           :headers="{ 'token': token }" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
           name="media" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
@@ -154,32 +156,38 @@ const username = $ref(user?.name)
 
 let orderInfos = $ref<OrderInfo[]>([])
 
-request.get('/consumer/get-orders').then(res => {
-  orderInfos = res.data.data
-  console.log(orderInfos)
-})
+// request.get('/consumer/get-orders').then(res => {
+//   orderInfos = res.data.data
+//   console.log('orderInfos: ', orderInfos)
+// })
 
 let orderId = $ref('')
 
 let comment = $ref('')
 let star = $ref(0)
 
-let orderStatus = $ref(0)
+let pictureUrls = $ref<string[]>([])
 
 let dialogFormVisible = $ref(false)
 
-const loadOrders = (status: number) => {
+let status = $ref(0)
+
+const loadOrders = (orderStatus: number) => {
+  status = orderStatus
   let orderUrl = ''
-  status--
-  if (status >= 0) {
-    orderUrl = `/consumer/hotel/get-selected-orders?status=${status}`
+  orderStatus--
+  if (orderStatus >= 0) {
+    orderUrl = `/consumer/hotel/get-selected-orders?status=${orderStatus}`
   } else {
     orderUrl = '/consumer/hotel/get-selected-orders'
   }
   request.get(orderUrl).then(res => {
     orderInfos = res.data.data
+    console.log('orderInfos: ', orderInfos)
   })
 }
+
+loadOrders(0)
 
 const addComment = () => {
 
@@ -192,12 +200,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   console.log('keyPath: ', keyPath)
 }
 
-const fileList = ref<UploadUserFile[]>([
-  // {
-  //   name: 'food.jpeg',
-  //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  // }
-])
+const fileList = ref<UploadUserFile[]>()
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'video/mp4') {
@@ -226,7 +229,8 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 const dialogImageUrl = ref('')
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
+  console.log('uploadFile: ', uploadFile)
+  console.log('uploadFiles: ', uploadFiles)
 }
 
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
@@ -245,8 +249,6 @@ const submitUpload = () => {
     message: h("i", { style: "color: teal" }, "评论成功"),
   })
 }
-
-let status = $ref(0)
 
 // const status = ['全部订单', '待付款', '已超时', '已支付', '待评价', '已评价', '已退款']
 const map1 = new Map<string, string>()
