@@ -341,6 +341,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public void uploadComment(Long orderId, String comment) {
         Order order = orderDao.selectById(orderId);
+        order.setStatus(COMMENTED);
         order.setComment(comment);
         orderDao.updateById(order);
     }
@@ -349,6 +350,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     public void uploadCommentStar(Long orderId, Float star) {
         Order order = orderDao.selectById(orderId);
         order.setStars(star);
+        order.setStatus(COMMENTED);
         orderDao.updateById(order);
     }
 
