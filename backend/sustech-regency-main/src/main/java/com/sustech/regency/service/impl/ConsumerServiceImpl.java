@@ -244,7 +244,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderInfo.setHotelInfo(hotelInfo);
             orderInfos.add(orderInfo);
         }
-        orderInfos.sort(Comparator.comparing(o -> o.getOrder().getCreateTime()));
+        orderInfos.sort(((o1, o2) -> o2.getOrder().getCreateTime().compareTo(o1.getOrder().getCreateTime())));
         return orderInfos;
     }
 

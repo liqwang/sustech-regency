@@ -299,7 +299,7 @@ public class PublicServiceImpl implements PublicService {
                 if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
             }
         }
-        comments.sort(Comparator.comparing(Comment::getCommentTime));
+        comments.sort((c1, c2) -> c2.getCommentTime().compareTo(c1.getCommentTime()));
         return comments;
     }
 
