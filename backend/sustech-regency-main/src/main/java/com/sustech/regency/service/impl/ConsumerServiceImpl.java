@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -234,8 +235,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         orderLambdaQueryWrapper.eq(Order::getPayerId, getUserId());
         List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o :
-                orderList) {
+        for (Order o : orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
             OrderInfo orderInfo = new OrderInfo();
@@ -244,6 +244,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderInfo.setHotelInfo(hotelInfo);
             orderInfos.add(orderInfo);
         }
+        orderInfos.sort(Comparator.comparing(o -> o.getOrder().getCreateTime()));
         return orderInfos;
     }
 

@@ -271,25 +271,25 @@ public class PublicServiceImpl implements PublicService {
                 .selectAs(Hotel::getName, Comment::getHotelName)
                 .selectAs(RoomType::getName, Comment::getRoomType);
         wrapper.eq(Hotel::getId, hotelId)
-                .and(query->query.eq(Order::getStatus,NOT_COMMENTED)
-                                 .or() //未评论的变为默认好评
-                                 .eq(Order::getStatus,COMMENTED));
+                .and(query -> query.eq(Order::getStatus, NOT_COMMENTED)
+                        .or() //未评论的变为默认好评
+                        .eq(Order::getStatus, COMMENTED));
         wrapper.innerJoin(User.class, User::getId, Order::getPayerId)
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
-        List<Comment> comments =orderDao.selectJoinList(Comment.class, wrapper)
-                                        .stream()
-                                        .peek(comment -> {
-                                            if(comment.getComment()==null){
-                                                comment.setComment("系统默认好评");
-                                                comment.setStars(5.0f);
-                                            }
-                                        }).toList();
-        for (Comment comment:comments) {
+        List<Comment> comments = new ArrayList<>(orderDao.selectJoinList(Comment.class, wrapper)
+                .stream()
+                .peek(comment -> {
+                    if (comment.getComment() == null) {
+                        comment.setComment("系统默认好评");
+                        comment.setStars(5.0f);
+                    }
+                }).toList());
+        for (Comment comment : comments) {
             String userName = comment.getUserName();
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getName,userName);
+            userLambdaQueryWrapper.eq(User::getName, userName);
             User user = userDao.selectOne(userLambdaQueryWrapper);
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, user.getHeadshotId());
@@ -298,6 +298,7 @@ public class PublicServiceImpl implements PublicService {
                 if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
             }
         }
+        comments.sort(Comparator.comparing(Comment::getCommentTime));
         return comments;
     }
 
