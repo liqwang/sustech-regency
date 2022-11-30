@@ -13,7 +13,7 @@
               </el-button>
             </span>
             <span v-else>
-              <el-button style="width: 100px; margin-left: 10px" :icon="Star" @click="collect">
+              <el-button style="width: 100px; margin-left: 60px" :icon="Star" @click="collect">
                 收藏
               </el-button>
             </span>
