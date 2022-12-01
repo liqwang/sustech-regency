@@ -99,7 +99,7 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.token ? JSON.parse(localStorage.token) : ''
   if (to.meta.requiresAuth && !token) {
     ElNotification({
-      title: "Success",
+      title: "Information",
       message: h("i", { style: "color: teal" }, "请先登录！"),
     })
     next('/login')

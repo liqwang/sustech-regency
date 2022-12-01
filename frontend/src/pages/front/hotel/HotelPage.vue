@@ -157,9 +157,14 @@ const collect = () => {
     if (res.data.code === 200) {
       ElNotification({
         title: "Success",
-        message: h("i", { style: "color: teal" }, "收藏成功"),
+        message: h("i", { style: "color: teal" }, "收藏成功！"),
       })
       collectStatus = true
+    } else if (res.data.code === 401) {
+      ElNotification({
+        title: "Information",
+        message: h("i", { style: "color: teal" }, "请先登录！"),
+      })
     }
   })
 }
@@ -178,11 +183,16 @@ const cancelCollect = () => {
 
 let collectHotels = $ref<number[]>([])
 
-request.get('/consumer/get-likes-all').then(res => {
-  const hotels = res.data.data as HotelInfo[]
-  collectHotels = hotels.map(hotel => hotel.id)
-  console.log('collectHotels: ', collectHotels)
-  collectStatus = collectHotels.includes(hotelId)
-})
+const token = localStorage.getItem('token')
+
+if (token) {
+  request.get('/consumer/get-likes-all').then(res => {
+    const hotels = res.data.data as HotelInfo[]
+    console.log('hotels: ', hotels)
+    collectHotels = hotels.map(hotel => hotel.id)
+    console.log('collectHotels: ', collectHotels)
+    collectStatus = collectHotels.includes(hotelId)
+  })
+}
 
 </script>
