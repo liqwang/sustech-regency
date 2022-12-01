@@ -438,7 +438,7 @@ const sale_discount = ref(1)
 const confirm_sale = () => {
   console.log(sale_type.value)
   if (sale_type.value > 0) {
-    let url = `/room/room/updateRooms?discount=${sale_discount.value}&typeId=${sale_type.value}&hotelId=${id_par.HotelId}`
+    let url = `/merchant/hotel/on-sale?discount=${sale_discount.value}&roomTypeId=${sale_type.value}&hotelId=${id_par.HotelId}`
     request.post(url).then((res) => {
       if (res.data.code == 200) {
         ElNotification({
