@@ -39,13 +39,13 @@
                 <span class="text-gray-500">价格区间</span>
               </el-col>
               <el-col :span="3">
-                <el-input-number v-model="form.min" :min="0" :max="10000" controls-position="right" step="10" />
+                <el-input-number v-model="form.min" :min="0" :max="10000" controls-position="right" step="10" @change="handleChange" />
               </el-col>
               <el-col :span="1" class="text-center">
                 <span class="text-gray-500">-</span>
               </el-col>
               <el-col :span="3">
-                <el-input-number v-model="form.max" :min="form.min" :placeholder="form.min" :max="10000" step="10" controls-position="right" />
+                <el-input-number v-model="form.max" :min="form.min" :placeholder="form.min" :max="10000" step="10" controls-position="right" @change="handleChange" />
               </el-col>
             </el-form-item>
             <el-form-item>
@@ -623,5 +623,13 @@ const disabledDate = (time: Date) => {
 const disabledOut = (time: Date) => {
   if (form.start == '') return time.getTime() <= Date.now()
   else return time.getTime() <= Date.parse(form.start)
+}
+const handleChange = (value: number) => {
+  if (value > 10000) {
+    value = 10000
+  }
+  if (value < 0) {
+    value = 0
+  }
 }
 </script>
