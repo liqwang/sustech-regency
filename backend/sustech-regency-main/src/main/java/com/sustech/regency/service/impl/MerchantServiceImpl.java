@@ -165,19 +165,18 @@ public class MerchantServiceImpl implements MerchantService {
         Float[] money = new Float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
         for (Room room : rooms) {
-            if (roomType != null) {
-                if (!Objects.equals(room.getTypeId(), roomType)) {
-                    continue;
-                }
-            }
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
-                if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
-                    money[differentDays(startTime, o.getDateEnd())] = o.getFee();
+                if(o.getStatus().ordinal()>=2&&o.getStatus().ordinal()<=4){
+                    if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
+                        money[differentDays(startTime, o.getDateEnd())] = o.getFee();
+                        System.out.println("roomId"+room.getId());
+                        System.out.print(o.getFee());
+                        System.out.println();
+                    }
                 }
-
             }
         }
         return new ArrayList<>(Arrays.asList(money));
