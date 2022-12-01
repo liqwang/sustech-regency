@@ -7,14 +7,12 @@ import com.sustech.regency.db.dao.LoginLogDao;
 import com.sustech.regency.db.dao.UserDao;
 import com.sustech.regency.db.dao.UserWithRoleDao;
 import com.sustech.regency.db.po.*;
+import com.sustech.regency.util.EmailUtil;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.vo.UserInfo;
 import com.sustech.regency.service.UserService;
 import com.sustech.regency.util.FileUtil;
-import com.sustech.regency.util.VerificationUtil;
 import com.sustech.regency.web.util.JwtUtil;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,8 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.sustech.regency.util.VerificationUtil.generateVerificationCode;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 import static com.sustech.regency.util.VerificationUtil.validateCode;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -144,20 +144,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Resource
-    private JavaMailSender javaMailSender;
-
+    private EmailUtil emailUtil;
     @Override
     public void sendVerificationCode(String email) {
         //1.发送验证码
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("836200779@qq.com");
-        message.setTo(email);
-        message.setSubject("SUSTech-Regency邮箱验证");
-        String randomCode = VerificationUtil.generateVerificationCode();
-        message.setText("验证码:" + randomCode + ", 有效期2分钟");
-        javaMailSender.send(message);
+        String randomCode = generateVerificationCode();
+        String content = "验证码:"+ randomCode +", 有效期2分钟";
+        emailUtil.sendMail(email,content,"SUSTech-Regency邮箱验证");
         //2.存入Redis
-        redis.setObject("verification:" + email, randomCode, 120);
+        redis.setObject("verification:" + email, randomCode, 2, MINUTES);
     }
 
     @Override

@@ -3,23 +3,23 @@
     <el-row>
       <el-container>
         <el-header id="head">
-          <el-col :span="12" :offset="0">
+          <el-col :span="18" :offset="0">
             <a href="/" id="back" target="_blank">SUSTech Regency </a>
-            <div id="cur-hotel" style="display: inline"> 当前酒店:{{ hotelInfo?.name }}</div>
-            <div id="cur-hotel" style="display: inline"> 当前酒店商家:{{ hotel_owner }}</div>
+            <div id="cur-hotel" style="display: inline; margin-left: 60px;"> 当前酒店:{{ hotelInfo?.name }}</div>
+            <div id="cur-hotel" style="display: inline; margin-left: 60px;"> 当前酒店商家:{{ hotel_owner }}</div>
             <span v-if="collectStatus">
-              <el-button type="primary" style="width: 100px; margin-left: 10px" :icon="Star" @click="cancelCollect">
+              <el-button type="primary" style="width: 100px; margin-left: 60px" :icon="Star" @click="cancelCollect">
                 取消收藏
               </el-button>
             </span>
             <span v-else>
-              <el-button style="width: 100px; margin-left: 10px" :icon="Star" @click="collect">
+              <el-button style="width: 100px; margin-left: 60px" :icon="Star" @click="collect">
                 收藏
               </el-button>
             </span>
           </el-col>
 
-          <el-col :span="12" :offset="0" id="user">
+          <el-col :span="6" :offset="0" id="user">
             <UserIcon />
           </el-col>
         </el-header>

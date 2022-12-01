@@ -19,9 +19,9 @@
           <el-dropdown-item @click="toMerchantPage">管理端</el-dropdown-item>
         </span>
         <span v-if="!token">
-          <el-dropdown-item @click="signup">注册</el-dropdown-item>
           <el-dropdown-item @click="login">登录</el-dropdown-item>
         </span>
+        <el-dropdown-item @click="signup">注册</el-dropdown-item>
         <span v-if="token">
           <el-dropdown-item divided @click="toUserPage">个人中心</el-dropdown-item>
           <el-dropdown-item @click="toChangePasswordPage">修改密码</el-dropdown-item>

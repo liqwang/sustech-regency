@@ -19,6 +19,4 @@ public class OrderInfo {
     private Order order;
     private HotelInfo hotelInfo;
     private RoomInfo roomInfo;
-
-
 }

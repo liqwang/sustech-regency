@@ -1,6 +1,5 @@
-package com.sustech.regency.util.db;
+package com.sustech.regency.db.util;
 
-import com.sustech.regency.db.util.Redis;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

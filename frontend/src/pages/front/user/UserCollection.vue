@@ -18,7 +18,7 @@
                 </el-col>
                 <el-col :span="12" :offset="0">
                   <div class="rate">
-                    <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
+                    <el-rate v-model="hotelInfo.stars" :colors="colors" disabled text-color="#ff9900" />
                   </div>
                 </el-col>
                 <el-col :span="12" :offset="0" class="comment">
@@ -54,6 +54,8 @@ interface IPage {
   records: HotelInfo[]
   total: string
 }
+
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 
 let pageNum = $ref(1)
 let pageSize = $ref(5)

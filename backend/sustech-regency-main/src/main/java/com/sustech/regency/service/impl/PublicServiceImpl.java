@@ -20,6 +20,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.sustech.regency.db.po.OrderStatus.COMMENTED;
+import static com.sustech.regency.db.po.OrderStatus.NOT_COMMENTED;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
 
 @Service
@@ -50,6 +52,9 @@ public class PublicServiceImpl implements PublicService {
 
     @Resource
     private CollectionDao collectionDao;
+
+    @Resource
+    private CommentAttachmentDao commentAttachmentDao;
 
     @Override
     public IPage<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName, Integer pageNum, Integer pageSize) {
@@ -117,6 +122,41 @@ public class PublicServiceImpl implements PublicService {
             }
         }
         return pictureList;
+    }
+
+    @Override
+    public List<String> getCommentsPictureUrls(Long orderId) {
+        LambdaQueryWrapper<CommentAttachment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CommentAttachment::getOrderId, orderId);
+        List<CommentAttachment> list = commentAttachmentDao.selectList(wrapper);
+        List<String> pictureList = new ArrayList<>();
+
+        for (CommentAttachment he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && !file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) pictureList.add(FileUtil.getUrl(file));
+            }
+        }
+        return pictureList;
+    }
+
+    @Override
+    public List<String> getCommentsVideoUrls(Long orderId) {
+        LambdaQueryWrapper<CommentAttachment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CommentAttachment::getOrderId,orderId);
+        List<CommentAttachment> list = commentAttachmentDao.selectList(wrapper);
+        List<String> videoList = new ArrayList<>();
+        for (CommentAttachment he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) videoList.add(FileUtil.getUrl(file));
+            }
+        }
+        return videoList;
     }
 
 
@@ -197,8 +237,15 @@ public class PublicServiceImpl implements PublicService {
             int room_id = r.getId();
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
+            int room_comment = 0;
             List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
-            cnt += orderList.size();
+            for (Order o:
+                 orderList) {
+                if (o.getStatus() == COMMENTED || o.getStatus() == NOT_COMMENTED){
+                    room_comment+=1;
+                }
+            }
+            cnt += room_comment;
         }
         return cnt;
     }
@@ -254,29 +301,42 @@ public class PublicServiceImpl implements PublicService {
         wrapper.select(User::getName)
                 .eq(Hotel::getId, hotelId)
                 .leftJoin(Hotel.class, Hotel::getMerchantId, User::getId);
-        return userDao.selectJoinOne(User.class, wrapper).getName();
+        User user = userDao.selectJoinOne(User.class, wrapper);
+        if (user == null) {
+            return null;
+        }
+        return user.getName();
     }
 
     @Override
     public List<Comment> getCommentsByHotelId(Integer hotelId) {
         MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars)
+        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars,Order::getPayTime)
+                .selectAs(Order::getId,Comment::getOrderId)
                 .selectAs(User::getName, Comment::getUserName)
                 .selectAs(Hotel::getName, Comment::getHotelName)
                 .selectAs(RoomType::getName, Comment::getRoomType);
-        wrapper.eq(Hotel::getId, hotelId);
+        wrapper.eq(Hotel::getId, hotelId)
+                .and(query -> query.eq(Order::getStatus, NOT_COMMENTED)
+                        .or() //未评论的变为默认好评
+                        .eq(Order::getStatus, COMMENTED));
         wrapper.innerJoin(User.class, User::getId, Order::getPayerId)
                 .innerJoin(Room.class, Room::getId, Order::getRoomId)
                 .innerJoin(Hotel.class, Hotel::getId, Room::getHotelId)
                 .innerJoin(RoomType.class, RoomType::getId, Room::getTypeId);
-
-        List<Comment> comments = orderDao.selectJoinList(Comment.class, wrapper);
-        for (Comment comment:
-             comments) {
-
+        List<Comment> comments = new ArrayList<>(orderDao.selectJoinList(Comment.class, wrapper)
+                .stream()
+                .peek(comment -> {
+                    if (comment.getComment() == null) {
+                        comment.setComment("系统默认好评");
+                        comment.setStars(5.0f);
+                        comment.setCommentTime(comment.getPayTime());
+                    }
+                }).toList());
+        for (Comment comment : comments) {
             String userName = comment.getUserName();
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getName,userName);
+            userLambdaQueryWrapper.eq(User::getName, userName);
             User user = userDao.selectOne(userLambdaQueryWrapper);
             LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
             fileLambdaQueryWrapper.eq(File::getId, user.getHeadshotId());
@@ -284,7 +344,11 @@ public class PublicServiceImpl implements PublicService {
             if (file != null) {
                 if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
             }
+            comment.setPictureUrls(getCommentsPictureUrls(comment.getOrderId()));
+
+            comment.setVideoUrls(getCommentsVideoUrls(comment.getOrderId()));
         }
+        comments.sort((c1, c2) -> c2.getCommentTime().compareTo(c1.getCommentTime()));
         return comments;
     }
 
@@ -354,6 +418,30 @@ public class PublicServiceImpl implements PublicService {
         wrapper.eq(Collection::getHotelId, hotelId);
         List<Collection> list = collectionDao.selectList(wrapper);
         return list.size();
+    }
+
+    @Override
+    public Float getAvgStarsByHotelId(Integer hotelId) {
+        LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Room::getHotelId, hotelId);
+        List<Room> roomList = roomDao.selectList(wrapper);
+        int cnt = 0;
+        float points = 0;
+        for (Room r : roomList) {
+            int room_id = r.getId();
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
+            List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
+            for (Order o:
+                 orderList) {
+                if(o.getStars()!=null){
+                    points+=o.getStars();
+                    cnt += 1;
+                }
+
+            }
+        }
+        return points/cnt;
     }
 
 }

@@ -56,7 +56,7 @@
             <el-col :span="3"></el-col>
             <el-col :span="18">
               <el-form-item label="" prop="newpwd" v-show="pass_check">
-                <el-input type="text" placeholder="请输入新密码" v-model="form.newpwd" />
+                <el-input placeholder="请输入新密码" v-model="form.newpwd" show-password type="password" />
               </el-form-item>
             </el-col>
             <el-col :span="3"></el-col>
@@ -72,7 +72,7 @@
             <el-col :span="3"></el-col>
             <el-col :span="18">
               <el-form-item label="" prop="newpwd" v-show="pass_check">
-                <el-input type="text" placeholder="请再次输入新密码" v-model="form.newpwd2" />
+                <el-input placeholder="请再次输入新密码" v-model="form.newpwd2" show-password type="password" />
               </el-form-item>
             </el-col>
             <el-col :span="3"></el-col>
@@ -115,7 +115,7 @@
 }
 
 #bigg {
-  background-image: url("https://withpinbox.com/static/media/bg.aab24a9d.png");
+  background-image: url('https://withpinbox.com/static/media/bg.aab24a9d.png');
   width: auto;
   height: 100vh;
 }
@@ -136,7 +136,6 @@
 
 /* 在850px以下直接用left */
 @media screen and (max-width: 850px) {
-
   #btn_sign,
   #btn_get_pwd_back,
   #btn_sub,
@@ -266,7 +265,7 @@
   }
 
   #welcome {
-    font-family: "Inter";
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 3rem;
@@ -279,7 +278,7 @@
   }
 
   #slogn {
-    font-family: "Inter";
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 200;
     font-size: 1.7rem;
@@ -396,61 +395,59 @@
 </style>
 
 <script lang="ts" setup>
-import { ElNotification } from "element-plus";
-import { ref, h } from "vue";
-import { reactive } from "vue";
+import { ElNotification } from 'element-plus'
+import { ref, h } from 'vue'
+import { reactive } from 'vue'
 
-import request from "../utils/request";
-import router from "../router";
+import request from '../utils/request'
+import router from '../router'
 
 // do not use same name with ref
-let btn_msg = ref("获取验证码");
-const back_code = ref("");
-let btn_vaild = ref(true);
-let has_get_code = ref(false);
-let pass_check = ref(true);
+let btn_msg = ref('获取验证码')
+const back_code = ref('')
+let btn_vaild = ref(true)
+let has_get_code = ref(false)
+let pass_check = ref(true)
 const form = reactive({
-  username: "",
-  code: "",
-  newpwd: "",
-  newpwd2: "",
-});
+  username: '',
+  code: '',
+  newpwd: '',
+  newpwd2: ''
+})
 const cancel = () => {
-  return router.push("/login");
-};
+  return router.push('/login')
+}
 const getCode = () => {
   //从后端获取验证码,btn_msg变成 “「60s」后再次获取” ，按钮在倒计时期间变成灰色
-  if (form.username != "") {
-    let timer = ref<number>(60);
-    btn_vaild.value = false;
+  if (form.username != '') {
+    let timer = ref<number>(60)
+    btn_vaild.value = false
 
     const T = setInterval(function () {
       {
-        timer.value--;
-        btn_msg.value = `${timer.value}s后重新获取`;
+        timer.value--
+        btn_msg.value = `${timer.value}s后重新获取`
         if (timer.value == 0) {
-          btn_vaild.value = true;
-          btn_msg.value = "获取验证码";
-          clearInterval(T);
+          btn_vaild.value = true
+          btn_msg.value = '获取验证码'
+          clearInterval(T)
         }
       }
-    }, 1000);
+    }, 1000)
 
-    has_get_code.value = true;
+    has_get_code.value = true
 
     // 获取backcode
-    request
-      .post(`/user/send-verification-code?email=` + form.username)
-      .then((res) => {
-        console.log(res.data);
-      });
+    request.post(`/user/send-verification-code?email=` + form.username).then((res) => {
+      console.log(res.data)
+    })
   } else {
     ElNotification({
-      title: "Failed",
-      message: h("i", { style: "color: red" }, "用户名为空"),
-    });
+      title: 'Failed',
+      message: h('i', { style: 'color: red' }, '用户名为空')
+    })
   }
-};
+}
 
 const doubleCheck = () => {
   if (form.newpwd === form.newpwd2) {
@@ -460,33 +457,33 @@ const doubleCheck = () => {
       .post(`/user/find-password`, {
         email: form.username,
         newPassword: form.newpwd,
-        verificationCode: form.code,
+        verificationCode: form.code
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data)
         if (res.data.code == 200) {
           ElNotification({
-            title: "Success",
-            message: h("i", { style: "color: teal" }, "修改密码成功"),
-          });
-          router.push("/login");
+            title: 'Success',
+            message: h('i', { style: 'color: teal' }, '修改密码成功')
+          })
+          router.push('/login')
         } else if (res.data.code == 400) {
           ElNotification({
-            title: "Failed",
-            message: h("i", { style: "color: red" }, res.data.message),
-          });
+            title: 'Failed',
+            message: h('i', { style: 'color: red' }, res.data.message)
+          })
         }
-      });
+      })
   } else {
     // 弹窗报错，清空两个新密码
     // 弹窗报错
     ElNotification({
-      title: "Failed",
-      message: h("i", { style: "color: red" }, "两次密码输入不一致，请重试"),
-    });
+      title: 'Failed',
+      message: h('i', { style: 'color: red' }, '两次密码输入不一致，请重试')
+    })
     // 清空密码
-    form.newpwd = "";
-    form.newpwd2 = "";
+    form.newpwd = ''
+    form.newpwd2 = ''
   }
-};
+}
 </script>

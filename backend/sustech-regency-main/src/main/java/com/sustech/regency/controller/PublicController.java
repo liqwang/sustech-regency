@@ -40,6 +40,9 @@ public class PublicController {
     @Resource
     private ProvinceDao provinceDao;
 
+    @Resource
+    private ConsumerService consumerService;
+
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
     public ApiResponse<List<Province>> getAllProvinces() {
@@ -107,11 +110,11 @@ public class PublicController {
     @ApiOperation("根据省市区酒店名字分页查询获得酒店信息")
     @GetMapping("/get-hotels-by-location")
     public ApiResponse<IPage<HotelInfo>> getHotels(@ApiParam(value = "省份名字") @RequestParam(required = false) String ProvinceName,
-                                                  @ApiParam(value = "城市名字") @RequestParam(required = false) String CityName,
-                                                  @ApiParam(value = "区的名字") @RequestParam(required = false) String RegionName,
-                                                  @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName,
-                                                  @ApiParam(value = "页数") Integer pageNum,
-                                                  @ApiParam(value = "页面大小") Integer pageSize) {
+                                                   @ApiParam(value = "城市名字") @RequestParam(required = false) String CityName,
+                                                   @ApiParam(value = "区的名字") @RequestParam(required = false) String RegionName,
+                                                   @ApiParam(value = "酒店名字") @RequestParam(required = false) String HotelName,
+                                                   @ApiParam(value = "页数") Integer pageNum,
+                                                   @ApiParam(value = "页面大小") Integer pageSize) {
         IPage<HotelInfo> hotelsByLocation = publicService.getHotelsByLocation(ProvinceName, CityName, RegionName, HotelName, pageNum, pageSize);
         List<HotelInfo> hotels = hotelsByLocation.getRecords();
         for (HotelInfo hotelInfo : hotels) {
@@ -156,7 +159,12 @@ public class PublicController {
     @ApiOperation("根据酒店Id获取商家用户名")
     @GetMapping("/merchant-username")
     public ApiResponse<String> getMerchantUsernameByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
-        return ApiResponse.success(publicService.getMerchantUsernameByHotelId(hotelId));
+        String username = publicService.getMerchantUsernameByHotelId(hotelId);
+        if (username == null) {
+            return ApiResponse.badRequest("No such hotel");
+        } else {
+            return ApiResponse.success(username);
+        }
     }
 
     @ApiOperation("根据酒店Id获取所有评论")
@@ -191,8 +199,13 @@ public class PublicController {
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
 
-    @Resource
-    private ConsumerService consumerService;
+    @ApiOperation("根据酒店Id获取所有评论平均星级打分")
+    @GetMapping("/get-hotel-Comments-avgStar")
+    public ApiResponse<Float> getAvgStarsByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getAvgStarsByHotelId(hotelId));
+    }
+
+
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
      * <ul>

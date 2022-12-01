@@ -35,12 +35,14 @@
           <el-col :span="3">
             订单状态: {{ map1.get(orderInfo.order.status) }}
           </el-col>
-          <el-col :span="2">
-            <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
-              @click="dialogFormVisible = true, orderId = orderInfo.order.id">
-              评价
-            </el-button>
-          </el-col>
+          <div v-if="(orderInfo.order.status === 'NOT_COMMENTED' || orderInfo.order.status === 'COMMENTED')">
+            <el-col :span="2">
+              <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
+                @click="(dialogFormVisible = true, orderId = orderInfo.order.id, comment = orderInfo.order.comment, star = orderInfo.order.stars)">
+                评价
+              </el-button>
+            </el-col>
+          </div>
         </el-row>
         <el-row>
           <el-col>
@@ -84,7 +86,7 @@
           酒店评分
         </el-col>
         <el-col :span="8">
-          <el-rate v-model="stars" text-color="#ff9900" show-score score-template="{value}分/5分" />
+          <el-rate v-model="star" :colors="colors" text-color="#ff9900" show-score score-template="{value}分/5分" />
         </el-col>
       </el-row>
       <br>
@@ -93,7 +95,7 @@
           评论
         </el-col>
         <el-col :span="20">
-          <el-input class="textarea" v-model="commentText" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
+          <el-input class="textarea" v-model="comment" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea"
             placeholder="请输入对订单的评价" />
         </el-col>
       </el-row>
@@ -108,7 +110,7 @@
             <Plus />
           </el-icon>
         </el-upload> -->
-        <el-upload v-model:file-list="fileList" ref="uploadRef" class="upload-demo"
+        <el-upload v-model:file-list="fileList" list-type="picture-card" ref="uploadRef" class="upload-demo"
           :action="'http://quanquancho.com:8080/consumer/comment/upload-media?orderId=' + orderId" :auto-upload="false"
           :headers="{ 'token': token }" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
           name="media" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
@@ -140,12 +142,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
-import { ElMessage, UploadProps, UploadUserFile } from 'element-plus'
+import { ElMessage, ElNotification, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
-import request from '../../../utils/request';
-import { OrderInfo } from "../../../type/type";
+import request from '../../../utils/request'
+import { OrderInfo } from "../../../type/type.d"
+
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 
 const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
@@ -154,36 +158,36 @@ const username = $ref(user?.name)
 
 let orderInfos = $ref<OrderInfo[]>([])
 
-request.get('/consumer/get-orders').then(res => {
-  orderInfos = res.data.data
-  console.log(orderInfos)
-})
+// request.get('/consumer/get-orders').then(res => {
+//   orderInfos = res.data.data
+//   console.log('orderInfos: ', orderInfos)
+// })
 
 let orderId = $ref('')
 
-let commentText = $ref('')
-let stars = $ref(0)
-
-let orderStatus = $ref(0)
+let comment = $ref('')
+let star = $ref(0)
 
 let dialogFormVisible = $ref(false)
 
-const loadOrders = (status: number) => {
+let status = $ref(0)
+
+const loadOrders = (orderStatus: number) => {
+  status = orderStatus
   let orderUrl = ''
-  status--
-  if (status >= 0) {
-    orderUrl = `/consumer/hotel/get-selected-orders?status=${status}`
+  orderStatus--
+  if (orderStatus >= 0) {
+    orderUrl = `/consumer/hotel/get-selected-orders?status=${orderStatus}`
   } else {
     orderUrl = '/consumer/hotel/get-selected-orders'
   }
   request.get(orderUrl).then(res => {
     orderInfos = res.data.data
+    console.log('orderInfos: ', orderInfos)
   })
 }
 
-const addComment = () => {
-
-}
+loadOrders(0)
 
 const activeIndex = ref('0')
 
@@ -192,12 +196,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   console.log('keyPath: ', keyPath)
 }
 
-const fileList = ref<UploadUserFile[]>([
-  // {
-  //   name: 'food.jpeg',
-  //   url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  // }
-])
+const fileList = ref<UploadUserFile[]>()
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'video/mp4') {
@@ -224,27 +223,30 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 
 
 const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
+  console.log('uploadFile: ', uploadFile)
+  console.log('uploadFiles: ', uploadFiles)
 }
 
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!
-  dialogVisible.value = true
+  dialogFormVisible = true
 }
 
 const uploadRef = ref<UploadInstance>()
 
 const submitUpload = () => {
-  dialogVisible.value = false
   uploadRef.value!.submit()
+  uploadRateAndComment()
+  dialogFormVisible = false
+  ElNotification({
+    title: "Success",
+    message: h("i", { style: "color: teal" }, "评论成功"),
+  })
+  loadOrders(status)
 }
 
-let status = $ref(0)
-
-// const status = ['全部订单', '待付款', '已超时', '已支付', '待评价', '已评价', '已退款']
 const map1 = new Map<string, string>()
 map1.set('NOT_PAYED', '待付款')
 map1.set('TIMEOUT', '已超时')
@@ -252,6 +254,19 @@ map1.set('PAYED', '已支付')
 map1.set('NOT_COMMENTED', '待评价')
 map1.set('COMMENTED', '已评价')
 map1.set('REFUNDED', '已退款')
+
+const uploadRateAndComment = () => {
+  request.post(`/consumer/upload-comment-star?orderId=${orderId}&star=${star}`).then(res => {
+
+  })
+  request.post(`/consumer/upload-comment?orderId=${orderId}&comment=${comment}`).then(res => {
+
+  })
+}
+
+const deletePictureAndVideo = () => {
+
+}
 
 </script>
 

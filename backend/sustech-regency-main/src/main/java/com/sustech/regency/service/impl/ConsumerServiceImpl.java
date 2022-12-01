@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -141,8 +142,8 @@ public class ConsumerServiceImpl implements ConsumerService {
         String moneyStr = money + "";
         int decimalPointIndex = moneyStr.lastIndexOf('.');
         return moneyStr.length() == decimalPointIndex + 2 ? //eg: 198.0
-                moneyStr :
-                moneyStr.substring(0, decimalPointIndex + 3);
+               moneyStr :
+               moneyStr.substring(0, decimalPointIndex + 3);
     }
 
     @Override
@@ -150,9 +151,9 @@ public class ConsumerServiceImpl implements ConsumerService {
         redis.deleteObject("order:" + orderId);
         //这里即使Redis的key过期提前把表中状态改为TIMEOUT也不会有bug
         orderDao.updateById(new Order()
-                .setId(orderId)
-                .setStatus(PAYED)
-                .setPayTime(payTime));
+                               .setId(orderId)
+                               .setStatus(PAYED)
+                               .setPayTime(payTime));
         OrderWebSocket.notifyFrontend(orderId);
     }
 
@@ -234,8 +235,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         orderLambdaQueryWrapper.eq(Order::getPayerId, getUserId());
         List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o :
-                orderList) {
+        for (Order o : orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
             OrderInfo orderInfo = new OrderInfo();
@@ -244,6 +244,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderInfo.setHotelInfo(hotelInfo);
             orderInfos.add(orderInfo);
         }
+        orderInfos.sort(((o1, o2) -> o2.getOrder().getCreateTime().compareTo(o1.getOrder().getCreateTime())));
         return orderInfos;
     }
 
@@ -258,7 +259,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         for (Order o : orders) {
             boolean judge = true;
 
-            if (startTime != null && EndTime != null) {
+            if (startTime != null) {
                 if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
                     judge = false;
                 }
@@ -284,8 +285,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         }
 
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o :
-                orderList) {
+        for (Order o : orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
             OrderInfo orderInfo = new OrderInfo();
@@ -294,6 +294,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderInfo.setHotelInfo(hotelInfo);
             orderInfos.add(orderInfo);
         }
+        orderInfos.sort(((o1, o2) -> o2.getOrder().getCreateTime().compareTo(o1.getOrder().getCreateTime())));
         return orderInfos;
     }
 
@@ -340,7 +341,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public void uploadComment(Long orderId, String comment) {
         Order order = orderDao.selectById(orderId);
+        order.setStatus(COMMENTED);
         order.setComment(comment);
+        order.setCommentTime(new Date());
         orderDao.updateById(order);
     }
 
@@ -348,6 +351,8 @@ public class ConsumerServiceImpl implements ConsumerService {
     public void uploadCommentStar(Long orderId, Float star) {
         Order order = orderDao.selectById(orderId);
         order.setStars(star);
+        order.setStatus(COMMENTED);
+        order.setCommentTime(new Date());
         orderDao.updateById(order);
     }
 
