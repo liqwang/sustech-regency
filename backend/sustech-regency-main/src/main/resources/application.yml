@@ -34,7 +34,7 @@ spring:
 
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     #https://www.cnblogs.com/zhaodalei/p/16850870.html
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
   mapper-locations: classpath*:/dao/**/*.xml

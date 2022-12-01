@@ -202,8 +202,8 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'video/mp4') {
     ElMessage.error('必须上传jpg格式的图片或mp4格式的视频!')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('上传的图片或视频不能超过2MB!')
+  } else if (rawFile.size / 1024 / 1024 > 100) {
+    ElMessage.error('上传的图片或视频不能超过100MB!')
     return false
   }
   return true

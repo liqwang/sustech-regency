@@ -4,13 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.dao.ChatHistoryDao;
 import com.sustech.regency.db.po.ChatHistory;
-import com.sustech.regency.db.po.Room;
+import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.param.ReserveParam;
-import com.sustech.regency.db.po.Order;
 import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.OrderInfo;
 import com.sustech.regency.model.vo.PayInfo;
-import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.web.annotation.DateParam;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.Date;
@@ -74,6 +73,14 @@ public class ConsumerController {
                 reserveParam.getStartTime(),
                 reserveParam.getEndTime());
         return ApiResponse.success(payInfo);
+    }
+
+    @Resource
+    private Redis redis;
+    @ApiOperation(value = "获取未付款的订单二维码", notes = "返回支付二维码的Base64编码，如果过期，返回null")
+    @GetMapping("/get-qrcode")
+    public ApiResponse<String> getQrCode(@RequestParam @NotEmpty Long orderId){
+        return ApiResponse.success(redis.getObject(orderId+""));
     }
 
     @ApiOperation(value = "订单退款")
@@ -131,10 +138,10 @@ public class ConsumerController {
 
     @ApiOperation("用户多条件筛选某个酒店的订单")
     @GetMapping("/hotel/get-selected-orders")
-    public ApiResponse<List<OrderInfo>> getSelectedOrders(@ApiParam(value = "是否有评论", required = false) @RequestParam(required = false) Boolean isComment,
-                                                          @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                          @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
-                                                          @ApiParam(value = "订单状态", required = false) @RequestParam(required = false) Integer status) {
+    public ApiResponse<List<OrderInfo>> getSelectedOrders(@ApiParam(value = "是否有评论") @RequestParam(required = false) Boolean isComment,
+                                                          @ApiParam(value = "开始时间") @RequestParam(required = false) @DateParam Date startTime,
+                                                          @ApiParam(value = "结束时间") @RequestParam(required = false) @DateParam Date endTime,
+                                                          @ApiParam(value = "订单状态") @RequestParam(required = false) Integer status) {
 
         return ApiResponse.success(consumerService.selectCustomerOrders(isComment, startTime, endTime, status));
     }
@@ -154,18 +161,6 @@ public class ConsumerController {
         chatHistories.addAll(chatHistoryDao.selectList(queryWrapper));
         chatHistories.sort(Comparator.comparing(ChatHistory::getChatTime));
         return ApiResponse.success(chatHistories);
-    }
-
-    @ApiOperation("用户预定酒店时多参数筛选房间")
-    @GetMapping("/hotel/consumer-select-rooms")
-    public ApiResponse<List<Room>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
-                                                    @ApiParam(value = "开始时间", required = false) @RequestParam(required = false) @DateParam Date startTime,
-                                                    @ApiParam(value = "结束时间", required = false) @RequestParam(required = false) @DateParam Date endTime,
-                                                    @ApiParam(value = "最低价格", required = false) @RequestParam(required = false) Integer minPrice,
-                                                    @ApiParam(value = "最高价格", required = false) @RequestParam(required = false) Integer maxPrice,
-                                                    @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
-
-        return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId, startTime, endTime, minPrice, maxPrice, roomTypeId));
     }
 
     @ApiOperation("用户上传评论")

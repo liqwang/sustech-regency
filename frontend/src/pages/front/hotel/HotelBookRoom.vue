@@ -446,8 +446,12 @@ const clear = () => {
 }
 
 const onSubmit = () => {
+  if (form.max == form.end) {
+    form.min = ''
+    form.max = ''
+  }
   // console.log('前端表单', form)
-  request.get(`/consumer/hotel/consumer-select-rooms?hotelId=${hotelId}&startTime=${form.start}&endTime=${form.end}&minPrice=${form.min}&maxPrice=${form.max}&roomTypeId=${form.type}`).then((res) => {
+  request.get(`/public/hotel/consumer-select-rooms?hotelId=${hotelId}&startTime=${form.start}&endTime=${form.end}&minPrice=${form.min}&maxPrice=${form.max}&roomTypeId=${form.type}`).then((res) => {
     // console.log('返回数据', res.data.data)
     rooms = []
     for (const key in res.data.data) {
@@ -628,7 +632,7 @@ const handleChange = (value: number) => {
   if (value > 10000) {
     value = 10000
   }
-  if (value < 0) {
+  if (value <= 0) {
     value = 0
   }
 }

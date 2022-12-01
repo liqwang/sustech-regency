@@ -12,6 +12,7 @@ import com.sustech.regency.model.vo.HotelInfo;
 import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.ConsumerService;
 import com.sustech.regency.service.PublicService;
+import com.sustech.regency.web.annotation.DateParam;
 import com.sustech.regency.web.annotation.DateTimeParam;
 import com.sustech.regency.web.annotation.PathController;
 import com.sustech.regency.web.handler.ApiException;
@@ -61,6 +62,17 @@ public class PublicController {
                 .innerJoin(Province.class, Province::getId, City::getProvinceId)
                 .eq(isNotEmpty(province), Province::getName, province);
         return ApiResponse.success(cityDao.selectJoinList(City.class, wrapper));
+    }
+
+    @ApiOperation("用户预定酒店时多参数筛选房间")
+    @GetMapping("/hotel/consumer-select-rooms")
+    public ApiResponse<List<Room>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @javax.validation.constraints.NotNull Integer hotelId,
+                                                    @ApiParam(value = "开始时间") @RequestParam(required = false) @DateParam Date startTime,
+                                                    @ApiParam(value = "结束时间") @RequestParam(required = false) @DateParam Date endTime,
+                                                    @ApiParam(value = "最低价格") @RequestParam(required = false) Integer minPrice,
+                                                    @ApiParam(value = "最高价格") @RequestParam(required = false) Integer maxPrice,
+                                                    @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
+        return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId, startTime, endTime, minPrice, maxPrice, roomTypeId));
     }
 
     @Resource
@@ -204,7 +216,6 @@ public class PublicController {
     public ApiResponse<Float> getAvgStarsByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
         return ApiResponse.success(publicService.getAvgStarsByHotelId(hotelId));
     }
-
 
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：
