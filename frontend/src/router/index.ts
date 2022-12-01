@@ -19,6 +19,8 @@ import HotelChat from '../pages/front/hotel/HotelChat.vue'
 import UserSetting from '../pages/front/user/UserSetting.vue'
 import UserOrder from '../pages/front/user/UserOrder.vue'
 import UserCollection from '../pages/front/user/UserCollection.vue'
+import { ElNotification } from 'element-plus'
+import { h } from 'vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -96,6 +98,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.token ? JSON.parse(localStorage.token) : ''
   if (to.meta.requiresAuth && !token) {
+    ElNotification({
+      title: "Success",
+      message: h("i", { style: "color: teal" }, "请先登录！"),
+    })
     next('/login')
   } else {
     next()
