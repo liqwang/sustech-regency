@@ -77,16 +77,18 @@ public class ConsumerController {
 
     @Resource
     private Redis redis;
+
     @ApiOperation(value = "获取未付款的订单二维码", notes = "返回支付二维码的Base64编码，如果过期，返回null")
     @GetMapping("/get-qrcode")
-    public ApiResponse<String> getQrCode(@RequestParam @NotEmpty Long orderId){
-        return ApiResponse.success(redis.getObject(orderId+""));
+    public ApiResponse<String> getQrCode(@RequestParam @NotEmpty String orderId) {
+        return ApiResponse.success(redis.getObject(orderId + ""));
     }
 
     @ApiOperation(value = "订单退款")
     @PostMapping("/refund")
-    public ApiResponse refund(@RequestParam @NotNull Long orderId) {
-        consumerService.cancelOrder(orderId);
+    public ApiResponse refund(@RequestParam @NotNull String orderId) {
+        Long id = Long.parseLong(orderId);
+        consumerService.cancelOrder(id);
         return ApiResponse.success();
     }
 
