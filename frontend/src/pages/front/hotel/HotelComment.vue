@@ -3,7 +3,8 @@
     <el-card class="box-card" style="border-radius: 15px">
       <el-scrollbar>
         <div>
-          <el-rate v-model="stars" disabled show-score text-color="#ff9900" score-template="{value}分/5分" />
+          <el-rate v-model="stars" :colors="colors" disabled show-score text-color="#ff9900"
+            score-template="{value}分/5分" />
           <br />
         </div>
         <div>{{ hotelInfo?.commentNum }}条评论</div>
@@ -26,7 +27,8 @@
                 <b>{{ comment.userName }}</b>
               </div>
               <div style="flex: 1; font-size: 14px; padding: 5px 0; line-height: 25px; margin-left: 20px;">
-                <el-rate v-model="comment.stars" disabled show-score text-color="#ff9900" score-template="{value}分/5分">
+                <el-rate v-model="comment.stars" :colors="colors" disabled show-score text-color="#ff9900"
+                  score-template="{value}分/5分">
                 </el-rate>
                 <div> {{ comment.comment }} </div>
                 <el-row :gutter="2">
@@ -84,6 +86,8 @@ interface Comment {
   headShotUrl: string
 }
 
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
+
 const router = useRouter()
 
 const props = defineProps<{
@@ -94,11 +98,16 @@ const props = defineProps<{
 let commentList = $ref<Comment[]>([])
 
 const hotelInfo = $ref(props.hotelInfo)
-const stars = $ref(hotelInfo?.stars)
+let stars = $ref(0)
+
+const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
+
+request.get(`/public/get-hotel-Comments-avgStar?hotelId=${hotelId}`).then(res => {
+  stars = parseFloat(res.data.data.toFixed(1))
+})
 
 console.log("router", router.currentRoute.value.fullPath)
 
-const hotelId = parseInt(router.currentRoute.value.params['hotelId'] as string)
 
 request.get(`/public/get-hotelComments?hotelId=${hotelId}`).then(res => {
   commentList = res.data.data

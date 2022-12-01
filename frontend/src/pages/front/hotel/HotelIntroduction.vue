@@ -25,10 +25,13 @@
       <el-col :span="10" :offset="1">
         <div m="t-10">
           <div>
-            <el-rate v-model="stars" disabled text-color="#ff9900" />
+            <el-rate v-model="stars" :colors="colors" disabled text-color="#ff9900" />
             <br />
             <b style="font-size: 20px">￥{{ hotelInfo?.minPrice }}</b>
             起
+            <div>
+              <div>共{{ hotelInfo.likes_num }}人收藏</div>
+            </div>
           </div>
           <br />
           <br />
@@ -49,6 +52,8 @@ const props = defineProps<{
   hotelInfo: HotelInfo
 }
 >()
+
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 
 const hotelInfo = $ref(props.hotelInfo)
 let stars = $ref(hotelInfo?.stars)
