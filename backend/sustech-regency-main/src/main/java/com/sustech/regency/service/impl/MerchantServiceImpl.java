@@ -1,5 +1,6 @@
 package com.sustech.regency.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -162,7 +163,7 @@ public class MerchantServiceImpl implements MerchantService {
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime, Integer roomType) {
         asserts(startTime!=null && EndTime!=null, "StartTime and EndTime need to be chosen!");
         asserts(EndTime.after(startTime), "Time illegal!");
-        Float[] money = new Float[differentDays(startTime, EndTime)];
+        float[] money = new float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
         for (Room room : rooms) {
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -171,15 +172,17 @@ public class MerchantServiceImpl implements MerchantService {
             for (Order o : orders) {
                 if(o.getStatus().ordinal()>=2&&o.getStatus().ordinal()<=4){
                     if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
-                        money[differentDays(startTime, o.getDateEnd())] = o.getFee();
-                        System.out.println("roomId"+room.getId());
-                        System.out.print(o.getFee());
-                        System.out.println();
+                        money[differentDays(startTime, o.getDateEnd())] += o.getFee();
+
                     }
                 }
             }
         }
-        return new ArrayList<>(Arrays.asList(money));
+        List<Float> bills =new ArrayList<>();
+        for (float v : money) {
+            bills.add(v);
+        }
+        return bills;
     }
 
     @Override
