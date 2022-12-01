@@ -237,8 +237,15 @@ public class PublicServiceImpl implements PublicService {
             int room_id = r.getId();
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
+            int room_comment = 0;
             List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
-            cnt += orderList.size();
+            for (Order o:
+                 orderList) {
+                if (o.getStatus() == COMMENTED || o.getStatus() == NOT_COMMENTED){
+                    room_comment+=1;
+                }
+            }
+            cnt += room_comment;
         }
         return cnt;
     }
