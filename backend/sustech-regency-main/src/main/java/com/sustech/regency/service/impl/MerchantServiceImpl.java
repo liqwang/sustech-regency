@@ -158,8 +158,10 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime, Integer roomType) {
+        asserts(startTime!=null && EndTime!=null, "StartTime and EndTime need to be chosen!");
+        asserts(EndTime.after(startTime), "Time illegal!");
         Float[] money = new Float[differentDays(startTime, EndTime)];
-        List<Room> rooms = publicService.getRoomsByHotel(hotelId, null);
+        List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
         for (Room room : rooms) {
             if (roomType != null) {
                 if (!Objects.equals(room.getTypeId(), roomType)) {
