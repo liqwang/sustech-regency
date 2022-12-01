@@ -304,7 +304,7 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<Comment> getCommentsByHotelId(Integer hotelId) {
         MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
-        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars)
+        wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars,Order::getPayTime)
                 .selectAs(Order::getId,Comment::getOrderId)
                 .selectAs(User::getName, Comment::getUserName)
                 .selectAs(Hotel::getName, Comment::getHotelName)
@@ -323,7 +323,7 @@ public class PublicServiceImpl implements PublicService {
                     if (comment.getComment() == null) {
                         comment.setComment("系统默认好评");
                         comment.setStars(5.0f);
-                        comment.setCommentTime(new Date());
+                        comment.setCommentTime(comment.getPayTime());
                     }
                 }).toList());
         for (Comment comment : comments) {
