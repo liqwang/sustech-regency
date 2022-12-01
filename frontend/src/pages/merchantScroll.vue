@@ -477,8 +477,8 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type != 'image/png') {
     cover_tip.value = ('Hotel cover must be JPG or PNG format!')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    cover_tip.value = ('Hotel cover size can not exceed 2MB!')
+  } else if (rawFile.size / 1024 / 1024 > 100) {
+    cover_tip.value = ('Hotel cover size can not exceed 100MB!')
     return false
   }
   console.log(rawFile.type)
