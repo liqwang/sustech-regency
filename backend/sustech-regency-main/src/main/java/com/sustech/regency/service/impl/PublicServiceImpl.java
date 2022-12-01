@@ -338,6 +338,7 @@ public class PublicServiceImpl implements PublicService {
                 if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
             }
             comment.setPictureUrls(getCommentsPictureUrls(comment.getOrderId()));
+
             comment.setVideoUrls(getCommentsVideoUrls(comment.getOrderId()));
         }
         comments.sort((c1, c2) -> c2.getCommentTime().compareTo(c1.getCommentTime()));
