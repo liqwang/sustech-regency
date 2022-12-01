@@ -28,7 +28,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -130,9 +129,9 @@ public class ConsumerServiceImpl implements ConsumerService {
         @SuppressWarnings("ConstantConditions")
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String webSocketUrl = "ws://" + request.getServerName() + ":" + request.getServerPort() + "/websocket/order/" + order.getId();
-        redis.setObject("order:" + order.getId(), null, 15, MINUTES); //订单15分钟后未支付会超时
+        redis.setObject("order:" + order.getId(), base64QrCode, 15, MINUTES); //订单15分钟后未支付会超时,将二维码暂时存储在Redis中
         return new PayInfo().setBase64QrCode(base64QrCode)
-                .setWebSocketUrl(webSocketUrl);
+                            .setWebSocketUrl(webSocketUrl);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.sustech.regency.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -93,6 +94,7 @@ public class MerchantServiceImpl implements MerchantService {
             if (merchantId != null) hotel.setMerchantId(merchantId); //比如酒店转让
             if (name != null) hotel.setName(name);
             if (tel != null) hotel.setTel(tel);
+            if (address!=null) hotel.setAddress(address);
             hotelDao.updateById(hotel);
         }
         return true;
@@ -162,25 +164,26 @@ public class MerchantServiceImpl implements MerchantService {
     public List<Float> getHotelHistoricalBills(Integer hotelId, Date startTime, Date EndTime, Integer roomType) {
         asserts(startTime!=null && EndTime!=null, "StartTime and EndTime need to be chosen!");
         asserts(EndTime.after(startTime), "Time illegal!");
-        Float[] money = new Float[differentDays(startTime, EndTime)];
+        float[] money = new float[differentDays(startTime, EndTime)];
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
         for (Room room : rooms) {
-            if (roomType != null) {
-                if (!Objects.equals(room.getTypeId(), roomType)) {
-                    continue;
-                }
-            }
             LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
             orderLambdaQueryWrapper.eq(Order::getRoomId, room.getId());
             List<Order> orders = orderDao.selectList(orderLambdaQueryWrapper);
             for (Order o : orders) {
-                if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
-                    money[differentDays(startTime, o.getDateEnd())] = o.getFee();
-                }
+                if(o.getStatus().ordinal()>=2&&o.getStatus().ordinal()<=4){
+                    if (startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd())) {
+                        money[differentDays(startTime, o.getDateEnd())] += o.getFee();
 
+                    }
+                }
             }
         }
-        return new ArrayList<>(Arrays.asList(money));
+        List<Float> bills =new ArrayList<>();
+        for (float v : money) {
+            bills.add(v);
+        }
+        return bills;
     }
 
     @Override

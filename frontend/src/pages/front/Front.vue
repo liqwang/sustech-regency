@@ -255,17 +255,27 @@ const disabled = $ref(false)
 
 const load = () => {
   listLoading = true
-  request
-    .get(`/public/get-hotels-by-location?CityName=${city}&ProvinceName=${province}&RegionName=${region}&HotelName=${hotelName}&pageNum=${pageNum}&pageSize=${pageSize}`)
-    .then(res => {
+  if (province === '全部') {
+    request.get(`/public/get-hotels-by-location?pageNum=${pageNum}&pageSize=${pageSize}`).then(res => {
       console.log(res.data.data)
       pages = res.data.data
       hotelInfos = pages.records
       totalNum = parseInt(pages.total)
-    })
-    .finally(() => {
+    }).finally(() => {
       listLoading = false
     })
+  } else {
+    request.get(`/public/get-hotels-by-location?CityName=${city}&ProvinceName=${province}&RegionName=${region}&HotelName=${hotelName}&pageNum=${pageNum}&pageSize=${pageSize}`)
+      .then(res => {
+        console.log(res.data.data)
+        pages = res.data.data
+        hotelInfos = pages.records
+        totalNum = parseInt(pages.total)
+      })
+      .finally(() => {
+        listLoading = false
+      })
+  }
 }
 
 load()
@@ -277,17 +287,24 @@ const search = () => {
 request.get('/public/province/all').then((res) => {
   const provinceList = res.data.data as City[]
   provinces = provinceList.map((p) => p.name)
+  provinces.unshift('全部')
 })
 
-const changeCity = (province: string) => {
-  console.log('myprovince: ' + province)
-  request.get(`/public/city/all?province=${province}`).then((res) => {
-    const cityList = res.data.data as Province[]
-    cities = cityList.map((c) => c.name)
+const changeCity = (curProvince: string) => {
+  console.log('myprovince: ' + curProvince)
+  if (curProvince === '全部') {
+    province = '全部'
     city = ''
     region = ''
-    console.log(cities)
-  })
+  } else {
+    request.get(`/public/city/all?province=${curProvince}`).then(res => {
+      const cityList = res.data.data as Province[]
+      cities = cityList.map(c => c.name)
+      city = ''
+      region = ''
+      console.log(cities)
+    })
+  }
 }
 
 const changeRegion = (province: string, city: string) => {
