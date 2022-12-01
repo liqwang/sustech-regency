@@ -48,10 +48,7 @@ const avatarUrl = user ? JSON.parse(localStorage.getItem('user') as string).head
 const isMerchant = user ? JSON.parse(localStorage.getItem('user') as string).isMerchant : false
 
 const login = () => {
-  let userRouteUrl = router.resolve({
-    path: '/login'
-  })
-  window.open(userRouteUrl.href, '_blank')
+  router.push('/login')
 }
 
 const logout = () => {
@@ -65,10 +62,7 @@ const logout = () => {
 }
 
 const signup = () => {
-  let userRouteUrl = router.resolve({
-    path: '/signup'
-  })
-  window.open(userRouteUrl.href, '_blank')
+  router.push('/signup')
 }
 
 const toUserPage = () => {
