@@ -7,17 +7,19 @@ import com.sustech.regency.db.dao.*;
 import com.sustech.regency.db.po.*;
 import com.sustech.regency.db.po.Collection;
 import com.sustech.regency.model.vo.HotelInfo;
-import com.sustech.regency.model.vo.RoomInfo;
 import com.sustech.regency.service.MerchantService;
 import com.sustech.regency.service.PublicService;
 import com.sustech.regency.service.RoomService;
+import com.sustech.regency.util.EmailUtil;
 import com.sustech.regency.util.FileUtil;
-import org.springframework.security.core.parameters.P;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.sustech.regency.util.VerificationUtil.getUserId;
 import static com.sustech.regency.web.util.AssertUtil.asserts;
@@ -232,23 +234,34 @@ public class MerchantServiceImpl implements MerchantService {
         return orderList;
     }
 
+    @Resource
+    private EmailUtil emailUtil;
+    @Resource
+    private ThreadPoolExecutor threadPool;
+    public static final Logger LOGGER = LogManager.getLogger(MerchantServiceImpl.class);
     @Override
     public void notifySale(Integer hotelId, Integer roomType, Float saleRate) {
+        String hotelName = hotelDao.selectById(hotelId).getName();
         List<Room> rooms = publicService.getRoomsByHotel(hotelId, roomType);
         for (Room room : rooms) {
             roomService.updateOneRoom(getUserId(), room.getId(), null, null, null, null, null, null, saleRate);
         }
-//        发给所有收藏了该酒店的用户打折
-        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        collectionLambdaQueryWrapper.eq(Collection::getHotelId,hotelId);
-        List<Collection> collections = collectionDao.selectList(collectionLambdaQueryWrapper);
-        for (Collection collection:
-             collections) {
-            int userId = collection.getUserId();
-//            发邮件
-        }
-
-
+        //异步发送给所有收藏了该酒店的用户打折通知邮件
+        collectionDao.selectJoinList(User.class,
+                                     new MPJLambdaWrapper<User>()
+                                        .select(User::getEmail)
+                                        .innerJoin(User.class, User::getId, Collection::getUserId)
+                                        .eq(Collection::getHotelId, hotelId))
+                      .stream()
+                      .map(User::getEmail)
+                      .forEach(email->threadPool.execute(
+                                    ()-> {
+                                        LOGGER.info("Start send to {}",email);
+                                        emailUtil.sendMail(email,"您收藏的酒店「"+hotelName+"」刚刚发布了打折活动，快来看看吧~","酒店降价提醒");
+                                        LOGGER.info("Complete send to {}",email);
+                                    })
+                              );
+        LOGGER.info("Return ApiResponse");
     }
 
     /**
@@ -263,10 +276,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     /**
      * date2比date1多的天数
-     *
-     * @param date1
-     * @param date2
-     * @return
      */
     private static int differentDays(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
@@ -296,9 +305,4 @@ public class MerchantServiceImpl implements MerchantService {
             return day2 - day1;
         }
     }
-
-
 }
-
-
-
