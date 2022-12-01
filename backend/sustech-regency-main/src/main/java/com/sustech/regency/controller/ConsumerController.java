@@ -152,7 +152,7 @@ public class ConsumerController {
         queryWrapper.eq("to_name", user1);
         queryWrapper.eq("hotel_id", hotelId);
         chatHistories.addAll(chatHistoryDao.selectList(queryWrapper));
-        chatHistories.sort((c1, c2) -> c2.getChatTime().compareTo(c1.getChatTime()));
+        chatHistories.sort(Comparator.comparing(ChatHistory::getChatTime));
         return ApiResponse.success(chatHistories);
     }
 
