@@ -40,6 +40,9 @@ public class PublicController {
     @Resource
     private ProvinceDao provinceDao;
 
+    @Resource
+    private ConsumerService consumerService;
+
     @ApiOperation("获取所有省")
     @GetMapping("/province/all")
     public ApiResponse<List<Province>> getAllProvinces() {
@@ -196,8 +199,12 @@ public class PublicController {
         return ApiResponse.success(publicService.getRoomTypesByHotelId(hotelId));
     }
 
-    @Resource
-    private ConsumerService consumerService;
+    @ApiOperation("根据酒店Id获取所有评论平均星级打分")
+    @GetMapping("/get-hotel-Comments-avgStar")
+    public ApiResponse<Float> getAvgStarsByHotelId(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId) {
+        return ApiResponse.success(publicService.getAvgStarsByHotelId(hotelId));
+    }
+
 
     /**
      * 事实上，该接口很容易被攻击者调用，需要保证安全性，包括但不限于：

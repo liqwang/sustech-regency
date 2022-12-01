@@ -413,4 +413,28 @@ public class PublicServiceImpl implements PublicService {
         return list.size();
     }
 
+    @Override
+    public Float getAvgStarsByHotelId(Integer hotelId) {
+        LambdaQueryWrapper<Room> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Room::getHotelId, hotelId);
+        List<Room> roomList = roomDao.selectList(wrapper);
+        int cnt = 0;
+        float points = 0;
+        for (Room r : roomList) {
+            int room_id = r.getId();
+            LambdaQueryWrapper<Order> orderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderLambdaQueryWrapper.eq(Order::getRoomId, room_id);
+            List<Order> orderList = orderDao.selectList(orderLambdaQueryWrapper);
+            for (Order o:
+                 orderList) {
+                if(o.getStars()!=null){
+                    points+=o.getStars();
+                    cnt += 1;
+                }
+
+            }
+        }
+        return points/cnt;
+    }
+
 }

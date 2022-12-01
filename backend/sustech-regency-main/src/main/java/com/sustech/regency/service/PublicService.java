@@ -46,4 +46,6 @@ public interface PublicService {
     List<RoomType> getRoomTypesByHotel(Integer hotelId);
 
     Integer getLikesNumByHotelId(Integer hotelId);
+
+    Float getAvgStarsByHotelId(Integer hotelId);
 }
