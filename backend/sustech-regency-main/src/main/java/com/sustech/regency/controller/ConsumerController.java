@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sustech.regency.db.dao.ChatHistoryDao;
 import com.sustech.regency.db.po.ChatHistory;
-import com.sustech.regency.db.po.Room;
 import com.sustech.regency.db.util.Redis;
 import com.sustech.regency.model.param.ReserveParam;
 import com.sustech.regency.model.vo.HotelInfo;
@@ -162,17 +161,6 @@ public class ConsumerController {
         chatHistories.addAll(chatHistoryDao.selectList(queryWrapper));
         chatHistories.sort(Comparator.comparing(ChatHistory::getChatTime));
         return ApiResponse.success(chatHistories);
-    }
-
-    @ApiOperation("用户预定酒店时多参数筛选房间")
-    @GetMapping("/hotel/consumer-select-rooms")
-    public ApiResponse<List<Room>> getSelectedRooms(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
-                                                    @ApiParam(value = "开始时间") @RequestParam(required = false) @DateParam Date startTime,
-                                                    @ApiParam(value = "结束时间") @RequestParam(required = false) @DateParam Date endTime,
-                                                    @ApiParam(value = "最低价格") @RequestParam(required = false) Integer minPrice,
-                                                    @ApiParam(value = "最高价格") @RequestParam(required = false) Integer maxPrice,
-                                                    @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId) {
-        return ApiResponse.success(consumerService.getRoomInfosByCustomerChoice(hotelId, startTime, endTime, minPrice, maxPrice, roomTypeId));
     }
 
     @ApiOperation("用户上传评论")
