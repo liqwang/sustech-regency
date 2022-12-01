@@ -53,6 +53,9 @@ public class PublicServiceImpl implements PublicService {
     @Resource
     private CollectionDao collectionDao;
 
+    @Resource
+    private CommentAttachmentDao commentAttachmentDao;
+
     @Override
     public IPage<HotelInfo> getHotelsByLocation(String province, String city, String region, String hotelName, Integer pageNum, Integer pageSize) {
         MPJLambdaWrapper<HotelInfo> wrapper = new MPJLambdaWrapper<>();
@@ -119,6 +122,41 @@ public class PublicServiceImpl implements PublicService {
             }
         }
         return pictureList;
+    }
+
+    @Override
+    public List<String> getCommentsPictureUrls(Long orderId) {
+        LambdaQueryWrapper<CommentAttachment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CommentAttachment::getOrderId, orderId);
+        List<CommentAttachment> list = commentAttachmentDao.selectList(wrapper);
+        List<String> pictureList = new ArrayList<>();
+
+        for (CommentAttachment he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && !file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) pictureList.add(FileUtil.getUrl(file));
+            }
+        }
+        return pictureList;
+    }
+
+    @Override
+    public List<String> getCommentsVideoUrls(Long orderId) {
+        LambdaQueryWrapper<CommentAttachment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CommentAttachment::getOrderId,orderId);
+        List<CommentAttachment> list = commentAttachmentDao.selectList(wrapper);
+        List<String> videoList = new ArrayList<>();
+        for (CommentAttachment he : list) {
+            LambdaQueryWrapper<File> fileLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            fileLambdaQueryWrapper.eq(File::getId, he.getFileId());
+            File file = fileDao.selectOne(fileLambdaQueryWrapper);
+            if (file != null && file.getSuffix().equals("mp4")) {
+                if (file.getDeleteTime() == null) videoList.add(FileUtil.getUrl(file));
+            }
+        }
+        return videoList;
     }
 
 
@@ -267,6 +305,7 @@ public class PublicServiceImpl implements PublicService {
     public List<Comment> getCommentsByHotelId(Integer hotelId) {
         MPJLambdaWrapper<Comment> wrapper = new MPJLambdaWrapper<>();
         wrapper.select(Order::getCommentTime, Order::getComment, Order::getStars)
+                .selectAs(Order::getId,Comment::getOrderId)
                 .selectAs(User::getName, Comment::getUserName)
                 .selectAs(Hotel::getName, Comment::getHotelName)
                 .selectAs(RoomType::getName, Comment::getRoomType);
@@ -298,6 +337,8 @@ public class PublicServiceImpl implements PublicService {
             if (file != null) {
                 if (file.getDeleteTime() == null) comment.setHeadShotUrl(FileUtil.getUrl(file));
             }
+            comment.setPictureUrls(getCommentsPictureUrls(comment.getOrderId()));
+            comment.setVideoUrls(getCommentsVideoUrls(comment.getOrderId()));
         }
         comments.sort((c1, c2) -> c2.getCommentTime().compareTo(c1.getCommentTime()));
         return comments;

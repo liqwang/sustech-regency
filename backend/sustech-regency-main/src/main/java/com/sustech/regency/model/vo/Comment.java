@@ -24,4 +24,5 @@ public class Comment {
     private List<String> videoUrls;
     private List<String> pictureUrls;
     private String headShotUrl;
+    private Long orderId;
 }

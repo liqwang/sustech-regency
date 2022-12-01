@@ -23,6 +23,9 @@ public interface PublicService {
 
     List<String> getRoomTypeVideoUrls(Integer roomId);
 
+    List<String> getCommentsPictureUrls(Long orderId);
+
+    List<String> getCommentsVideoUrls(Long orderId);
 
     Float getMinPriceOfHotel(Integer hotelId);
 
