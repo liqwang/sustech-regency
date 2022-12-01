@@ -86,7 +86,7 @@
           酒店评分
         </el-col>
         <el-col :span="8">
-          <el-rate v-model="star" text-color="#ff9900" show-score score-template="{value}分/5分" />
+          <el-rate v-model="star" :colors="colors" text-color="#ff9900" show-score score-template="{value}分/5分" />
         </el-col>
       </el-row>
       <br>
@@ -146,8 +146,10 @@ import { h, ref } from 'vue'
 import { Comment } from '@element-plus/icons-vue'
 import { ElMessage, ElNotification, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
-import request from '../../../utils/request';
-import { OrderInfo } from "../../../type/type";
+import request from '../../../utils/request'
+import { OrderInfo } from "../../../type/type.d"
+
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 
 const token = localStorage.token ? JSON.parse(localStorage.token) : ''
 
@@ -165,8 +167,6 @@ let orderId = $ref('')
 
 let comment = $ref('')
 let star = $ref(0)
-
-let pictureUrls = $ref<string[]>([])
 
 let dialogFormVisible = $ref(false)
 
@@ -188,10 +188,6 @@ const loadOrders = (orderStatus: number) => {
 }
 
 loadOrders(0)
-
-const addComment = () => {
-
-}
 
 const activeIndex = ref('0')
 
@@ -251,7 +247,6 @@ const submitUpload = () => {
   loadOrders(status)
 }
 
-// const status = ['全部订单', '待付款', '已超时', '已支付', '待评价', '已评价', '已退款']
 const map1 = new Map<string, string>()
 map1.set('NOT_PAYED', '待付款')
 map1.set('TIMEOUT', '已超时')
@@ -259,10 +254,6 @@ map1.set('PAYED', '已支付')
 map1.set('NOT_COMMENTED', '待评价')
 map1.set('COMMENTED', '已评价')
 map1.set('REFUNDED', '已退款')
-
-const upload = () => {
-
-}
 
 const uploadRateAndComment = () => {
   request.post(`/consumer/upload-comment-star?orderId=${orderId}&star=${star}`).then(res => {

@@ -60,15 +60,20 @@
                     </el-col>
                     <el-col :span="12" :offset="0">
                       <div class="rate">
-                        <el-rate v-model="hotelInfo.stars" disabled text-color="#ff9900" />
+                        <el-rate v-model="hotelInfo.stars" :colors="colors" disabled text-color="#ff9900" />
                       </div>
                     </el-col>
-                    <el-col :span="12" :offset="0" class="comment">
+                    <el-col :span="8" :offset="0" class="comment">
                       <div class="comment">
                         <div>共{{ hotelInfo.commentNum }}条评论</div>
                       </div>
                     </el-col>
-                    <el-col :span="12" :offset="0" class="price">
+                    <el-col :span="7" :offset="1" class="comment">
+                      <div class="comment">
+                        <div>共{{ hotelInfo.likes_num }}人收藏</div>
+                      </div>
+                    </el-col>
+                    <el-col :span="8" :offset="0" class="price">
                       ¥<span class="">{{ hotelInfo.minPrice }}</span>起
                     </el-col>
                   </el-row>
@@ -224,6 +229,8 @@ interface IPage {
   records: HotelInfo[]
   total: string
 }
+
+const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 
 let pages = $ref<IPage>()
 let hotelInfos = $ref<HotelInfo[]>()
