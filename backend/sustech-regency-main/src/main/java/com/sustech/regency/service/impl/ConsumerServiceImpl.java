@@ -142,8 +142,8 @@ public class ConsumerServiceImpl implements ConsumerService {
         String moneyStr = money + "";
         int decimalPointIndex = moneyStr.lastIndexOf('.');
         return moneyStr.length() == decimalPointIndex + 2 ? //eg: 198.0
-                moneyStr :
-                moneyStr.substring(0, decimalPointIndex + 3);
+               moneyStr :
+               moneyStr.substring(0, decimalPointIndex + 3);
     }
 
     @Override
@@ -151,9 +151,9 @@ public class ConsumerServiceImpl implements ConsumerService {
         redis.deleteObject("order:" + orderId);
         //这里即使Redis的key过期提前把表中状态改为TIMEOUT也不会有bug
         orderDao.updateById(new Order()
-                .setId(orderId)
-                .setStatus(PAYED)
-                .setPayTime(payTime));
+                               .setId(orderId)
+                               .setStatus(PAYED)
+                               .setPayTime(payTime));
         OrderWebSocket.notifyFrontend(orderId);
     }
 
@@ -259,7 +259,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         for (Order o : orders) {
             boolean judge = true;
 
-            if (startTime != null && EndTime != null) {
+            if (startTime != null) {
                 if (!(startTime.before(o.getDateEnd()) && EndTime.after(o.getDateEnd()))) {
                     judge = false;
                 }
