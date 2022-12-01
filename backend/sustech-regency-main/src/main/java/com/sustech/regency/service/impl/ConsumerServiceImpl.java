@@ -343,6 +343,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         Order order = orderDao.selectById(orderId);
         order.setStatus(COMMENTED);
         order.setComment(comment);
+        order.setCommentTime(new Date());
         orderDao.updateById(order);
     }
 
@@ -351,6 +352,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         Order order = orderDao.selectById(orderId);
         order.setStars(star);
         order.setStatus(COMMENTED);
+        order.setCommentTime(new Date());
         orderDao.updateById(order);
     }
 
