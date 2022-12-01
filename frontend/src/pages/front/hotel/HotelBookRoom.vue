@@ -26,13 +26,13 @@
                 <span class="text-gray-500">行程安排</span>
               </el-col>
               <el-col :span="5">
-                <el-date-picker value-format="YYYY-MM-DD" v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
+                <el-date-picker value-format="YYYY-MM-DD" v-model="form.start" type="date" :disabled-date="disabledDate" placeholder="入住日期" style="width: 100%" />
               </el-col>
               <el-col :span="1" class="text-center">
                 <span class="text-gray-500">-</span>
               </el-col>
               <el-col :span="5">
-                <el-date-picker value-format="YYYY-MM-DD" v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
+                <el-date-picker value-format="YYYY-MM-DD" :disabled-date="disabledOut" v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
               </el-col>
               <el-col :span="1"></el-col>
               <el-col :span="2" class="text-center">
@@ -616,5 +616,12 @@ const booknow = () => {
         })
     }
   }
+}
+const disabledDate = (time: Date) => {
+  return time.getTime() <= Date.now()
+}
+const disabledOut = (time: Date) => {
+  if (form.start == '') return time.getTime() <= Date.now()
+  else return time.getTime() <= Date.parse(form.start)
 }
 </script>

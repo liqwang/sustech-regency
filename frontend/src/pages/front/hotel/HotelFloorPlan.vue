@@ -171,7 +171,7 @@
               </el-col>
               <el-col :span="9" :offset="0">
                 <div class="black">
-                  <el-date-picker v-model="form.start" type="date" placeholder="入住日期" style="width: 100%" />
+                  <el-date-picker v-model="form.start" type="date" placeholder="入住日期" :disabled-date="disabledDate" style="width: 100%" />
                 </div>
               </el-col>
               <el-col :span="3" :offset="0">
@@ -188,7 +188,7 @@
               </el-col>
               <el-col :span="9" :offset="0">
                 <div class="black">
-                  <el-date-picker v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
+                  <el-date-picker v-model="form.end" type="date" :disabled-date="disabledOut" placeholder="退房日期" style="width: 100%" />
                 </div>
               </el-col>
               <el-col :span="3" :offset="0">
@@ -762,5 +762,12 @@ const click_room = (room_id: string) => {
     console.log('房间id', chooseid)
     update(chooseid)
   })
+}
+const disabledDate = (time: Date) => {
+  return time.getTime() <= Date.now()
+}
+const disabledOut = (time: Date) => {
+  if (form.start == '') return time.getTime() <= Date.now()
+  else return time.getTime() <= Date.parse(form.start)
 }
 </script>
