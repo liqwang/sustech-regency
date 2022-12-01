@@ -5,7 +5,8 @@
         <el-row>
           <el-col :span="18">
             <div id="title_setup">
-              <b>SUSTech Regency</b>
+
+  <b><a href="/">SUSTech Regency</a>  </b>            
             </div>
           </el-col>
           <el-col span>
