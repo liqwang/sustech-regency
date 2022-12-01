@@ -35,7 +35,7 @@
           <el-col :span="3">
             订单状态: {{ map1.get(orderInfo.order.status) }}
           </el-col>
-          <div v-if="(status === 4 || status === 5)">
+          <div v-if="(orderInfo.order.status === 'NOT_COMMENTED' || orderInfo.order.status === 'COMMENTED')">
             <el-col :span="2">
               <el-button style="width: 100px; margin-left: 10px;" :icon="Comment"
                 @click="(dialogFormVisible = true, orderId = orderInfo.order.id, comment = orderInfo.order.comment, star = orderInfo.order.stars)">
@@ -244,11 +244,11 @@ const submitUpload = () => {
   uploadRef.value!.submit()
   uploadRateAndComment()
   dialogFormVisible = false
-  location.reload()
   ElNotification({
     title: "Success",
     message: h("i", { style: "color: teal" }, "评论成功"),
   })
+  loadOrders(status)
 }
 
 // const status = ['全部订单', '待付款', '已超时', '已支付', '待评价', '已评价', '已退款']
