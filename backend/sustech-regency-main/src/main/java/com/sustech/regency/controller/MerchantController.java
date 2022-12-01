@@ -150,7 +150,7 @@ public class MerchantController {
     }
 
     @ApiOperation("商家对整个酒店或酒店某房型打折")
-    @GetMapping("/hotel/onsale")
+    @PostMapping("/hotel/on-sale")
     public ApiResponse notifySale(@ApiParam(value = "酒店Id", required = true) @RequestParam @NotNull Integer hotelId,
                                   @ApiParam(value = "房型ID") @RequestParam(required = false) Integer roomTypeId,
                                   @ApiParam(value = "折扣率", required = true) @RequestParam @NotNull Float discount) {
