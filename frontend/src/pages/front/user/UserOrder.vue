@@ -24,7 +24,7 @@
             订单号: {{ orderInfo.order.id }}
           </el-col>
           <el-divider direction="vertical" />
-          <el-col :span="2">
+          <el-col :span="3">
             付款人: {{ username }}
           </el-col>
           <el-divider direction="vertical" />
@@ -43,6 +43,21 @@
               </el-button>
             </el-col>
           </div>
+          <div v-if="(orderInfo.order.status === 'NOT_PAYED')">
+            <el-col :span="2">
+              <el-button style="width: 100px; margin-left: 10px;" :icon="Money">
+                付款
+              </el-button>
+            </el-col>
+          </div>
+          <div v-if="(orderInfo.order.status === 'PAYED')">
+            <el-col :span="2">
+              <el-button style="width: 100px; margin-left: 10px;" :icon="Money"
+                @click="(centerDialogVisible = true, orderId = orderInfo.order.id)">
+                退款
+              </el-button>
+            </el-col>
+          </div>
         </el-row>
         <el-row>
           <el-col>
@@ -53,13 +68,13 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="1">
+          <el-col :span="2">
             {{ orderInfo.roomInfo.floor }}层
           </el-col>
           <el-col :span="2">
             {{ orderInfo.roomInfo.roomNum }}室
           </el-col>
-          <el-col :span="3">
+          <el-col :span="8">
             房型: {{ orderInfo.roomInfo.roomTypeName }}
           </el-col>
         </el-row>
@@ -139,11 +154,23 @@
       </span>
     </template>
   </el-dialog>
+
+  <el-dialog v-model="centerDialogVisible" title="Information" width="30%" align-center>
+    <span>确定要退款吗？</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="refund">
+          确认
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { Comment } from '@element-plus/icons-vue'
+import { Comment, Money } from '@element-plus/icons-vue'
 import { ElMessage, ElNotification, UploadProps, UploadUserFile } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
 import request from '../../../utils/request'
@@ -266,6 +293,25 @@ const uploadRateAndComment = () => {
 
 const deletePictureAndVideo = () => {
 
+}
+
+const centerDialogVisible = ref(false)
+
+const refund = () => {
+  request.post(`/consumer/refund?orderId=${orderId}`).then(res => {
+    centerDialogVisible.value = false
+    if (res.data.code === 200) {
+      ElNotification({
+        title: 'Success',
+        message: h('i', { style: 'color: teal' }, '退款成功！')
+      })
+    } else {
+      ElNotification({
+        title: 'Fail',
+        message: h('i', { style: 'color: red' }, '退款失败！')
+      })
+    }
+  })
 }
 
 </script>

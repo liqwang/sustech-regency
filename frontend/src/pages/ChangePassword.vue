@@ -444,7 +444,7 @@ const getCode = () => {
   } else {
     ElNotification({
       title: 'Failed',
-      message: h('i', { style: 'color: red' }, '用户名为空')
+      message: h('i', { style: 'color: red' }, '用户名为空！')
     })
   }
 }
@@ -464,7 +464,7 @@ const doubleCheck = () => {
         if (res.data.code == 200) {
           ElNotification({
             title: 'Success',
-            message: h('i', { style: 'color: teal' }, '修改密码成功')
+            message: h('i', { style: 'color: teal' }, '修改密码成功！')
           })
           router.push('/login')
         } else if (res.data.code == 400) {
@@ -479,7 +479,7 @@ const doubleCheck = () => {
     // 弹窗报错
     ElNotification({
       title: 'Failed',
-      message: h('i', { style: 'color: red' }, '两次密码输入不一致，请重试')
+      message: h('i', { style: 'color: red' }, '两次密码输入不一致，请重试！')
     })
     // 清空密码
     form.newpwd = ''

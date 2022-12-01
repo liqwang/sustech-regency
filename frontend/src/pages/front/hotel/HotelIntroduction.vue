@@ -9,12 +9,6 @@
       {{ hotelInfo?.provinceName }}, {{ hotelInfo?.cityName }}, {{ hotelInfo?.regionName }}
     </div>
     <br />
-    <el-dialog>
-      <video controls>
-        <source src="https://quanquancho.com:8080/public/file/2022/12/01/83fdca0ecef24ef48ea5f785b49bf822.mp4"
-          type="video/mp4">
-      </video>
-    </el-dialog>
     <el-row>
       <el-col :span="12">
         <div class="block text-center">
