@@ -35,9 +35,12 @@
                       :preview-src-list="comment.pictureUrls"></el-image>
                   </el-col>
                 </el-row>
-                <el-row>
-                  <el-col v-for="videoUrl in comment.videoUrls">
-                    <video :src="videoUrl"></video>
+                <br>
+                <el-row :gutter="2">
+                  <el-col :span="6" v-for="videoUrl in comment.videoUrls">
+                    <video controls>
+                      <source :src="videoUrl" type="video/mp4">
+                    </video>
                   </el-col>
                 </el-row>
                 <!-- <video src="https://quanquancho.com:8080/public/file/2022/11/29/379552bc34c84d97a58b4237b477e7ba.mp4"></video> -->
