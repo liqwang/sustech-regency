@@ -285,8 +285,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         }
 
         List<OrderInfo> orderInfos = new ArrayList<>();
-        for (Order o :
-                orderList) {
+        for (Order o : orderList) {
             RoomInfo roomInfo = publicService.getRoomInfoByRoomId(o.getRoomId());
             HotelInfo hotelInfo = publicService.getOneHotelByHotelId(roomInfo.getHotelId());
             OrderInfo orderInfo = new OrderInfo();
@@ -295,6 +294,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             orderInfo.setHotelInfo(hotelInfo);
             orderInfos.add(orderInfo);
         }
+        orderInfos.sort(((o1, o2) -> o2.getOrder().getCreateTime().compareTo(o1.getOrder().getCreateTime())));
         return orderInfos;
     }
 
