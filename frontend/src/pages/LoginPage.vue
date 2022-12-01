@@ -5,7 +5,9 @@
         <!-- LOGO区域 -->
         <div id="logo">
           <div id="title">
-            <div id="text">SUSTech Regency</div>
+            <a href="/">
+              <div id="text">SUSTech Regency</div>
+            </a>
           </div>
           <div id="hotel">
             <div id="logoimg"></div>
