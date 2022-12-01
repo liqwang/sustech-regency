@@ -94,6 +94,7 @@ public class MerchantServiceImpl implements MerchantService {
             if (merchantId != null) hotel.setMerchantId(merchantId); //比如酒店转让
             if (name != null) hotel.setName(name);
             if (tel != null) hotel.setTel(tel);
+            if (address!=null) hotel.setAddress(address);
             hotelDao.updateById(hotel);
         }
         return true;
