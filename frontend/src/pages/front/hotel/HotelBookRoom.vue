@@ -25,27 +25,27 @@
               <el-col :span="2" class="text-center">
                 <span class="text-gray-500">行程安排</span>
               </el-col>
-              <el-col :span="5">
+              <el-col :span="4">
                 <el-date-picker value-format="YYYY-MM-DD" v-model="form.start" type="date" :disabled-date="disabledDate" placeholder="入住日期" style="width: 100%" />
               </el-col>
               <el-col :span="1" class="text-center">
                 <span class="text-gray-500">-</span>
               </el-col>
-              <el-col :span="5">
+              <el-col :span="4">
                 <el-date-picker value-format="YYYY-MM-DD" :disabled-date="disabledOut" v-model="form.end" type="date" placeholder="退房日期" style="width: 100%" />
               </el-col>
               <el-col :span="1"></el-col>
               <el-col :span="2" class="text-center">
                 <span class="text-gray-500">价格区间</span>
               </el-col>
-              <el-col :span="2">
-                <el-input v-model="form.min" placeholder="min" clearable />
+              <el-col :span="3">
+                <el-input-number v-model="form.min" :min="0" :max="10000" controls-position="right" step="10" />
               </el-col>
               <el-col :span="1" class="text-center">
                 <span class="text-gray-500">-</span>
               </el-col>
-              <el-col :span="2">
-                <el-input v-model="form.max" placeholder="max" clearable />
+              <el-col :span="3">
+                <el-input-number v-model="form.max" :min="form.min" :placeholder="form.min" :max="10000" step="10" controls-position="right" />
               </el-col>
             </el-form-item>
             <el-form-item>
