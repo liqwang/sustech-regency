@@ -1,6 +1,5 @@
 package com.sustech.regency.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -225,10 +224,6 @@ public class MerchantServiceImpl implements MerchantService {
                         judge = false;
                     }
                 }
-
-
-
-
                 if (judge) {
                     orderList.add(o);
                 }
