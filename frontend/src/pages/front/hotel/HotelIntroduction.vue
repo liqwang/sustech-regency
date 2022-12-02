@@ -8,6 +8,12 @@
       </el-icon>
       {{ hotelInfo?.provinceName }}, {{ hotelInfo?.cityName }}, {{ hotelInfo?.regionName }}, {{ hotelInfo?.address }}
     </div>
+    <div>
+      <el-icon :size="20">
+        <Phone />
+      </el-icon>
+      {{ hotelInfo?.tel }}
+    </div>
     <br />
     <el-row>
       <el-col :span="12">
@@ -45,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { Location } from '@element-plus/icons-vue'
+import { Location, Phone } from '@element-plus/icons-vue'
 import { HotelInfo } from '../../../type/type.d'
 
 const props = defineProps<{
