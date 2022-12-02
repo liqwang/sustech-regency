@@ -6,7 +6,7 @@
       <el-icon :size="20">
         <Location />
       </el-icon>
-      {{ hotelInfo?.provinceName }}, {{ hotelInfo?.cityName }}, {{ hotelInfo?.regionName }}
+      {{ hotelInfo?.provinceName }}, {{ hotelInfo?.cityName }}, {{ hotelInfo?.regionName }}, {{ hotelInfo?.address }}
     </div>
     <br />
     <el-row>
