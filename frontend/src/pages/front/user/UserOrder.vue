@@ -49,6 +49,11 @@
                 付款
               </el-button>
             </el-col>
+            <!-- <div>剩余时间:
+              <el-icon>
+                <Timer />
+              </el-icon>
+            </div> -->
           </div>
           <div v-if="(orderInfo.order.status === 'PAYED')">
             <el-col :span="2">
@@ -175,6 +180,7 @@ import { ElMessage, ElNotification, UploadProps, UploadUserFile } from 'element-
 import type { UploadInstance } from 'element-plus'
 import request from '../../../utils/request'
 import { OrderInfo } from "../../../type/type.d"
+import { Timer } from '@element-plus/icons-vue'
 
 const colors = $ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 

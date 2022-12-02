@@ -70,9 +70,9 @@
 
 <script setup lang="ts">
 import { Timer } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router';
-import { HotelInfo } from '../../../type/type.d';
-import request from '../../../utils/request';
+import { useRouter } from 'vue-router'
+import { HotelInfo } from '../../../type/type.d'
+import request from '../../../utils/request'
 
 interface Comment {
   commentTime: string
