@@ -20,6 +20,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         ApiResponse response = new ApiResponse(401, "Unauthorized, no JWT or the JWT may is expired");
+        httpServletResponse.setStatus(401);
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(out, response);
